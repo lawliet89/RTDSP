@@ -1,0 +1,183 @@
+!SESSION 2013-01-29 16:23:50.244 -----------------------------------------------
+eclipse.buildId=4.1.3.00038
+java.version=1.5.0_14
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY org.eclipse.core.resources 2 10035 2013-01-29 16:24:00.418
+!MESSAGE A workspace crash was detected. The previous session did not exit normally.
+
+!ENTRY org.eclipse.core.jobs 4 2 2013-01-29 16:26:18.788
+!MESSAGE An internal error occurred during: "Solution save".
+!STACK 0
+java.lang.NullPointerException
+	at org.eclipse.swt.widgets.Display.asyncExec(Display.java:603)
+	at com.ti.dvt.datamodel.solution.SaveJob.saveSolutions(SaveJob.java:160)
+	at com.ti.dvt.datamodel.solution.SaveJob.run(SaveJob.java:191)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:58)
+!SESSION 2013-01-29 17:47:54.681 -----------------------------------------------
+eclipse.buildId=4.1.3.00038
+java.version=1.5.0_14
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY org.eclipse.core.resources 2 10035 2013-01-29 17:48:00.145
+!MESSAGE A workspace crash was detected. The previous session did not exit normally.
+!SESSION 2013-01-31 17:00:48.386 -----------------------------------------------
+eclipse.buildId=4.1.3.00038
+java.version=1.5.0_14
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY org.eclipse.core.resources 2 10035 2013-01-31 17:01:26.590
+!MESSAGE A workspace crash was detected. The previous session did not exit normally.
+
+!ENTRY com.ti.ccstudio.debug.core 4 0 2013-01-31 17:39:09.935
+!MESSAGE Error: TMS320C671X: Power Failure on Target CPU 
+
+!SESSION 2013-01-31 17:41:49.588 -----------------------------------------------
+eclipse.buildId=4.1.3.00038
+java.version=1.5.0_14
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY org.eclipse.core.resources 2 10035 2013-01-31 17:41:53.758
+!MESSAGE A workspace crash was detected. The previous session did not exit normally.
+
+!ENTRY com.ti.ccstudio.debug.core 4 0 2013-01-31 18:16:29.690
+!MESSAGE Error: TMS320C671X: Error initializing emulator 
+
+
+!ENTRY com.ti.ccstudio.debug.core 4 0 2013-01-31 19:00:04.405
+!MESSAGE Error: TMS320C671X: Power Failure on Target CPU 
+
+!SESSION 2013-02-05 15:19:15.511 -----------------------------------------------
+eclipse.buildId=4.1.3.00038
+java.version=1.5.0_14
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en
+Command-line arguments:  -data H:\RTDSP\lab2 -os win32 -ws win32 -arch x86
+
+!ENTRY com.ti.ccstudio.debug.core 4 0 2013-02-05 15:20:43.046
+!MESSAGE Error: TMS320C671X: Power Failure on Target CPU 
+
+
+!ENTRY com.ti.ccstudio.debug.core 4 0 2013-02-05 15:21:08.968
+!MESSAGE Error: TMS320C671X: Error initializing emulator 
+
+!SESSION 2013-02-05 16:00:08.497 -----------------------------------------------
+eclipse.buildId=4.1.3.00038
+java.version=1.5.0_14
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en
+Command-line arguments:  -data H:\RTDSP\lab2 -os win32 -ws win32 -arch x86
+
+!ENTRY org.eclipse.core.resources 2 10035 2013-02-05 16:00:09.767
+!MESSAGE A workspace crash was detected. The previous session did not exit normally.
+
+!ENTRY com.ti.ccstudio.debug.core 4 0 2013-02-05 16:01:38.142
+!MESSAGE Error: TMS320C671X: Error initializing emulator 
+
+
+!ENTRY com.ti.ccstudio.debug.core 4 0 2013-02-05 16:20:55.462
+!MESSAGE Error: TMS320C671X: Power Failure on Target CPU 
+
+
+!ENTRY com.ti.ccstudio.debug.core 4 13 2013-02-05 16:20:58.543
+!MESSAGE Failed to load program 'H:\RTDSP\lab2\RTDSP\Debug\RTDSP.out' on target 'Spectrum Digital DSK-EVM-eZdsp onboard USB Emulator_0/TMS320C671X'.
+
+Reason:
+Cannot write to target
+
+!ENTRY com.ti.ccstudio.debug.core 4 0 2013-02-05 16:21:10.564
+!MESSAGE Error: TMS320C671X: Error initializing emulator 
+
+
+!ENTRY com.ti.ccstudio.debug.core 4 0 2013-02-05 16:25:33.660
+!MESSAGE Error: TMS320C671X: Power Failure on Target CPU 
+
+
+!ENTRY com.ti.ccstudio.debug.core 4 0 2013-02-05 16:25:33.721
+!MESSAGE Error: TMS320C671X: Failed to remove the debug state from the target before disconnecting.  There may still be breakpoint op-codes embedded in program memory.  It is recommended that you reset the emulator before you connect and reload your program before you continue debugging
+
+
+!ENTRY com.ti.ccstudio.debug.core 4 0 2013-02-05 16:26:08.682
+!MESSAGE Error: TMS320C671X: Error initializing emulator 
+
+
+!ENTRY org.eclipse.ui 4 4 2013-02-05 16:29:12.057
+!MESSAGE Unhandled event loop exception
+
+!ENTRY org.eclipse.ui 4 0 2013-02-05 16:29:12.067
+!MESSAGE The function "setSymbolicLocation" returned an error condition  (0x80070057)
+!STACK 0
+org.mozilla.xpcom.XPCOMException: The function "setSymbolicLocation" returned an error condition  (0x80070057)
+	at org.mozilla.xpcom.internal.XPCOMJavaProxy.callXPCOMMethod(Native Method)
+	at org.mozilla.xpcom.internal.XPCOMJavaProxy$3.call(XPCOMJavaProxy.java:242)
+	at java.util.concurrent.FutureTask$Sync.innerRun(Unknown Source)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+!SESSION 2013-02-05 20:23:15.632 -----------------------------------------------
+eclipse.buildId=4.1.3.00038
+java.version=1.5.0_14
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en
+Command-line arguments:  -data H:\RTDSP\lab2 -os win32 -ws win32 -arch x86
+
+!ENTRY org.eclipse.core.resources 2 10035 2013-02-05 20:23:16.645
+!MESSAGE A workspace crash was detected. The previous session did not exit normally.
+
+!ENTRY org.eclipse.ui 4 4 2013-02-05 20:44:15.321
+!MESSAGE Unhandled event loop exception
+
+!ENTRY org.eclipse.ui 4 0 2013-02-05 20:44:15.331
+!MESSAGE java.lang.NullPointerException
+!STACK 0
+java.lang.NullPointerException
+	at com.ti.dvt.util.SolutionHelper.registerEndRefreshForViews(SolutionHelper.java:2389)
+	at com.ti.dvt.graph.visualization.views.GraphPropertiesModalView$3.widgetSelected(GraphPropertiesModalView.java:360)
+	at org.eclipse.swt.widgets.TypedListener.handleEvent(TypedListener.java:90)
+	at org.eclipse.swt.widgets.EventTable.sendEvent(EventTable.java:66)
+	at org.eclipse.swt.widgets.Widget.sendEvent(Widget.java:928)
+	at org.eclipse.swt.widgets.Display.runDeferredEvents(Display.java:3348)
+	at org.eclipse.swt.widgets.Display.readAndDispatch(Display.java:2968)
+	at org.eclipse.ui.internal.Workbench.runEventLoop(Workbench.java:1914)
+	at org.eclipse.ui.internal.Workbench.runUI(Workbench.java:1878)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:419)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:149)
+	at org.eclipse.ui.internal.ide.IDEApplication.run(IDEApplication.java:97)
+	at org.eclipse.core.internal.runtime.PlatformActivator$1.run(PlatformActivator.java:78)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:92)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:68)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:400)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:177)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.eclipse.core.launcher.Main.invokeFramework(Main.java:336)
+	at org.eclipse.core.launcher.Main.basicRun(Main.java:280)
+	at org.eclipse.core.launcher.Main.run(Main.java:996)
+	at org.eclipse.core.launcher.Main.main(Main.java:971)
+
+!ENTRY org.eclipse.core.jobs 4 2 2013-02-05 20:49:16.057
+!MESSAGE An internal error occurred during: "resume".
+!STACK 0
+org.mozilla.xpcom.XPCOMException: The function "runWithCondition" returned an error condition  (0x80004005)
+	at org.mozilla.xpcom.internal.XPCOMJavaProxy.callXPCOMMethod(Native Method)
+	at org.mozilla.xpcom.internal.XPCOMJavaProxy$3.call(XPCOMJavaProxy.java:242)
+	at java.util.concurrent.FutureTask$Sync.innerRun(Unknown Source)
+	at java.util.concurrent.FutureTask.run(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(Unknown Source)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.runTask(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<States>
+<Expressions>
+<Expression IMemento.internal.id="sine_freq">
+<Format/>
+</Expression>
+<Expression IMemento.internal.id="sampling_freq">
+<Format/>
+</Expression>
+<Expression IMemento.internal.id="sample">
+<Format/>
+</Expression>
+</Expressions>
+</States>

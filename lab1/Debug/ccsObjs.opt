@@ -1,0 +1,1 @@
+"./volume.obj" "./vectors.obj" "./load.obj" -l"rts6700.lib" "../rts6700.lib" "../volume.cmd" 

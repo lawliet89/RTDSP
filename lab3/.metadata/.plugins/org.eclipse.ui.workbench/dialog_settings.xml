@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="StartAddressDecoration">
+		<section name="Spectrum Digital DSK-EVM-eZdsp onboard USB Emulator_0/TMS320C671X">
+			<item key="StartAddressDecoration.MEM_PAGE_ID" value="0"/>
+			<list key="StartAddressDecoration.ADDRESS_TEXT_ID">
+				<item value=""/>
+			</list>
+		</section>
+	</section>
+</section>

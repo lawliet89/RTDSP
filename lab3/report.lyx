@@ -1,0 +1,1311 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{ %
+  basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                % sets automatic line breaking
+  captionpos=b,                   % sets the caption-position to bottom
+  commentstyle=\color{dkgreen},   % comment style
+  escapeinside={\%*}{*)},         % if you want to add LaTeX within your code
+  keywordstyle=\color{blue},      % keyword style
+  language=C,                     % the language of the code
+  numbers=left,                   % where to put the line-numbers; possible values are (none, left, right)
+  numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+  stringstyle=\color{mauve},      % string literal style
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  xleftmargin=12pt,          % left margin
+  frame=leftline
+}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family sfdefault
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 1
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing onehalf
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 1.5cm
+\bottommargin 2cm
+\headheight 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+RTDSP Lab 3
+\end_layout
+
+\begin_layout Author
+Yong Wen Chua (ywc110)
+\end_layout
+
+\begin_layout Section
+Exercise 1
+\end_layout
+
+\begin_layout Subsection
+Reason for 0 V Centre
+\end_layout
+
+\begin_layout Standard
+The capacitor at the line out port blocks the DC component of the output
+ signal.
+ This is because the impedance of the capacitor is given by 
+\begin_inset Formula $\frac{1}{j\omega C}$
+\end_inset
+
+.
+ When the frequency 
+\begin_inset Formula $\omega=0$
+\end_inset
+
+, the capacitor has infinite impedance.
+ Thus, it acts to block the DC component of the output signal.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Oscilloscope-Traces"
+
+\end_inset
+
+Oscilloscope Traces
+\end_layout
+
+\begin_layout Standard
+The traces for the various input frequencies and their corresponding FFT
+ is given in the table below.
+ This table will be used to answer the second question regarding the output
+ frequency.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="10" columns="3">
+<features islongtable="true" headBottomDL="true" longtabularalignment="center">
+<column alignment="center" valignment="top" width="0pt">
+<column alignment="center" valignment="top" width="0pt">
+<column alignment="center" valignment="top" width="0">
+<row endhead="true">
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Trace
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+FFT
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rotate="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+200 Hz
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex1/Traces/0.2k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex1/FFT/0.2k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rotate="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+500 Hz
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex1/Traces/0.5k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex1/FFT/0.5k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rotate="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1000 Hz
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex1/Traces/1k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex1/FFT/1k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rotate="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1500 Hz
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex1/Traces/1.5k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex1/FFT/1.5k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rotate="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2000 Hz
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex1/Traces/2k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex1/FFT/2k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rotate="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2500 Hz
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex1/Traces/2.5k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex1/FFT/2.5k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rotate="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3000 Hz
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex1/Traces/3k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex1/FFT/3k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rotate="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3500 Hz
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex1/Traces/3.5k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex1/FFT/3.5k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rotate="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3800 Hz
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex1/Traces/3.8k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex1/FFT/3.8k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+On Frequency
+\end_layout
+
+\begin_layout Standard
+When a signal is input into the system, the output effectively has twice
+ the frequency of the input due to the rectification done on the input signal.
+ Thus, subject to the Nyquist Sampling Frequency limitation, the output
+ cannot be more than 4 KHz (for a sampling frequency of 8KHz), and this
+ translates to having an input frequency that can have a maximum of 2 KHz
+ before aliasing kicks in.
+ This is evident from the traces seen in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Oscilloscope-Traces"
+
+\end_inset
+
+.
+ Also, it can be observed that there is a variation in the output amplitude
+ due to the amplitude modulation effects also observed in lab 2.
+\end_layout
+
+\begin_layout Standard
+However, then the input frequency goes beyond 2 KHz, aliasing takes place
+ and folding can be observed in the output.
+ This is evident if one compares the trace and FFT output of input frequencies
+ of 200 Hz and 3800 Hz.
+ It can be seen that these two input frequencies both given an output frequency
+ of 400 Hz and have the same peak at 400 Hz in their FFT.
+ This is due to folding being observed as a result in aliasing.
+\end_layout
+
+\begin_layout Standard
+Folding is the 
+\begin_inset Quotes eld
+\end_inset
+
+wrapping
+\begin_inset Quotes erd
+\end_inset
+
+ around of the frequency output due to aliasing.
+ When a signal is sampled, copies of its frequency spectrum is made in the
+ frequency domain.
+ If the signal has frequency higher than half that of the sampling frequency,
+ these copies of the frequency content overlaps, resulting in aliasing.
+ Let 
+\begin_inset Formula $f_{a}$
+\end_inset
+
+ be the apparent frequency of the sampled frequency, 
+\begin_inset Formula $f$
+\end_inset
+
+ be the frequency of the sinusoid, and 
+\begin_inset Formula $f_{s}$
+\end_inset
+
+ be the sampling frequency.
+ Then the folding effect is given by
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\left|f_{a}\right|=\left|f-nf_{s}\right|
+\]
+
+\end_inset
+
+ where 
+\begin_inset Formula $\left|f_{a}\right|\leqslant\frac{f_{s}}{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $n\in\mathbb{Z}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+It can be observed that when the input frequency is at 3800 Hz, the output
+ frequency should be at 7600 Hz.
+ Then according to the equation, 
+\begin_inset Formula $n=2$
+\end_inset
+
+ and 
+\begin_inset Formula $f_{a}=400$
+\end_inset
+
+, which is what can be observed.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Code-Operation"
+
+\end_inset
+
+Code Operation
+\end_layout
+
+\begin_layout Standard
+Rectification is done ever time a sample is sent to the codec.
+ The function to service the interrupt is given below:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+void ISR_AIC(void){
+\end_layout
+
+\begin_layout Plain Layout
+
+	  int sample = mono_read_16Bit();	// read
+\end_layout
+
+\begin_layout Plain Layout
+
+	  sample = abs(sample);	// rectify
+\end_layout
+
+\begin_layout Plain Layout
+
+	  mono_write_16Bit((Int16) sample);	// write 
+\end_layout
+
+\begin_layout Plain Layout
+
+} 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The code first reads the sample from the input, calculates its absolute
+ value and then write it out to the output port.
+ Note the cast to 
+\family typewriter
+Int16
+\family default
+ as the output port is operating with 16 bits of data as per the configuration.
+\end_layout
+
+\begin_layout Section
+Exercise 2
+\end_layout
+
+\begin_layout Subsection
+Code Operation
+\end_layout
+
+\begin_layout Standard
+The code to generate the sine wave is similar to the one used in Lab 2.
+ Firstly, a lookup table is prepared during the initialisation stages to
+ prepare 256 values for one quarter of a sine wave.
+ The table is prepared using the following function (which is the same as
+ Lab 2):
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+void sine_init(void){
+\end_layout
+
+\begin_layout Plain Layout
+
+	int i; 
+\end_layout
+
+\begin_layout Plain Layout
+
+	for (i = 0; i < SINE_TABLE_SIZE; ++i)
+\end_layout
+
+\begin_layout Plain Layout
+
+        table[i] = sin(i * ( (2*PI) /(RES_MULTIPLIER*SINE_TABLE_SIZE)));
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+}  
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The macro 
+\family typewriter
+RES_MULTIPLIER
+\family default
+ is set to a value of '4'.
+ The service interrupt routine as described in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:Code-Operation"
+
+\end_inset
+
+ is then replaced with essentially the same function as in Lab 2.
+ 
+\end_layout
+
+\begin_layout Standard
+The routine, by keeping track of the 
+\begin_inset Quotes eld
+\end_inset
+
+phase
+\begin_inset Quotes erd
+\end_inset
+
+ of the current wave, will output the value to allow for the generation
+ of the sine wave in the appropriate frequency.
+ It keeps track of the 
+\begin_inset Quotes eld
+\end_inset
+
+phase
+\begin_inset Quotes erd
+\end_inset
+
+ of the wave using a 
+\family typewriter
+static
+\family default
+ variable 
+\family typewriter
+index
+\family default
+.
+ The static variables 
+\family typewriter
+prev_freq
+\family default
+ and 
+\family typewriter
+prev_sample
+\family default
+ are used top check for changes in those settings.
+ If either are changed, the 
+\family typewriter
+index
+\family default
+ is reset to zero, and the values described below will be recalculated.
+\end_layout
+
+\begin_layout Standard
+The first value determines the number of samples necessary to generate the
+ entire wave using the following line:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+double cycleSampleCount =  (double) sampling_freq / (double) sine_freq;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The number of entries in the sine table to skip each time a sample is required
+ is then calculated using the line, along with an increment of the 
+\family typewriter
+index
+\family default
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=C"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+step = (double) (SINE_TABLE_SIZE*RES_MULTIPLIER)/(double) cycleSampleCount;
+\end_layout
+
+\begin_layout Plain Layout
+
+//...
+ other code ...
+\end_layout
+
+\begin_layout Plain Layout
+
+index += step;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To ensure that we do not exceed the number of entries in the table and cause
+ a segmentation fault, the following line will reset the index with the
+ necessary offset for the next cycle to ensure a smoother wave and allows
+ the generation of 
+\begin_inset Quotes eld
+\end_inset
+
+odd
+\begin_inset Quotes erd
+\end_inset
+
+ frequencies:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+// Check that index is in range   
+\end_layout
+
+\begin_layout Plain Layout
+
+if ((int) index >=  SINE_TABLE_SIZE*RES_MULTIPLIER)
+\end_layout
+
+\begin_layout Plain Layout
+
+	index -= (SINE_TABLE_SIZE*RES_MULTIPLIER);	
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The table is then retrieved from the table, mulitplied by an appropriate
+ gain and sent to the output.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sample = sine_value((int) round(index)); // get value from table     
+\end_layout
+
+\begin_layout Plain Layout
+
+output = (Int16) fabs(sample*gain);	// ouput saved to a variable for ease
+ of debugging    
+\end_layout
+
+\begin_layout Plain Layout
+
+mono_write_16Bit(output);	// write to port
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\family typewriter
+sine_value
+\family default
+ function works by first determing the quadrant of a sine wave in which
+ the index we want to retrieve is at, and also calculates the 
+\begin_inset Quotes eld
+\end_inset
+
+progress
+\begin_inset Quotes erd
+\end_inset
+
+ in that specific quadrant:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+int quadrant = index/SINE_TABLE_SIZE;  // the quadrant in which the cycle
+ is in     
+\end_layout
+
+\begin_layout Plain Layout
+
+int modulo = index % SINE_TABLE_SIZE;   // the modulo
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Then, according to the quadrant the index is in, the appropriate value is
+ read from the table array and adjusted accordingly.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+if (quadrant == 0)         
+\end_layout
+
+\begin_layout Plain Layout
+
+	value = table[index];     
+\end_layout
+
+\begin_layout Plain Layout
+
+else if (quadrant == 1)         
+\end_layout
+
+\begin_layout Plain Layout
+
+	value =  table[SINE_TABLE_SIZE-modulo-1];     
+\end_layout
+
+\begin_layout Plain Layout
+
+else if (quadrant == 2)         
+\end_layout
+
+\begin_layout Plain Layout
+
+	value =  table[modulo]*-1;     
+\end_layout
+
+\begin_layout Plain Layout
+
+else if (quadrant == 3)         
+\end_layout
+
+\begin_layout Plain Layout
+
+	value =  table[SINE_TABLE_SIZE-modulo-1]*-1;	     
+\end_layout
+
+\begin_layout Plain Layout
+
+else         
+\end_layout
+
+\begin_layout Plain Layout
+
+	value =  0;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Oscilloscope Traces
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex2/5.JPG
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+5 Hz input sine wave rectified to 10 Hz
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex2/10.JPG
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+10 Hz input sine wave rectified to 20 Hz.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex2/1k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+1 KHz sine wave rectified to 2 KHz
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex2/1.5k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+1.5 KHz input rectified to 3 KHZ.
+ Notice the varying amplitude due to amplitude modulating effects
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex2/2k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+2 KHz input rectified to 4 KHz.
+ The Nyquist Frequency
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Ex2/2.5k.JPG
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+2.5 KHz input that is supposed to give a 5 KHz.
+ Due to aliasing giving rise to folding, the output is at 3 KHz.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Code Listing
+\end_layout
+
+\begin_layout Subsection
+Exercise 1
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "RTDSP/ex1.c"
+lstparams "label={ex1-listing}"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Exercise 2
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "RTDSP/ex2.c"
+lstparams "label={ex2-listing}"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

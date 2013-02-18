@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<States>
+<Expressions>
+<Expression IMemento.internal.id="dataIO">
+<Format/>
+</Expression>
+<Expression IMemento.internal.id="str">
+<Format/>
+</Expression>
+<Expression IMemento.internal.id="gain">
+<Format/>
+</Expression>
+<Expression IMemento.internal.id="processingLoad">
+<Format/>
+</Expression>
+</Expressions>
+</States>
