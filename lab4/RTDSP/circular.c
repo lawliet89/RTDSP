@@ -58,7 +58,7 @@ DSK6713_AIC23_CodecHandle H_Codec;
 #define N 88
 
 // include the coefficients
-#include "fir_coef.txt"
+#include "fir_coef_float.txt"
 
 // define the buffer
 Int16 buffer[N] = {0};
@@ -75,7 +75,6 @@ int index = 0;
 void init_hardware(void);     
 void init_HWI(void);          
 void ISR_AIC(void);    
-Int16 convolute(Int16 input);	
 /********************************** Main routine ************************************/
 void main(){      
 	// initialize board and the audio port
@@ -130,28 +129,20 @@ void init_HWI(void)
 /******************** WRITE YOUR INTERRUPT SERVICE ROUTINE HERE***********************/  
 
 void ISR_AIC(void){
-	  Int16 sample = mono_read_16Bit();	// read
-	  sample =  convolute(sample); // convolute
-	  mono_write_16Bit(sample);	// write
-}
-
-// Perform convolution
-Int16 convolute(Int16 input){
 	int i, offset;
-	double result = 0;
-	// write to current "zero" sample
-	*(buffer + index) = input;
+	float result = 0;
+	*(buffer + index) = mono_read_16Bit();	// read and write to current "zero" sample
 	
-	for (i = 0; i < N; i++){
+	for (i = 0; i < N; ++i){
 		offset = index - i;
 		if (offset < 0)
 			offset += N;
 		result += b[i]* buffer[offset];
 	}
 	// advance index
-	index++;
+	++index;
 	if (index >= N)
 		index = 0;
-	
-	return (Int16) round(result);
+		
+	mono_write_16Bit((Int16) result);	// write
 }
