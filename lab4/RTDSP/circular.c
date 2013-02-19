@@ -137,16 +137,21 @@ void ISR_AIC(void){
 
 // Perform convolution
 Int16 convolute(Int16 input){
-	int i;
+	int i, offset;
 	double result = 0;
 	// write to current "zero" sample
 	*(buffer + index) = input;
 	
-	for (i = 0; i < N; i++)
-		result += b[i]* buffer[ ((index-i) + N) % N];
-	
+	for (i = 0; i < N; i++){
+		offset = index - i;
+		if (offset < 0)
+			offset += N;
+		result += b[i]* buffer[offset];
+	}
 	// advance index
-	index = (index + 1)%N;
+	index++;
+	if (index >= N)
+		index = 0;
 	
 	return (Int16) round(result);
 }

@@ -13,7 +13,7 @@ no optimisation
 5238
 
 
-CIRCULAR BUFFER
+CIRCULAR BUFFER v1
 
 no optimisation
 9027
@@ -23,3 +23,29 @@ no optimisation
 
 2 optimisation
 7439
+
+CIRCULAR BUFFER v2
+
+no optimisation
+7958 (index = 86/87)
+
+0 optimisation
+(index = 86) 6895
+(index = 87) 6895
+
+2 optimisation
+(index = 86) 5440
+(index = 87) 5439
+
+CIRCULAR BUFFER v3
+
+no optimisation
+7958 (index = 86/87)
+
+0 optimisation
+(index = 86) 6895
+(index = 87) 6895
+
+2 optimisation
+(index = 86) 5440
+(index = 87) 5439
