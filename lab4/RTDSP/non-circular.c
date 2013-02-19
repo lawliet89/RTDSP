@@ -5,7 +5,7 @@
  				      EE 3.19: Real Time Digital Signal Processing
 					       Dr Paul Mitcheson and Daniel Harvey
 
-				        		  		LAB 4
+                                LAB 4 - Non-circular FIR
  ************************************************************************************/
 
 /**************************** Pre-processor statements ******************************/

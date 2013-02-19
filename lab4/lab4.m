@@ -6,7 +6,6 @@ f = [0.065 0.1125 0.5625 0.625]; % Normalised frequencies
 a = [0 1 0];                  % amplitude
 fs = 8000;                    % sampling frequency
 
-%dev = [0.00316227766000000,0.0230217824400000,0.00316227766000000];
 % calculate deviation
 dev = [10^(-rs/20) (10^(rp/20)-1)/(10^(rp/20)+1) 10^(-rs/20)];
 
@@ -41,10 +40,6 @@ plot (omega, unwrap(angle(h)));
 grid minor;
 xlabel('Frequency (Hz)');
 ylabel('Phase (radians)');
-
-%figure
-% bode plots
-%freqz(b, 1, 2048, fs);
 
 % write to file
 format long e
