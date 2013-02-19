@@ -48,4 +48,4 @@ ylabel('Phase (radians)');
 
 % write to file
 format long e
-save ('fir_coef.txt', 'b', '-ascii', '-double');
+save ('fir_coef.txt', 'b', '-ascii', '-double', '-tabs');

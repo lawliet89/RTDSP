@@ -27,9 +27,6 @@
 // Some functions to help with writing/reading the audio ports when using interrupts.
 #include <helper_functions_ISR.h>
 
-// The order of the FIR filter
-
-
 /******************************* Global declarations ********************************/
 
 /* Audio port configuration settings: these values set registers in the AIC23 audio 
@@ -55,10 +52,22 @@ DSK6713_AIC23_Config Config = { \
 // Codec handle:- a variable used to identify audio interface  
 DSK6713_AIC23_CodecHandle H_Codec;
 
+
+/******************************* Filter Stuff ********************************/
+// The order of the FIR filter +1
+#define N 88
+
+// include the coefficients
+#include "fir_coef.txt"
+
+// define the buffer
+Int16 buffer[N] = {0};
+
  /******************************* Function prototypes ********************************/
 void init_hardware(void);     
 void init_HWI(void);          
-void ISR_AIC(void);         
+void ISR_AIC(void);    
+Int16 convoluteNonCircular(void);     
 /********************************** Main routine ************************************/
 void main(){      
 
@@ -115,7 +124,26 @@ void init_HWI(void)
 /******************** WRITE YOUR INTERRUPT SERVICE ROUTINE HERE***********************/  
 
 void ISR_AIC(void){
-	  int sample = mono_read_16Bit();	// read
-	  sample = abs(sample);	// rectify
-	  mono_write_16Bit((Int16) sample);	// write
+	  int i;
+	  Int16 output;
+	  Int16 sample = mono_read_16Bit();	// read
+	 
+	  // Handle the buffer
+	  for (i = N-1; i > 0; i--)
+	  	buffer[i] = buffer[i-1];
+	  	
+	  buffer[0] = sample;
+	  output = convoluteNonCircular();
+	  mono_write_16Bit(output);	// write
+}
+
+// Perform convolution
+Int16 convoluteNonCircular(void){
+	double output = 0;
+	int i;
+	
+	for (i = 0; i < N; i++)
+		output += b[i] * buffer[i];
+	
+	return (Int16) round(output);
 }

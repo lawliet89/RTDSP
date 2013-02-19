@@ -9,7 +9,7 @@ SPACE := $(EMPTY) $(EMPTY)
 
 ORDERED_OBJS += \
 $(GEN_CMDS_QUOTED) \
-"./ex1.obj" \
+"./initio.obj" \
 "./dsp_bios_cfg_c.obj" \
 "./dsp_bios_cfg.obj" \
 -l"rts6700.lib" \
@@ -111,16 +111,16 @@ all: RTDSP.out
 RTDSP.out: $(GEN_CMDS) $(OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Linker'
-	"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/bin/cl6x" -mv6200 -g --define="_DEBUG" --define="CHIP_6713" --diag_warning=225 -z -m"RTDSP.map" --warn_sections -i"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/lib" -i"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/include" -i"C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/rtdx/lib/c6000" -i"C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/bios/lib" --reread_libs --rom_model -o "RTDSP.out" $(ORDERED_OBJS)
+	"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/bin/cl6x" -mv6200 -g -O3 --define="_DEBUG" --define="CHIP_6713" --diag_warning=225 -z -m"RTDSP.map" --warn_sections -i"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/lib" -i"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/include" -i"C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/rtdx/lib/c6000" -i"C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/bios/lib" --reread_libs --rom_model -o "RTDSP.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
 	-$(RM) $(GEN_CMDS__QTD)$(GEN_SRCS__QTD)$(C6000_EXECUTABLE_OUTPUTS__QTD) "RTDSP.out"
-	-$(RM) ".\dsp_bios_cfg.obj" ".\dsp_bios_cfg_c.obj" ".\ex1.obj" 
+	-$(RM) ".\dsp_bios_cfg.obj" ".\dsp_bios_cfg_c.obj" ".\initio.obj" 
 	-$(RM) ".\dsp_bios_cfg.pp" 
-	-$(RM) ".\dsp_bios_cfg_c.pp" ".\ex1.pp" 
+	-$(RM) ".\dsp_bios_cfg_c.pp" ".\initio.pp" 
 	-@echo ' '
 
 .PHONY: all clean dependents

@@ -75,7 +75,7 @@ type GlobalStatus {
         prop Visible :: 0
         prop Writable :: 1
     }
-    global DATE :: "Thu Feb 14 14:24:39 2013" { 
+    global DATE :: "Tue Feb 19 13:25:55 2013" { 
         prop Type :: "{21455EA3-B96A-11cf-9BFE-0000C0AC14C7}"
         prop Visible :: 0
         prop Writable :: 0
@@ -4177,8 +4177,8 @@ object HWI_INT4 :: HWI {
     param iId :: 4
     param iDelUser :: "HWI"
     param iDelMsg :: "Hardware interrupt objects cannot be deleted"
-    param iSource :: MCSP_1_Transmit
-    param iEventId :: 14
+    param iSource :: MCSP_1_Receive
+    param iEventId :: 15
     param iReMappable :: 1
     param iIntrEnableMask :: 16
     param function :: @_ISR_AIC
@@ -6061,7 +6061,7 @@ object MCSP_1_Transmit :: ISRC {
     param iId :: 0
     param iDelUser :: "USER"
     param iDelMsg :: "ok"
-    param iHwi :: HWI_INT4
+    param iHwi :: HWI_UNUSED
     param iIntrSelectNum :: 14
 }
 
@@ -6071,7 +6071,7 @@ object MCSP_1_Receive :: ISRC {
     param iId :: 0
     param iDelUser :: "USER"
     param iDelMsg :: "ok"
-    param iHwi :: HWI_UNUSED
+    param iHwi :: HWI_INT4
     param iIntrSelectNum :: 15
 }
 
