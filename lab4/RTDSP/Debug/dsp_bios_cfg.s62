@@ -5,7 +5,7 @@
 ;; INPUT dsp_bios_.cdb
 
 ;; CONFIGURATION/VERSION INFORMATION
-	.asg "Tue Feb 19 13:25:55 2013", VERS$DATE
+	.asg "Tue Feb 19 20:01:57 2013", VERS$DATE
 
 ;; PROLOGUE
 	.include dsp_bios_cfg.h62

@@ -1,7 +1,7 @@
 ******************************************************************************
                TMS320C6x Linker PC v6.1.15                     
 ******************************************************************************
->> Linked Tue Feb 19 13:26:04 2013
+>> Linked Tue Feb 19 20:02:07 2013
 
 OUTPUT FILE NAME:   <RTDSP.out>
 ENTRY POINT SYMBOL: "_c_int00"  address: 000093e0
@@ -82,7 +82,7 @@ section   page    origin      length       input sections
 
 .text      0    000043c0    00001f80     
                   000043c0    00000480     dsk6713bslccsv4.lib : dsk6713.obj (.text)
-                  00004840    00000420     initio.obj (.text)
+                  00004840    00000420     non-circular.obj (.text)
                   00004c60    000002e0     dsk6713bslccsv4.lib : dsk6713_aic23_opencodec.obj (.text)
                   00004f40    00000240     rts6700.lib : memcpy62.obj (.text:_memcpy)
                   00005180    000001c0     csl6713.lib : csl_irq.obj (.text:_IRQ_map)
@@ -112,7 +112,7 @@ section   page    origin      length       input sections
 .cinit     0    00006340    0000123c     
                   00006340    00000564     dsp_bios_cfg.obj (.cinit)
                   000068a4    00000004     --HOLE-- [fill = 0]
-                  000068a8    00000302     initio.obj (.cinit)
+                  000068a8    00000302     non-circular.obj (.cinit)
                   00006baa    00000006     --HOLE-- [fill = 0]
                   00006bb0    0000026c     bios.a67 : biosdata.o67 (.cinit)
                   00006e1c    00000004     --HOLE-- [fill = 0]
@@ -178,7 +178,7 @@ section   page    origin      length       input sections
                   00008400    00000020              : intr_tgt.o62 (.rtdx_text)
 
 .far       0    00008420    000008a0     UNINITIALIZED
-                  00008420    00000398     initio.obj (.far)
+                  00008420    00000398     non-circular.obj (.far)
                   000087b8    00000188     rts6700.lib : atexit.obj (.far)
                   00008940    000000f4     csl6713.lib : csl_irq.obj (.far)
                   00008a34    000000d8     bios.a67 : knl.o67 (.far)
@@ -232,7 +232,7 @@ section   page    origin      length       input sections
                   0000a06c    00000004     bios.a67 : clk_data2.o67 (.bss)
                   0000a070    00000004              : gbl_setL2CacheMode.o67 (.bss)
                   0000a074    00000004              : idl_busy.o67 (.bss)
-                  0000a078    00000004     initio.obj (.bss)
+                  0000a078    00000004     non-circular.obj (.bss)
                   0000a07c    00000002     dsk6713bslccsv4.lib : dsk6713.obj (.bss)
 
 .trace     0    0000a080    00000200     
