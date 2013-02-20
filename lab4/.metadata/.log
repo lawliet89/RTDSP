@@ -828,3 +828,328 @@ java.lang.IllegalArgumentException: ProducerArgument not null!!!
 	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:779)
 	at org.eclipse.debug.internal.ui.DebugUIPlugin$4.run(DebugUIPlugin.java:835)
 	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:113)
+!SESSION 2013-02-20 16:22:35.247 -----------------------------------------------
+eclipse.buildId=4.1.3.00038
+java.version=1.5.0_14
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY org.eclipse.debug.core 4 120 2013-02-20 16:22:43.047
+!MESSAGE Error logged from Debug Core: 
+!STACK 1
+org.eclipse.core.internal.resources.ResourceException: Resource is out of sync with the file system: /RTDSP/.launches/RTDSP.launch.
+	at org.eclipse.core.internal.localstore.FileSystemResourceManager.read(FileSystemResourceManager.java:606)
+	at org.eclipse.core.internal.resources.File.getContents(File.java:290)
+	at org.eclipse.core.internal.resources.File.getContents(File.java:279)
+	at org.eclipse.debug.internal.core.LaunchManager.getInfo(LaunchManager.java:1158)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.getInfo(LaunchConfiguration.java:374)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.getType(LaunchConfiguration.java:505)
+	at org.eclipse.debug.internal.core.LaunchManager.isValid(LaunchManager.java:1702)
+	at org.eclipse.debug.internal.core.LaunchManager.verifyConfigurations(LaunchManager.java:2023)
+	at org.eclipse.debug.internal.core.LaunchManager.getAllLaunchConfigurations(LaunchManager.java:928)
+	at org.eclipse.debug.internal.core.LaunchManager.getLaunchConfigurations(LaunchManager.java:1208)
+	at com.ti.ccstudio.breakpoint.core.PropertyUtils.getTargetName(PropertyUtils.java:60)
+	at com.ti.ccstudio.breakpoint.ui.action.base.AbstractEditorActionDelegate.determineTargetBreakpoint(AbstractEditorActionDelegate.java:67)
+	at com.ti.ccstudio.breakpoint.ui.action.EditorPropertiesRulerActionDelegate.updateMenuItem(EditorPropertiesRulerActionDelegate.java:31)
+	at com.ti.ccstudio.breakpoint.ui.action.base.AbstractEditorActionDelegate.setActiveEditor(AbstractEditorActionDelegate.java:44)
+	at org.eclipse.ui.internal.EditorPluginAction.editorChanged(EditorPluginAction.java:75)
+	at org.eclipse.ui.internal.EditorPluginAction.<init>(EditorPluginAction.java:34)
+	at org.eclipse.ui.internal.ActionDescriptor.createAction(ActionDescriptor.java:256)
+	at org.eclipse.ui.internal.ActionDescriptor.<init>(ActionDescriptor.java:170)
+	at org.eclipse.ui.internal.ViewerActionBuilder.createActionDescriptor(ViewerActionBuilder.java:53)
+	at org.eclipse.ui.internal.PluginActionBuilder.readElement(PluginActionBuilder.java:158)
+	at org.eclipse.ui.internal.ViewerActionBuilder.readElement(ViewerActionBuilder.java:88)
+	at org.eclipse.ui.internal.registry.RegistryReader.readElements(RegistryReader.java:138)
+	at org.eclipse.ui.internal.registry.RegistryReader.readElementChildren(RegistryReader.java:127)
+	at org.eclipse.ui.internal.PluginActionBuilder.readElement(PluginActionBuilder.java:141)
+	at org.eclipse.ui.internal.ViewerActionBuilder.readElement(ViewerActionBuilder.java:88)
+	at org.eclipse.ui.internal.registry.RegistryReader.readElements(RegistryReader.java:138)
+	at org.eclipse.ui.internal.registry.RegistryReader.readExtension(RegistryReader.java:149)
+	at org.eclipse.ui.internal.registry.RegistryReader.readRegistry(RegistryReader.java:170)
+	at org.eclipse.ui.internal.PluginActionBuilder.readContributions(PluginActionBuilder.java:112)
+	at org.eclipse.ui.internal.ViewerActionBuilder.readViewerContributions(ViewerActionBuilder.java:106)
+	at org.eclipse.ui.internal.PopupMenuExtender.readStaticActionsFor(PopupMenuExtender.java:373)
+	at org.eclipse.ui.internal.PopupMenuExtender.<init>(PopupMenuExtender.java:125)
+	at org.eclipse.ui.internal.PartSite.registerContextMenu(PartSite.java:114)
+	at org.eclipse.ui.internal.EditorSite.registerContextMenu(EditorSite.java:151)
+	at org.eclipse.ui.texteditor.AbstractTextEditor.createPartControl(AbstractTextEditor.java:2673)
+	at org.eclipse.ui.texteditor.StatusTextEditor.createPartControl(StatusTextEditor.java:53)
+	at org.eclipse.ui.texteditor.AbstractDecoratedTextEditor.createPartControl(AbstractDecoratedTextEditor.java:368)
+	at org.eclipse.cdt.internal.ui.editor.CEditor.createPartControl(CEditor.java:843)
+	at org.eclipse.ui.internal.EditorReference.createPartHelper(EditorReference.java:596)
+	at org.eclipse.ui.internal.EditorReference.createPart(EditorReference.java:372)
+	at org.eclipse.ui.internal.WorkbenchPartReference.getPart(WorkbenchPartReference.java:566)
+	at org.eclipse.ui.internal.EditorAreaHelper.setVisibleEditor(EditorAreaHelper.java:263)
+	at org.eclipse.ui.internal.EditorManager.setVisibleEditor(EditorManager.java:1420)
+	at org.eclipse.ui.internal.EditorManager$5.run(EditorManager.java:1005)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:37)
+	at org.eclipse.core.runtime.Platform.run(Platform.java:843)
+	at org.eclipse.ui.internal.EditorManager.restoreState(EditorManager.java:1000)
+	at org.eclipse.ui.internal.WorkbenchPage.restoreState(WorkbenchPage.java:2836)
+	at org.eclipse.ui.internal.WorkbenchWindow.restoreState(WorkbenchWindow.java:1949)
+	at org.eclipse.ui.internal.Workbench.doRestoreState(Workbench.java:2869)
+	at org.eclipse.ui.internal.Workbench.access$14(Workbench.java:2817)
+	at org.eclipse.ui.internal.Workbench$19.run(Workbench.java:1681)
+	at org.eclipse.ui.internal.Workbench.runStartupWithProgress(Workbench.java:1421)
+	at org.eclipse.ui.internal.Workbench.restoreState(Workbench.java:1679)
+	at org.eclipse.ui.internal.Workbench.access$12(Workbench.java:1650)
+	at org.eclipse.ui.internal.Workbench$17.run(Workbench.java:1529)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:37)
+	at org.eclipse.ui.internal.Workbench.restoreState(Workbench.java:1473)
+	at org.eclipse.ui.internal.WorkbenchConfigurer.restoreState(WorkbenchConfigurer.java:183)
+	at org.eclipse.ui.application.WorkbenchAdvisor.openWindows(WorkbenchAdvisor.java:702)
+	at org.eclipse.ui.internal.Workbench.init(Workbench.java:1085)
+	at org.eclipse.ui.internal.Workbench.runUI(Workbench.java:1847)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:419)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:149)
+	at org.eclipse.ui.internal.ide.IDEApplication.run(IDEApplication.java:97)
+	at org.eclipse.core.internal.runtime.PlatformActivator$1.run(PlatformActivator.java:78)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:92)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:68)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:400)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:177)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.eclipse.core.launcher.Main.invokeFramework(Main.java:336)
+	at org.eclipse.core.launcher.Main.basicRun(Main.java:280)
+	at org.eclipse.core.launcher.Main.run(Main.java:996)
+	at org.eclipse.core.launcher.Main.main(Main.java:971)
+!SUBENTRY 1 org.eclipse.core.resources 4 274 2013-02-20 16:22:43.047
+!MESSAGE Resource is out of sync with the file system: /RTDSP/.launches/RTDSP.launch.
+
+!ENTRY org.eclipse.core.resources 4 2 2013-02-20 16:22:49.377
+!MESSAGE Problems occurred when invoking code from plug-in: "org.eclipse.core.resources".
+!STACK 0
+java.lang.NullPointerException
+	at com.ti.ccstudio.managedbuild.core.util.ManagedBuildCoreUtils.getDeviceConfiguration(ManagedBuildCoreUtils.java:352)
+	at com.ti.ccstudio.managedbuild.core.CCEConfigurationBuildMacroSupplier.getAllConfigurationMacros(CCEConfigurationBuildMacroSupplier.java:72)
+	at com.ti.common.managedbuild.core.CTIConfigurationBuildMacroSupplier.internalGetAllConfigurationMacros(CTIConfigurationBuildMacroSupplier.java:56)
+	at com.ti.common.managedbuild.core.CTIConfigurationBuildMacroSupplier.getMacro(CTIConfigurationBuildMacroSupplier.java:47)
+	at com.ti.ccstudio.managedbuild.core.CCEConfigurationBuildMacroSupplier.getMacro(CCEConfigurationBuildMacroSupplier.java:111)
+	at org.eclipse.cdt.managedbuilder.internal.macros.ExternalExtensionMacroSupplier.getMacro(ExternalExtensionMacroSupplier.java:128)
+	at org.eclipse.cdt.managedbuilder.internal.macros.BuildMacroProvider.getMacro(BuildMacroProvider.java:72)
+	at org.eclipse.cdt.managedbuilder.internal.macros.DefaultMacroSubstitutor.resolveMacro(DefaultMacroSubstitutor.java:308)
+	at org.eclipse.cdt.managedbuilder.internal.macros.DefaultMacroSubstitutor.resolveMacro(DefaultMacroSubstitutor.java:296)
+	at org.eclipse.cdt.managedbuilder.internal.macros.DefaultMacroSubstitutor.getResolvedMacro(DefaultMacroSubstitutor.java:281)
+	at org.eclipse.cdt.managedbuilder.internal.macros.DefaultMacroSubstitutor.resolveToString(DefaultMacroSubstitutor.java:233)
+	at org.eclipse.cdt.managedbuilder.internal.macros.DefaultMacroSubstitutor.resolveToString(DefaultMacroSubstitutor.java:251)
+	at org.eclipse.cdt.managedbuilder.internal.macros.MacroResolver.resolve(MacroResolver.java:149)
+	at org.eclipse.cdt.managedbuilder.internal.macros.MacroResolver.resolveToStringList(MacroResolver.java:226)
+	at org.eclipse.cdt.managedbuilder.internal.macros.BuildMacroProvider.resolveStringListValue(BuildMacroProvider.java:199)
+	at org.eclipse.cdt.managedbuilder.internal.core.ManagedBuildInfo.processPath(ManagedBuildInfo.java:1143)
+	at org.eclipse.cdt.managedbuilder.internal.core.ManagedBuildInfo.addPaths(ManagedBuildInfo.java:1358)
+	at org.eclipse.cdt.managedbuilder.internal.core.ManagedBuildInfo.addIncludes(ManagedBuildInfo.java:1351)
+	at org.eclipse.cdt.managedbuilder.internal.core.ManagedBuildInfo.readToolsOptions(ManagedBuildInfo.java:1325)
+	at org.eclipse.cdt.managedbuilder.internal.core.ManagedBuildInfo.getOptionValues(ManagedBuildInfo.java:1250)
+	at org.eclipse.cdt.managedbuilder.internal.core.ManagedBuildInfo.getManagedBuildValues(ManagedBuildInfo.java:1220)
+	at org.eclipse.cdt.managedbuilder.internal.core.ManagedBuildInfo.getManagedBuildValues(ManagedBuildInfo.java:1188)
+	at org.eclipse.cdt.managedbuilder.internal.scannerconfig.ManagedBuildCPathEntryContainer.getPathEntries(ManagedBuildCPathEntryContainer.java:198)
+	at org.eclipse.cdt.internal.core.model.PathEntryManager.getResolvedPathEntries(PathEntryManager.java:457)
+	at org.eclipse.cdt.internal.core.model.PathEntryManager.getResolvedPathEntries(PathEntryManager.java:429)
+	at org.eclipse.cdt.internal.core.model.SetPathEntryContainerOperation.executeOperation(SetPathEntryContainerOperation.java:109)
+	at org.eclipse.cdt.internal.core.model.CModelOperation.execute(CModelOperation.java:342)
+	at org.eclipse.cdt.internal.core.model.CModelOperation.run(CModelOperation.java:607)
+	at org.eclipse.cdt.internal.core.model.CModelOperation.runOperation(CModelOperation.java:635)
+	at org.eclipse.cdt.internal.core.model.PathEntryManager.setPathEntryContainer(PathEntryManager.java:574)
+	at org.eclipse.cdt.core.model.CoreModel.setPathEntryContainer(CoreModel.java:874)
+	at com.ti.ccstudio.managedbuild.core.CCSPathEntryContainerInitializer.initialize(CCSPathEntryContainerInitializer.java:27)
+	at com.ti.common.managedbuild.core.ManagedBuildPathEntryMonitor.updatePathEntries(ManagedBuildPathEntryMonitor.java:88)
+	at com.ti.common.managedbuild.core.ManagedBuildPathEntryMonitor.access$0(ManagedBuildPathEntryMonitor.java:71)
+	at com.ti.common.managedbuild.core.ManagedBuildPathEntryMonitor$1.resourceChanged(ManagedBuildPathEntryMonitor.java:48)
+	at org.eclipse.core.internal.events.NotificationManager$2.run(NotificationManager.java:284)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:37)
+	at org.eclipse.core.internal.events.NotificationManager.notify(NotificationManager.java:278)
+	at org.eclipse.core.internal.events.NotificationManager.broadcastChanges(NotificationManager.java:152)
+	at org.eclipse.core.internal.resources.Workspace.broadcastBuildEvent(Workspace.java:240)
+	at org.eclipse.core.internal.events.AutoBuildJob.doBuild(AutoBuildJob.java:146)
+	at org.eclipse.core.internal.events.AutoBuildJob.run(AutoBuildJob.java:208)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:58)
+
+!ENTRY org.eclipse.core.resources 4 2 2013-02-20 16:22:49.397
+!MESSAGE Problems occurred when invoking code from plug-in: "org.eclipse.core.resources".
+!STACK 0
+java.lang.NullPointerException
+	at com.ti.common.ui.activeproject.ActiveProjectManager.storeActiveProject(ActiveProjectManager.java:296)
+	at com.ti.common.ui.activeproject.ActiveProjectManager.setActiveProject(ActiveProjectManager.java:202)
+	at com.ti.common.ui.activeproject.ActiveProjectManager.setActiveProject(ActiveProjectManager.java:179)
+	at com.ti.common.ui.activeproject.ActiveProjectManager.onProjectAdded(ActiveProjectManager.java:313)
+	at com.ti.common.ui.activeproject.ActiveProjectManager.access$1(ActiveProjectManager.java:310)
+	at com.ti.common.ui.activeproject.ActiveProjectManager$ResourceChangeListener$1.visit(ActiveProjectManager.java:125)
+	at org.eclipse.core.internal.events.ResourceDelta.accept(ResourceDelta.java:67)
+	at org.eclipse.core.internal.events.ResourceDelta.accept(ResourceDelta.java:76)
+	at org.eclipse.core.internal.events.ResourceDelta.accept(ResourceDelta.java:48)
+	at com.ti.common.ui.activeproject.ActiveProjectManager$ResourceChangeListener.resourceChanged(ActiveProjectManager.java:92)
+	at org.eclipse.core.internal.events.NotificationManager$2.run(NotificationManager.java:284)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:37)
+	at org.eclipse.core.internal.events.NotificationManager.notify(NotificationManager.java:278)
+	at org.eclipse.core.internal.events.NotificationManager.broadcastChanges(NotificationManager.java:152)
+	at org.eclipse.core.internal.resources.Workspace.broadcastPostChange(Workspace.java:256)
+	at org.eclipse.core.internal.resources.Workspace.endOperation(Workspace.java:958)
+	at org.eclipse.core.internal.events.AutoBuildJob.doBuild(AutoBuildJob.java:155)
+	at org.eclipse.core.internal.events.AutoBuildJob.run(AutoBuildJob.java:208)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:58)
+!SESSION 2013-02-20 16:22:52.667 -----------------------------------------------
+eclipse.buildId=4.1.3.00038
+java.version=1.5.0_14
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY org.eclipse.core.resources 2 10035 2013-02-20 16:22:55.317
+!MESSAGE A workspace crash was detected. The previous session did not exit normally.
+!SESSION 2013-02-20 16:29:20.380 -----------------------------------------------
+eclipse.buildId=4.1.3.00038
+java.version=1.5.0_14
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en
+Command-line arguments:  -os win32 -ws win32 -arch x86
+
+!ENTRY com.ti.ccstudio.debug.core 4 0 2013-02-20 16:31:46.105
+!MESSAGE Error: TMS320C671X: Error initializing emulator 
+
+
+!ENTRY com.ti.ccstudio.debug.core 4 0 2013-02-20 16:31:52.825
+!MESSAGE Error: TMS320C671X: Error initializing emulator 
+
+
+!ENTRY com.ti.ccstudio.debug.core 4 0 2013-02-20 16:32:47.469
+!MESSAGE Error: TMS320C671X: Error initializing emulator 
+
+
+!ENTRY com.ti.ccstudio.debug.core 4 0 2013-02-20 16:32:54.096
+!MESSAGE Error: TMS320C671X: Error initializing emulator 
+
+
+!ENTRY org.eclipse.core.resources 4 566 2013-02-20 16:36:46.006
+!MESSAGE An error occurred while traversing resources.
+!STACK 0
+java.lang.IllegalArgumentException: ProducerArgument not null!!!
+
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildResource.addToArg(BuildResource.java:120)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildIOType.addResource(BuildIOType.java:64)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.addOutputs(BuildDescription.java:906)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.calculateOutputs(BuildDescription.java:1178)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.composeOutputs(BuildDescription.java:596)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.composeOutputs(BuildDescription.java:603)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.access$1(BuildDescription.java:496)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription$RcVisitor.doVisitFile(BuildDescription.java:206)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription$RcVisitor.visit(BuildDescription.java:136)
+	at org.eclipse.core.internal.resources.Resource$1.visitElement(Resource.java:57)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.doIteration(ElementTreeIterator.java:81)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.doIteration(ElementTreeIterator.java:85)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.doIteration(ElementTreeIterator.java:85)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.doIteration(ElementTreeIterator.java:85)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.doIteration(ElementTreeIterator.java:85)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.doIteration(ElementTreeIterator.java:85)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.iterate(ElementTreeIterator.java:126)
+	at org.eclipse.core.internal.resources.Resource.accept(Resource.java:67)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.initDescription(BuildDescription.java:681)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.init(BuildDescription.java:704)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.DefaultBuildDescriptionFactory.createBuildDescription(DefaultBuildDescriptionFactory.java:37)
+	at org.eclipse.cdt.managedbuilder.buildmodel.BuildDescriptionManager.createBuildDescription(BuildDescriptionManager.java:81)
+	at org.eclipse.cdt.managedbuilder.internal.core.GeneratedMakefileBuilder.build(GeneratedMakefileBuilder.java:533)
+	at org.eclipse.core.internal.events.BuildManager$2.run(BuildManager.java:603)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:37)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:167)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:201)
+	at org.eclipse.core.internal.events.BuildManager$1.run(BuildManager.java:230)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:37)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:233)
+	at org.eclipse.core.internal.events.BuildManager.build(BuildManager.java:307)
+	at org.eclipse.core.internal.resources.Project.build(Project.java:88)
+	at org.eclipse.cdt.launch.AbstractCLaunchDelegate.buildForLaunch(AbstractCLaunchDelegate.java:524)
+	at com.ti.ccstudio.debug.core.launch.BaseCCELaunchDelegate.buildForLaunch(BaseCCELaunchDelegate.java:235)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:636)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:583)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:779)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$4.run(DebugUIPlugin.java:835)
+	at org.eclipse.jface.operation.ModalContext$ModalContextThread.run(ModalContext.java:113)
+
+!ENTRY org.eclipse.core.resources 4 566 2013-02-20 17:19:03.798
+!MESSAGE An error occurred while traversing resources.
+!STACK 0
+java.lang.IllegalArgumentException: ProducerArgument not null!!!
+
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildResource.addToArg(BuildResource.java:120)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildIOType.addResource(BuildIOType.java:64)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.addOutputs(BuildDescription.java:906)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.calculateOutputs(BuildDescription.java:1178)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.composeOutputs(BuildDescription.java:596)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.composeOutputs(BuildDescription.java:603)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.access$1(BuildDescription.java:496)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription$RcVisitor.doVisitFile(BuildDescription.java:206)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription$RcVisitor.visit(BuildDescription.java:136)
+	at org.eclipse.core.internal.resources.Resource$1.visitElement(Resource.java:57)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.doIteration(ElementTreeIterator.java:81)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.doIteration(ElementTreeIterator.java:85)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.doIteration(ElementTreeIterator.java:85)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.doIteration(ElementTreeIterator.java:85)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.doIteration(ElementTreeIterator.java:85)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.doIteration(ElementTreeIterator.java:85)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.iterate(ElementTreeIterator.java:126)
+	at org.eclipse.core.internal.resources.Resource.accept(Resource.java:67)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.initDescription(BuildDescription.java:681)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.init(BuildDescription.java:704)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.DefaultBuildDescriptionFactory.createBuildDescription(DefaultBuildDescriptionFactory.java:37)
+	at org.eclipse.cdt.managedbuilder.buildmodel.BuildDescriptionManager.createBuildDescription(BuildDescriptionManager.java:81)
+	at org.eclipse.cdt.managedbuilder.internal.core.GeneratedMakefileBuilder.build(GeneratedMakefileBuilder.java:533)
+	at org.eclipse.core.internal.events.BuildManager$2.run(BuildManager.java:603)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:37)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:167)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:201)
+	at org.eclipse.core.internal.events.BuildManager$1.run(BuildManager.java:230)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:37)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:233)
+	at org.eclipse.core.internal.events.BuildManager.build(BuildManager.java:307)
+	at org.eclipse.core.internal.resources.Project.build(Project.java:88)
+	at org.eclipse.ui.actions.BuildAction.invokeOperation(BuildAction.java:192)
+	at org.eclipse.ui.actions.WorkspaceAction.execute(WorkspaceAction.java:134)
+	at org.eclipse.ui.actions.WorkspaceAction$2.runInWorkspace(WorkspaceAction.java:429)
+	at org.eclipse.core.internal.resources.InternalWorkspaceJob.run(InternalWorkspaceJob.java:38)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:58)
+
+!ENTRY org.eclipse.core.resources 4 566 2013-02-20 17:35:33.936
+!MESSAGE An error occurred while traversing resources.
+!STACK 0
+java.lang.IllegalArgumentException: ProducerArgument not null!!!
+
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildResource.addToArg(BuildResource.java:120)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildIOType.addResource(BuildIOType.java:64)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.addOutputs(BuildDescription.java:906)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.calculateOutputs(BuildDescription.java:1178)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.composeOutputs(BuildDescription.java:596)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.composeOutputs(BuildDescription.java:603)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.access$1(BuildDescription.java:496)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription$RcVisitor.doVisitFile(BuildDescription.java:206)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription$RcVisitor.visit(BuildDescription.java:136)
+	at org.eclipse.core.internal.resources.Resource$1.visitElement(Resource.java:57)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.doIteration(ElementTreeIterator.java:81)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.doIteration(ElementTreeIterator.java:85)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.doIteration(ElementTreeIterator.java:85)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.doIteration(ElementTreeIterator.java:85)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.doIteration(ElementTreeIterator.java:85)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.doIteration(ElementTreeIterator.java:85)
+	at org.eclipse.core.internal.watson.ElementTreeIterator.iterate(ElementTreeIterator.java:126)
+	at org.eclipse.core.internal.resources.Resource.accept(Resource.java:67)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.initDescription(BuildDescription.java:681)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.BuildDescription.init(BuildDescription.java:704)
+	at org.eclipse.cdt.managedbuilder.internal.buildmodel.DefaultBuildDescriptionFactory.createBuildDescription(DefaultBuildDescriptionFactory.java:37)
+	at org.eclipse.cdt.managedbuilder.buildmodel.BuildDescriptionManager.createBuildDescription(BuildDescriptionManager.java:81)
+	at org.eclipse.cdt.managedbuilder.internal.core.GeneratedMakefileBuilder.build(GeneratedMakefileBuilder.java:533)
+	at org.eclipse.core.internal.events.BuildManager$2.run(BuildManager.java:603)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:37)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:167)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:201)
+	at org.eclipse.core.internal.events.BuildManager$1.run(BuildManager.java:230)
+	at org.eclipse.core.runtime.SafeRunner.run(SafeRunner.java:37)
+	at org.eclipse.core.internal.events.BuildManager.basicBuild(BuildManager.java:233)
+	at org.eclipse.core.internal.events.BuildManager.build(BuildManager.java:307)
+	at org.eclipse.core.internal.resources.Project.build(Project.java:88)
+	at org.eclipse.ui.actions.BuildAction.invokeOperation(BuildAction.java:192)
+	at org.eclipse.ui.actions.WorkspaceAction.execute(WorkspaceAction.java:134)
+	at org.eclipse.ui.actions.WorkspaceAction$2.runInWorkspace(WorkspaceAction.java:429)
+	at org.eclipse.core.internal.resources.InternalWorkspaceJob.run(InternalWorkspaceJob.java:38)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:58)

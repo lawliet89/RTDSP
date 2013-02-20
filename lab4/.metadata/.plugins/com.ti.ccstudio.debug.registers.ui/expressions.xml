@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <States>
-<Expressions/>
+<Expressions>
+<Expression IMemento.internal.id="index">
+<Format/>
+</Expression>
+</Expressions>
 </States>
