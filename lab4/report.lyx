@@ -109,6 +109,11 @@ Yong Wen Chua (ywc110) & Ryan Savitski (rs5010)
 Matlab Filter Design
 \end_layout
 
+\begin_layout Standard
+The transition band used in this lab is between 260 Hz and 450 Hz, and between
+ 2250 Hz and 2500 Hz.
+\end_layout
+
 \begin_layout Subsection
 Matlab Code
 \end_layout
