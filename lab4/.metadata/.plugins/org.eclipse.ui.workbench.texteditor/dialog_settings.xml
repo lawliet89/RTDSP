@@ -8,13 +8,15 @@
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
-		<item key="selection" value="int"/>
+		<item key="selection" value="double"/>
 		<item key="wrap" value="false"/>
 		<item key="casesensitive" value="false"/>
 		<list key="findhistory">
+			<item value="float"/>
 			<item value="unsigned"/>
 		</list>
 		<list key="replacehistory">
+			<item value="double"/>
 			<item value="int"/>
 		</list>
 	</section>

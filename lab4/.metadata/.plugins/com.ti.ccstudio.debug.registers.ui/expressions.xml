@@ -4,5 +4,14 @@
 <Expression IMemento.internal.id="index">
 <Format/>
 </Expression>
+<Expression IMemento.internal.id="offset">
+<Format/>
+</Expression>
+<Expression IMemento.internal.id="result">
+<Format/>
+</Expression>
+<Expression IMemento.internal.id="i">
+<Format/>
+</Expression>
 </Expressions>
 </States>

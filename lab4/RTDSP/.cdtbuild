@@ -66,8 +66,14 @@
 <resourceConfiguration exclude="true" id="com.ti.ccstudio.buildDefinitions.C6000.Debug.1451776913./RTDSP/non-circular.c" name="non-circular.c" rcbsApplicability="disable" resourcePath="/RTDSP/non-circular.c" toolsToInvoke="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/non-circular.c">
 <tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/non-circular.c" name="C6000 Compiler" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890"/>
 </resourceConfiguration>
-<resourceConfiguration exclude="true" id="com.ti.ccstudio.buildDefinitions.C6000.Debug.1451776913./RTDSP/circular.c" name="circular.c" rcbsApplicability="disable" resourcePath="/RTDSP/circular.c" toolsToInvoke="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/circular.c">
+<resourceConfiguration exclude="false" id="com.ti.ccstudio.buildDefinitions.C6000.Debug.1451776913./RTDSP/circular.c" name="circular.c" rcbsApplicability="disable" resourcePath="/RTDSP/circular.c" toolsToInvoke="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/circular.c">
 <tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/circular.c" name="C6000 Compiler" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890"/>
+</resourceConfiguration>
+<resourceConfiguration exclude="true" id="com.ti.ccstudio.buildDefinitions.C6000.Debug.1451776913./RTDSP/circ_FIR_DP.asm" name="circ_FIR_DP.asm" rcbsApplicability="disable" resourcePath="/RTDSP/circ_FIR_DP.asm" toolsToInvoke="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/circ_FIR_DP.asm">
+<tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/circ_FIR_DP.asm" name="C6000 Compiler" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890"/>
+</resourceConfiguration>
+<resourceConfiguration exclude="true" id="com.ti.ccstudio.buildDefinitions.C6000.Debug.1451776913./RTDSP/asm.c" name="asm.c" rcbsApplicability="disable" resourcePath="/RTDSP/asm.c" toolsToInvoke="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/asm.c">
+<tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/asm.c" name="C6000 Compiler" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890"/>
 </resourceConfiguration>
 </configuration>
 <configuration artifactExtension="out" artifactName="RTDSP" description="" id="com.ti.ccstudio.buildDefinitions.C6000.Release.271389140" name="Release" parent="com.ti.ccstudio.buildDefinitions.C6000.Release">

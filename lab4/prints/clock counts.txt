@@ -49,3 +49,16 @@ no optimisation
 2 optimisation
 (index = 86) 4853
 (index = 87) 4853
+
+CIRCULAR BUFFER V4
+
+no optimisation
+6511
+
+0 optimisation
+5318
+5317
+5293
+
+2 optimisation
+2938
