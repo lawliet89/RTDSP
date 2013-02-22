@@ -49,7 +49,16 @@
 \index_command default
 \paperfontsize default
 \spacing onehalf
-\use_hyperref false
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
 \papersize default
 \use_geometry true
 \use_amsmath 1
@@ -97,7 +106,7 @@ Yong Wen Chua (ywc110)
 \end_layout
 
 \begin_layout Section
-Exercise 1
+Exercise 1 - Input Sine Wave Rectification
 \end_layout
 
 \begin_layout Subsection
@@ -540,32 +549,27 @@ When a signal is input into the system, the output effectively has twice
  the frequency of the input due to the rectification done on the input signal.
  Thus, subject to the Nyquist Sampling Frequency limitation, the output
  cannot be more than 4 KHz (for a sampling frequency of 8KHz), and this
- translates to having an input frequency that can have a maximum of 2 KHz
- before aliasing kicks in.
- This is evident from the traces seen in 
+ translates to having an input frequency that, theoretically, can have a
+ maximum of 2 KHz (which will give an output of 4 KHz) before aliasing kicks
+ in.
+ 
+\end_layout
+
+\begin_layout Standard
+When the input frequency goes beyond 2 KHz, aliasing takes place and folding
+ can be observed in the output.
+ This is evident if one compares the trace and FFT output (in 
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand formatted
 reference "sub:Oscilloscope-Traces"
 
 \end_inset
 
-.
- Also, it can be observed that there is a variation in the output amplitude
- due to the amplitude modulation effects also observed in lab 2.
-\end_layout
-
-\begin_layout Standard
-However, then the input frequency goes beyond 2 KHz, aliasing takes place
- and folding can be observed in the output.
- This is evident if one compares the trace and FFT output of input frequencies
- of 200 Hz and 3800 Hz.
- It can be seen that these two input frequencies both given an output frequency
+) of input frequencies of 200 Hz and 3800 Hz.
+ It can be seen that these two input frequencies both give an output frequency
  of 400 Hz and have the same peak at 400 Hz in their FFT.
  This is due to folding being observed as a result in aliasing.
-\end_layout
-
-\begin_layout Standard
-Folding is the 
+ Folding is the 
 \begin_inset Quotes eld
 \end_inset
 
@@ -576,8 +580,11 @@ wrapping
  around of the frequency output due to aliasing.
  When a signal is sampled, copies of its frequency spectrum is made in the
  frequency domain.
- If the signal has frequency higher than half that of the sampling frequency,
- these copies of the frequency content overlaps, resulting in aliasing.
+ If the signal has frequency content higher than half that of the sampling
+ frequency, these copies of the frequency content overlaps.
+ The overlapped frequency content will cause an apparently lower frequency
+ signal to be produced.
+ This is the folding effect of aliasing.
  Let 
 \begin_inset Formula $f_{a}$
 \end_inset
@@ -586,7 +593,7 @@ wrapping
 \begin_inset Formula $f$
 \end_inset
 
- be the frequency of the sinusoid, and 
+ be the (supposed) frequency of the sinusoid, and 
 \begin_inset Formula $f_{s}$
 \end_inset
 
@@ -596,9 +603,9 @@ wrapping
 
 \begin_layout Standard
 \begin_inset Formula 
-\[
-\left|f_{a}\right|=\left|f-nf_{s}\right|
-\]
+\begin{equation}
+\left|f_{a}\right|=\left|f-nf_{s}\right|\label{eq:1}
+\end{equation}
 
 \end_inset
 
@@ -615,9 +622,20 @@ wrapping
 
 \begin_layout Standard
 It can be observed that when the input frequency is at 3800 Hz, the output
- frequency should be at 7600 Hz.
- Then according to the equation, 
-\begin_inset Formula $n=2$
+ frequency, 
+\begin_inset Formula $f$
+\end_inset
+
+, should be at 7600 Hz.
+ Then according to the 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:1"
+
+\end_inset
+
+, 
+\begin_inset Formula $n=1$
 \end_inset
 
  and 
@@ -625,6 +643,51 @@ It can be observed that when the input frequency is at 3800 Hz, the output
 \end_inset
 
 , which is what can be observed.
+\end_layout
+
+\begin_layout Standard
+A similar observation can be seen in the output traces for inputs of 2.5
+ KHz, 3 KHz, and 3.5 KHz.
+ They give rise to apparent frequencies of 3 KHz, 2 KHz, and 1 KHz respectively.
+ According to 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:1"
+
+\end_inset
+
+, they would all have 
+\begin_inset Formula $n=1$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Amplitude modulation can also be observed.
+ This is due to the rectification of the sine wave, giving rise to additional
+ harmonics.
+ Take, for example, the FFT of the input frequency of 1.5 KHz.
+ Around the main peak at 3 KHz, there are peaks at 2.25 KHz and 3.75 KHz,
+ both of which are equidistant to the main peak at 3 KHz.
+ This gives rise the the amplitude modulation, as can be observed from the
+ trace.
+ The imperfect anti-aliasing filter also limits the output frequency to
+ around 3.6 KHz to 3.8 KHz.
+ because the 
+\begin_inset Quotes eld
+\end_inset
+
+copies
+\begin_inset Quotes erd
+\end_inset
+
+ of the frequency content due to sampling above 4 KHz will not be filtered
+ out properly, resulting in amplitude modulation.
+ This can be seen in the FFT for the input frequency of 2 KHz, where a peak
+ at 4.75 KHz was not filtered, resulting in amplitude modulation being observed.
+ (The amplitude modulation was not captured in the trace due to the high
+ frequency modulation.)
 \end_layout
 
 \begin_layout Subsection
@@ -638,7 +701,7 @@ Code Operation
 \end_layout
 
 \begin_layout Standard
-Rectification is done ever time a sample is sent to the codec.
+Rectification is done every time a sample is sent to the codec.
  The function to service the interrupt is given below:
 \end_layout
 
@@ -688,7 +751,7 @@ Int16
 \end_layout
 
 \begin_layout Section
-Exercise 2
+Exercise 2 - Interrupt generated sine wave
 \end_layout
 
 \begin_layout Subsection
@@ -1192,7 +1255,7 @@ status open
 placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -1227,13 +1290,10 @@ status open
 
 \begin_layout Standard
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
-
-\begin_layout Plain Layout
-
-\end_layout
 
 \begin_layout Plain Layout
 \begin_inset Graphics
