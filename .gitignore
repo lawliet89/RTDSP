@@ -29,5 +29,7 @@
 #.buildpath
 
 .history/
+Debug/
+temp/
 *.o
 *.exe

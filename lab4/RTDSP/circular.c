@@ -129,17 +129,20 @@ void init_HWI(void)
 /******************** WRITE YOUR INTERRUPT SERVICE ROUTINE HERE***********************/  
 
 void ISR_AIC(void){
-	int i = 0;
-	int offset = index;
-	float result = 0;
-	buffer[index] = mono_read_16Bit();	// read and write to current "zero" sample
+	float *i = b;
+	float *bEnd = b + N;	// one after last element
+	float *offset = buffer + index;
+	float *bufferEnd = buffer + N; // one after last element
 	
-	for (; offset < N; ++i, ++offset)
-		result += b[i]* buffer[offset];
+	float result = 0;
+	*offset = mono_read_16Bit();	// read and write to current "zero" sample
+	
+	for (; offset < bufferEnd; ++i, ++offset)
+		result += (*i) * (*offset);
 	
     
-    for (offset = 0; i < N; ++i, ++offset)
-        result += b[i]* buffer[offset];
+    for (offset = buffer; i < bEnd; ++i, ++offset)
+        result += (*i) * (*offset);
         
 	// advance index
 	index = (index == 0) ? N-1 : index-1;

@@ -11,7 +11,7 @@
 </perspectiveBar>
 <coolbarLayout locked="0">
 <coolItem id="group.file" itemType="typeGroupMarker"/>
-<coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="153" y="22"/>
+<coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="115" y="22"/>
 <coolItem id="additions" itemType="typeGroupMarker"/>
 <coolItem id="com.ti.ccstudio.debug.ui.DebugActionSet" itemType="typeToolBarContribution" x="107" y="22"/>
 <coolItem id="com.ti.ccstudio.debug.ui.RealTimeActionSet" itemType="typeToolBarContribution" x="61" y="22"/>
@@ -27,7 +27,7 @@
 <coolItem id="group.help" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.help" itemType="typeToolBarContribution" x="-1" y="-1"/>
 </coolbarLayout>
-<page focus="true" label="Workspace - C/C++">
+<page focus="true" label="Workspace - Debug">
 <editors>
 <editorArea activeWorkbook="DefaultEditorWorkbook">
 <info part="DefaultEditorWorkbook">
@@ -46,7 +46,7 @@
 <editor id="org.eclipse.cdt.ui.editor.asm.AsmEditor" name="circ_FIR_DP.asm" partName="circ_FIR_DP.asm" path="H:/RTDSP/lab4/RTDSP/circ_FIR_DP.asm" title="circ_FIR_DP.asm" tooltip="RTDSP/circ_FIR_DP.asm" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/RTDSP/circ_FIR_DP.asm"/>
 </editor>
-<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="circular.c" partName="circular.c" path="H:/RTDSP/lab4/RTDSP/circular.c" title="circular.c" tooltip="RTDSP/circular.c" workbook="DefaultEditorWorkbook">
+<editor focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="circular.c" partName="circular.c" path="H:/RTDSP/lab4/RTDSP/circular.c" title="circular.c" tooltip="RTDSP/circular.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/RTDSP/circular.c"/>
 </editor>
 </editors>
@@ -97,11 +97,11 @@
 <view id="com.ti.ccstudio.debug.registers.ui.Variables" partName="Local (1)">
 <viewState columnName.0="Name" columnName.1="Value" columnName.2="Address" columnName.3="Type" columnName.4="Format" columnWidth.0="150" columnWidth.1="150" columnWidth.2="150" columnWidth.3="150" columnWidth.4="80" numberOfVisibleColumns="5"/>
 </view>
-<view id="com.ti.ccstudio.debug.ui.TIDisassemblyView" partName="Disassembly">
+<view id="com.ti.ccstudio.debug.ui.TIDisassemblyView" partName="Disassembly (C$RL12)">
 <viewState/>
 </view>
 <view id="org.eclipse.ui.views.ProblemView" partName="Problems">
-<viewState columnWidth0="265" columnWidth1="90" columnWidth2="165" columnWidth3="75" columnWidth4="0" horizontalPosition="0" verticalPosition="0">
+<viewState columnWidth0="268" columnWidth1="93" columnWidth2="168" columnWidth3="78" columnWidth4="0" horizontalPosition="0" verticalPosition="0">
 <columnOrder columnOrderIndex="0"/>
 <columnOrder columnOrderIndex="1"/>
 <columnOrder columnOrderIndex="2"/>
@@ -110,7 +110,7 @@
 </viewState>
 </view>
 </views>
-<perspectives activePart="org.eclipse.cdt.ui.editor.CEditor" activePerspective="org.eclipse.cdt.ui.CPerspective">
+<perspectives activePart="org.eclipse.debug.ui.DebugView" activePerspective="org.eclipse.debug.ui.DebugPerspective">
 <perspective editorAreaVisible="1" fixed="0" version="0.016">
 <descriptor class="org.eclipse.cdt.internal.ui.CPerspectiveFactory" id="org.eclipse.cdt.ui.CPerspective" label="C/C++"/>
 <alwaysOnActionSet id="com.ti.ccstudio.debug.ui.licensing"/>
@@ -320,7 +320,7 @@
 <info part="org.eclipse.ui.editorss" ratio="0.29411766" ratioLeft="215" ratioRight="516" relationship="4" relative="org.eclipse.debug.internal.ui.NavigatorFolderView"/>
 <info folder="true" part="org.eclipse.debug.internal.ui.OutlineFolderView" ratio="0.75033736" ratioLeft="1112" ratioRight="370" relationship="2" relative="org.eclipse.ui.editorss">
 <folder activePageID="com.ti.ccstudio.debug.ui.TIDisassemblyView" appearance="2" expanded="2">
-<page content="com.ti.ccstudio.debug.ui.TIDisassemblyView" label="Disassembly"/>
+<page content="com.ti.ccstudio.debug.ui.TIDisassemblyView" label="Disassembly (C$RL12)"/>
 <page content="com.ti.ccstudio.memory.ui.view.TIMemoryView" label="LabelNotFound"/>
 <page content="org.eclipse.ui.views.ContentOutline" label="LabelNotFound"/>
 <page content="com.ti.ccstudio.debug.ui.views.KernelObjects" label="LabelNotFound"/>
@@ -357,63 +357,6 @@
 <editors>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/RTDSP/circular.c"/>
 </editors>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5639" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5281" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5639" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5281" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5639" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5279" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5281" y="78"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5639" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5282" y="8"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5281" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5639" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5295" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="3464" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5281" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5639" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5203" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="3464" y="0"/>
-</item>
 <item historyLabel="circular.c" index="0">
 <position info="not_deleted" x="5281" y="0"/>
 </item>
@@ -504,8 +447,65 @@
 <item historyLabel="circular.c" index="0">
 <position info="not_deleted" x="5488" y="0"/>
 </item>
-<item active="true" historyLabel="circular.c" index="0">
+<item historyLabel="circular.c" index="0">
 <position info="not_deleted" x="5444" y="0"/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position info="not_deleted" x="5592" y="0"/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position info="not_deleted" x="3464" y="0"/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position info="not_deleted" x="5382" y="0"/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position info="not_deleted" x="3464" y="0"/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position info="not_deleted" x="5227" y="0"/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position info="not_deleted" x="5226" y="0"/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position info="not_deleted" x="5767" y="0"/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position info="not_deleted" x="5226" y="0"/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position info="not_deleted" x="5767" y="0"/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position info="not_deleted" x="5226" y="0"/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position info="not_deleted" x="5387" y="0"/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position info="not_deleted" x="5484" y="0"/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position info="not_deleted" x="5528" y="0"/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position info="not_deleted" x="5484" y="0"/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position info="not_deleted" x="5767" y="0"/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position info="not_deleted" x="5226" y="0"/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position info="not_deleted" x="5767" y="0"/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position info="not_deleted" x="5226" y="0"/>
+</item>
+<item active="true" historyLabel="circular.c" index="0">
+<position info="not_deleted" x="5767" y="0"/>
 </item>
 </navigationHistory>
 <stickyState>
