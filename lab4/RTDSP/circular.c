@@ -137,7 +137,7 @@ void ISR_AIC(void){
 		result += b[i]* buffer[offset];
 	
     
-    for (offset = N; i < N; ++i, --offset)
+    for (offset = N-1; i < N; ++i, --offset)
         result += b[i]* buffer[offset];
     
     
