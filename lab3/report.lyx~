@@ -745,8 +745,8 @@ a copy
 \end_inset
 
  made by the sampling process.
- Also, from the FFT traces, it can be seen that some of frequency components
- above 4 KHz are not properly filtered out, due to the imperfect anti-aliasing
+ Also, from the FFT traces, it can be seen that frequency components above
+ 4 KHz are not properly filtered out, due to the imperfect anti-aliasing
  filter.
  This also contributes to the distortion of the output signal.
 \end_layout
