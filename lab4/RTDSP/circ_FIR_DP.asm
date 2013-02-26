@@ -59,8 +59,8 @@ _circ_FIR_DP:
 		; set circular mode using the AMR 
 
 		MVC .S2			AMR,B13		;(0) Save contents of AMR reg to B13
-		MVK .S2			4H,B2 ;(0) BK0. block size is 1024 bytes
-		MVKLH .S2		9H,B2 ;(0) set A5 to be circular buffering addressing mode using BK0
+		MVK .S2			4H,B2 		;(0) Lower half. set A5 to be circular buffering addressing mode using BK0
+		MVKLH .S2		9H,B2 		;(0) Upper half. Set BK0 to work for 1024 bytes
 		MVC .S2			B2,AMR		;(0) set AMR reg
 
 		; get the data passed from C
@@ -70,17 +70,16 @@ _circ_FIR_DP:
 		NOP 4						; A5 now holds address pointing into delay_circ
 
 		STW .D1			A11,*--A5	;(0) Store new input sample (MSB) to delay_circ array
+	||	ZERO .S1		A14			;(0) zero accumulator LSB
 		STW .D1			A10,*--A5 	;(0) Store new input sample (LSB) to delay_circ array   
+	||	ZERO .S1		A15			;(0) zero accumulator MSB
 	
 
 		STW .D1			A5,*A4		;(0) write back the decremented pointer to circ_ptr
 									; this points to the end of the MSB of where the next sample
 									; will be stored on the next call to this function 
 
-		ZERO .S1		A14			;(0) zero accumulator LSB
-		ZERO .S1		A15			;(0) zero accumulator MSB
-
-        MV .S2X 		A8, B0      ;(0) move parameter (numCoefs) passed from C into b0 
+    ||  MV .S2X 		A8, B0      ;(0) move parameter (numCoefs) passed from C into b0 
 		
 		;********************************** loop begin **********************************
 		
