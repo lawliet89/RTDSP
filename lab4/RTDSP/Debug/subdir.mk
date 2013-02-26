@@ -60,7 +60,7 @@ GEN_CMDS_QUOTED += \
 circular.obj: ../circular.c $(GEN_OPTS)
 	@echo 'Building file: $<'
 	@echo 'Invoking: Compiler'
-	"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/bin/cl6x" -mv6200 -g -O2 --define="_DEBUG" --define="CHIP_6713" --include_path="C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/include" --include_path="C:/EEE/CCStudio4.1/ccsv4/C6000/dsk6713/include" --include_path="C:/EEE/CCStudio4.1/ccsv4/C6000/csl/include" --include_path="H:/RTDSP/lab4/RTDSP/Debug" --include_path="C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/bios/include" --include_path="C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/rtdx/include/c6000" --diag_warning=225 --preproc_with_compile --preproc_dependency="circular.pp" $(GEN_OPTS_QUOTED) $(subst #,$(wildcard $(subst $(SPACE),\$(SPACE),$<)),"#")
+	"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/bin/cl6x" -mv6700 -g -O2 --define="_DEBUG" --define="CHIP_6713" --include_path="C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/include" --include_path="C:/EEE/CCStudio4.1/ccsv4/C6000/dsk6713/include" --include_path="C:/EEE/CCStudio4.1/ccsv4/C6000/csl/include" --include_path="H:/RTDSP/lab4/RTDSP/Debug" --include_path="C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/bios/include" --include_path="C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/rtdx/include/c6000" --diag_warning=225 --preproc_with_compile --preproc_dependency="circular.pp" $(GEN_OPTS_QUOTED) $(subst #,$(wildcard $(subst $(SPACE),\$(SPACE),$<)),"#")
 	@echo 'Finished building: $<'
 	@echo ' '
 
@@ -77,14 +77,14 @@ dsp_bios_cfg_c.c: dsp_bios_cfg.cmd
 dsp_bios_cfg.obj: ./dsp_bios_cfg.s?? $(GEN_OPTS)
 	@echo 'Building file: $<'
 	@echo 'Invoking: Compiler'
-	"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/bin/cl6x" -mv6200 -g -O2 --define="_DEBUG" --define="CHIP_6713" --include_path="C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/include" --include_path="C:/EEE/CCStudio4.1/ccsv4/C6000/dsk6713/include" --include_path="C:/EEE/CCStudio4.1/ccsv4/C6000/csl/include" --include_path="H:/RTDSP/lab4/RTDSP/Debug" --include_path="C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/bios/include" --include_path="C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/rtdx/include/c6000" --diag_warning=225 --preproc_with_compile --preproc_dependency="dsp_bios_cfg.pp" $(GEN_OPTS_QUOTED) $(subst #,$(wildcard $(subst $(SPACE),\$(SPACE),$<)),"#")
+	"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/bin/cl6x" -mv6700 -g -O2 --define="_DEBUG" --define="CHIP_6713" --include_path="C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/include" --include_path="C:/EEE/CCStudio4.1/ccsv4/C6000/dsk6713/include" --include_path="C:/EEE/CCStudio4.1/ccsv4/C6000/csl/include" --include_path="H:/RTDSP/lab4/RTDSP/Debug" --include_path="C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/bios/include" --include_path="C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/rtdx/include/c6000" --diag_warning=225 --preproc_with_compile --preproc_dependency="dsp_bios_cfg.pp" $(GEN_OPTS_QUOTED) $(subst #,$(wildcard $(subst $(SPACE),\$(SPACE),$<)),"#")
 	@echo 'Finished building: $<'
 	@echo ' '
 
 dsp_bios_cfg_c.obj: ./dsp_bios_cfg_c.c $(GEN_OPTS)
 	@echo 'Building file: $<'
 	@echo 'Invoking: Compiler'
-	"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/bin/cl6x" -mv6200 -g -O2 --define="_DEBUG" --define="CHIP_6713" --include_path="C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/include" --include_path="C:/EEE/CCStudio4.1/ccsv4/C6000/dsk6713/include" --include_path="C:/EEE/CCStudio4.1/ccsv4/C6000/csl/include" --include_path="H:/RTDSP/lab4/RTDSP/Debug" --include_path="C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/bios/include" --include_path="C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/rtdx/include/c6000" --diag_warning=225 --preproc_with_compile --preproc_dependency="dsp_bios_cfg_c.pp" $(GEN_OPTS_QUOTED) $(subst #,$(wildcard $(subst $(SPACE),\$(SPACE),$<)),"#")
+	"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/bin/cl6x" -mv6700 -g -O2 --define="_DEBUG" --define="CHIP_6713" --include_path="C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/include" --include_path="C:/EEE/CCStudio4.1/ccsv4/C6000/dsk6713/include" --include_path="C:/EEE/CCStudio4.1/ccsv4/C6000/csl/include" --include_path="H:/RTDSP/lab4/RTDSP/Debug" --include_path="C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/bios/include" --include_path="C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/rtdx/include/c6000" --diag_warning=225 --preproc_with_compile --preproc_dependency="dsp_bios_cfg_c.pp" $(GEN_OPTS_QUOTED) $(subst #,$(wildcard $(subst $(SPACE),\$(SPACE),$<)),"#")
 	@echo 'Finished building: $<'
 	@echo ' '
 

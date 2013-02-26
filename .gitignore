@@ -33,3 +33,4 @@ Debug/
 temp/
 *.o
 *.exe
+.running

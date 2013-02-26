@@ -4,10 +4,10 @@
 <ManagedProjectBuildInfo>
 <project id="RTDSP.com.ti.ccstudio.buildDefinitions.C6000.ProjectType.47243007" name="C6000" projectType="com.ti.ccstudio.buildDefinitions.C6000.ProjectType">
 <configuration artifactExtension="out" artifactName="RTDSP" description="" id="com.ti.ccstudio.buildDefinitions.C6000.Debug.1451776913" name="Debug" parent="com.ti.ccstudio.buildDefinitions.C6000.Debug">
-<toolChain id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.DebugToolchain.1052587114" name="TI Code Generation Tools" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.DebugToolchain" targetTool="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.linkerDebug.33465929">
-<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1334717331" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION" value="6.1.15" valueType="string"/>
-<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.1715832786" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS" valueType="stringList">
-<listOptionValue builtIn="false" value="DEVICE_CONFIGURATION_ID=com.ti.ccstudio.deviceModel.C6000.GenericC62xxDevice"/>
+<toolChain id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.DebugToolchain.1156132675" name="TI Code Generation Tools" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.DebugToolchain" targetTool="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.linkerDebug.815953133">
+<option id="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION.1208533233" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_CODEGEN_VERSION" value="6.1.15" valueType="string"/>
+<option id="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS.720356071" superClass="com.ti.ccstudio.buildDefinitions.core.OPT_TAGS" valueType="stringList">
+<listOptionValue builtIn="false" value="DEVICE_CONFIGURATION_ID=com.ti.ccstudio.deviceModel.C6000.GenericC67xxDevice"/>
 <listOptionValue builtIn="false" value="DEVICE_ENDIANNESS=little"/>
 <listOptionValue builtIn="false" value="IS_ELF=false"/>
 <listOptionValue builtIn="false" value="LINKER_COMMAND_FILE="/>
@@ -17,12 +17,17 @@
 <listOptionValue builtIn="false" value="DSPBIOS_VERSION=5.41.02.14"/>
 <listOptionValue builtIn="false" value="PROJECT_KIND=com.ti.ccstudio.managedbuild.core.ProjectKind_Executable"/>
 </option>
-<tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890" name="C6000 Compiler" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug">
-<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.DIAG_WARNING.405655949" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.DIAG_WARNING" valueType="stringList">
+<tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.2061461017" name="C6000 Compiler" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug">
+<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.DIAG_WARNING.1014305258" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.DIAG_WARNING" valueType="stringList">
 <listOptionValue builtIn="false" value="225"/>
 </option>
-<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.SILICON_VERSION.1397612539" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.SILICON_VERSION" value="6200" valueType="string"/>
-<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.INCLUDE_PATH.454633954" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.INCLUDE_PATH" valueType="includePath">
+<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.SILICON_VERSION.941878437" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.SILICON_VERSION" value="6700" valueType="string"/>
+<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.OPT_LEVEL.753803286" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.OPT_LEVEL.2" valueType="enumerated"/>
+<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.DEFINE.371486274" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.DEFINE" valueType="definedSymbols">
+<listOptionValue builtIn="false" value="&quot;_DEBUG&quot;"/>
+<listOptionValue builtIn="false" value="&quot;CHIP_6713&quot;"/>
+</option>
+<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.INCLUDE_PATH.2125132811" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.INCLUDE_PATH" valueType="includePath">
 <listOptionValue builtIn="false" value="&quot;${CG_TOOL_ROOT}/include&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${CCS_INSTALL_ROOT}\C6000\dsk6713\include&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${CCS_INSTALL_ROOT}\C6000\csl\include&quot;"/>
@@ -30,50 +35,39 @@
 <listOptionValue builtIn="false" value="&quot;${BIOS_INCLUDE_DIR}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${RTDX_INCLUDE_DIR}&quot;"/>
 </option>
-<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.DEFINE.25473644" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.DEFINE" valueType="definedSymbols">
-<listOptionValue builtIn="false" value="&quot;_DEBUG&quot;"/>
-<listOptionValue builtIn="false" value="&quot;CHIP_6713&quot;"/>
-</option>
-<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.OPT_LEVEL.1881188157" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.OPT_LEVEL.2" valueType="enumerated"/>
 </tool>
-<tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.linkerDebug.33465929" name="C6000 Linker" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.linkerDebug">
-<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.OUTPUT_FILE.145749649" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.OUTPUT_FILE" value="&quot;RTDSP.out&quot;" valueType="string"/>
-<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.MAP_FILE.1719734237" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.MAP_FILE" value="&quot;RTDSP.map&quot;" valueType="string"/>
-<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.LIBRARY.992475494" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.LIBRARY" valueType="libs">
-<listOptionValue builtIn="false" value="&quot;rts6700.lib&quot;"/>
+<tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.linkerDebug.815953133" name="C6000 Linker" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.linkerDebug">
+<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.OUTPUT_FILE.331283233" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.OUTPUT_FILE" value="&quot;RTDSP.out&quot;" valueType="string"/>
+<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.MAP_FILE.558740807" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.MAP_FILE" value="&quot;RTDSP.map&quot;" valueType="string"/>
+<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.generatedLinkerCommandFiles.242856739" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.generatedLinkerCommandFiles" valueType="libs">
+<listOptionValue builtIn="false" value="&quot;$(GEN_CMDS_QUOTED)&quot;"/>
+</option>
+<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.LIBRARY.1914024932" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.LIBRARY" valueType="libs">
 <listOptionValue builtIn="false" value="&quot;${CCS_INSTALL_ROOT}\C6000\dsk6713\lib\dsk6713bslccsv4.lib&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${CCS_INSTALL_ROOT}\C6000\csl\lib\csl6713.lib&quot;"/>
+<listOptionValue builtIn="false" value="&quot;rts6700.lib&quot;"/>
 </option>
-<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.SEARCH_PATH.1386217347" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.SEARCH_PATH" valueType="stringList">
+<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.SEARCH_PATH.969311780" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.SEARCH_PATH" valueType="stringList">
 <listOptionValue builtIn="false" value="&quot;${CG_TOOL_ROOT}/lib&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${CG_TOOL_ROOT}/include&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${RTDX_LIB_DIR}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${BIOS_LIB_DIR}&quot;"/>
 </option>
-<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.generatedLinkerCommandFiles.2143740942" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.generatedLinkerCommandFiles" valueType="libs">
-<listOptionValue builtIn="false" value="&quot;$(GEN_CMDS_QUOTED)&quot;"/>
-</option>
 </tool>
-<tool id="com.ti.rtsc.buildDefinitions.DSPBIOS_5.40.tool.722745645" name="TConf Script Compiler" superClass="com.ti.rtsc.buildDefinitions.DSPBIOS_5.40.tool"/>
-<macros expandEnvironmentMacros="true"/>
+<tool id="com.ti.rtsc.buildDefinitions.DSPBIOS_5.40.tool.98552723" name="TConf Script Compiler" superClass="com.ti.rtsc.buildDefinitions.DSPBIOS_5.40.tool"/>
+<macros/>
 </toolChain>
-<resourceConfiguration exclude="false" id="com.ti.ccstudio.buildDefinitions.C6000.Debug.1451776913./RTDSP/ex1.c" name="ex1.c" rcbsApplicability="disable" resourcePath="/RTDSP/ex1.c" toolsToInvoke="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/ex1.c">
-<tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/ex1.c" name="C6000 Compiler" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890"/>
+<resourceConfiguration exclude="true" id="com.ti.ccstudio.buildDefinitions.C6000.Debug.1451776913./RTDSP/non-circular.c" name="non-circular.c" rcbsApplicability="disable" resourcePath="/RTDSP/non-circular.c" toolsToInvoke="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.2061461017./RTDSP/non-circular.c">
+<tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.2061461017./RTDSP/non-circular.c" name="C6000 Compiler" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.2061461017"/>
 </resourceConfiguration>
-<resourceConfiguration exclude="true" id="com.ti.ccstudio.buildDefinitions.C6000.Debug.1451776913./RTDSP/intio.c" name="intio.c" rcbsApplicability="disable" resourcePath="/RTDSP/ex2.c" toolsToInvoke="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/intio.c">
-<tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/intio.c" name="C6000 Compiler" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890"/>
+<resourceConfiguration exclude="false" id="com.ti.ccstudio.buildDefinitions.C6000.Debug.1451776913./RTDSP/circular.c" name="circular.c" rcbsApplicability="disable" resourcePath="/RTDSP/circular.c" toolsToInvoke="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.2061461017./RTDSP/circular.c">
+<tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.2061461017./RTDSP/circular.c" name="C6000 Compiler" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.2061461017"/>
 </resourceConfiguration>
-<resourceConfiguration exclude="true" id="com.ti.ccstudio.buildDefinitions.C6000.Debug.1451776913./RTDSP/non-circular.c" name="non-circular.c" rcbsApplicability="disable" resourcePath="/RTDSP/non-circular.c" toolsToInvoke="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/non-circular.c">
-<tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/non-circular.c" name="C6000 Compiler" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890"/>
+<resourceConfiguration exclude="true" id="com.ti.ccstudio.buildDefinitions.C6000.Debug.1451776913./RTDSP/asm.c" name="asm.c" rcbsApplicability="disable" resourcePath="/RTDSP/asm.c" toolsToInvoke="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.2061461017./RTDSP/asm.c">
+<tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.2061461017./RTDSP/asm.c" name="C6000 Compiler" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.2061461017"/>
 </resourceConfiguration>
-<resourceConfiguration exclude="false" id="com.ti.ccstudio.buildDefinitions.C6000.Debug.1451776913./RTDSP/circular.c" name="circular.c" rcbsApplicability="disable" resourcePath="/RTDSP/circular.c" toolsToInvoke="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/circular.c">
-<tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/circular.c" name="C6000 Compiler" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890"/>
-</resourceConfiguration>
-<resourceConfiguration exclude="true" id="com.ti.ccstudio.buildDefinitions.C6000.Debug.1451776913./RTDSP/circ_FIR_DP.asm" name="circ_FIR_DP.asm" rcbsApplicability="disable" resourcePath="/RTDSP/circ_FIR_DP.asm" toolsToInvoke="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/circ_FIR_DP.asm">
-<tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/circ_FIR_DP.asm" name="C6000 Compiler" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890"/>
-</resourceConfiguration>
-<resourceConfiguration exclude="true" id="com.ti.ccstudio.buildDefinitions.C6000.Debug.1451776913./RTDSP/asm.c" name="asm.c" rcbsApplicability="disable" resourcePath="/RTDSP/asm.c" toolsToInvoke="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/asm.c">
-<tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890./RTDSP/asm.c" name="C6000 Compiler" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.913806890"/>
+<resourceConfiguration exclude="true" id="com.ti.ccstudio.buildDefinitions.C6000.Debug.1451776913./RTDSP/circ_FIR_DP.asm" name="circ_FIR_DP.asm" rcbsApplicability="disable" resourcePath="/RTDSP/circ_FIR_DP.asm" toolsToInvoke="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.2061461017./RTDSP/circ_FIR_DP.asm">
+<tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.2061461017./RTDSP/circ_FIR_DP.asm" name="C6000 Compiler" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.2061461017"/>
 </resourceConfiguration>
 </configuration>
 <configuration artifactExtension="out" artifactName="RTDSP" description="" id="com.ti.ccstudio.buildDefinitions.C6000.Release.271389140" name="Release" parent="com.ti.ccstudio.buildDefinitions.C6000.Release">
@@ -118,5 +112,6 @@
 <tool id="com.ti.rtsc.buildDefinitions.DSPBIOS_5.40.tool.1847762874" name="TConf Script Compiler" superClass="com.ti.rtsc.buildDefinitions.DSPBIOS_5.40.tool"/>
 </toolChain>
 </configuration>
+<macros/>
 </project>
 </ManagedProjectBuildInfo>

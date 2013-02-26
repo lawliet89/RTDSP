@@ -12,9 +12,9 @@ $(GEN_CMDS_QUOTED) \
 "./dsp_bios_cfg_c.obj" \
 "./dsp_bios_cfg.obj" \
 "./circular.obj" \
--l"rts6700.lib" \
 -l"C:/EEE/CCStudio4.1/ccsv4\C6000\dsk6713\lib\dsk6713bslccsv4.lib" \
 -l"C:/EEE/CCStudio4.1/ccsv4\C6000\csl\lib\csl6713.lib" \
+-l"rts6700.lib" \
 
 -include ../makefile.init
 
@@ -111,7 +111,7 @@ all: RTDSP.out
 RTDSP.out: $(GEN_CMDS) $(OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Linker'
-	"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/bin/cl6x" -mv6200 -g -O2 --define="_DEBUG" --define="CHIP_6713" --diag_warning=225 -z -m"RTDSP.map" --warn_sections -i"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/lib" -i"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/include" -i"C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/rtdx/lib/c6000" -i"C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/bios/lib" --reread_libs --rom_model -o "RTDSP.out" $(ORDERED_OBJS)
+	"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/bin/cl6x" -mv6700 -g -O2 --define="_DEBUG" --define="CHIP_6713" --diag_warning=225 -z -m"RTDSP.map" --warn_sections -i"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/lib" -i"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/include" -i"C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/rtdx/lib/c6000" -i"C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/bios/lib" --reread_libs --rom_model -o "RTDSP.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

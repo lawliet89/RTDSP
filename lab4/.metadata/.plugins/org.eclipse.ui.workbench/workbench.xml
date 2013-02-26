@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workbench progressCount="67" version="2.0">
+<workbench progressCount="66" version="2.0">
 <workbenchAdvisor/>
-<window height="1058" maximized="true" width="1511" x="315" y="-14">
+<window height="916" maximized="true" width="1456" x="315" y="-14">
 <fastViewData fastViewLocation="1024">
 <orientation position="512" view="org.eclipse.cdt.ui.CView"/>
 <orientation position="512" view="com.ti.ccstudio.system.setup.ui.views.TargetConfigurationView"/>
@@ -11,7 +11,7 @@
 </perspectiveBar>
 <coolbarLayout locked="0">
 <coolItem id="group.file" itemType="typeGroupMarker"/>
-<coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="115" y="22"/>
+<coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="153" y="22"/>
 <coolItem id="additions" itemType="typeGroupMarker"/>
 <coolItem id="com.ti.ccstudio.debug.ui.DebugActionSet" itemType="typeToolBarContribution" x="107" y="22"/>
 <coolItem id="com.ti.ccstudio.debug.ui.RealTimeActionSet" itemType="typeToolBarContribution" x="61" y="22"/>
@@ -22,12 +22,13 @@
 <coolItem id="group.nav" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.navigate" itemType="typeToolBarContribution" x="190" y="22"/>
 <coolItem id="group.editor" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.ui.DefaultTextEditor" itemType="typePlaceholder" x="-1" y="-1"/>
 <coolItem id="org.eclipse.cdt.ui.editor.asm.AsmEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
 <coolItem id="org.eclipse.cdt.ui.editor.CEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
 <coolItem id="group.help" itemType="typeGroupMarker"/>
 <coolItem id="org.eclipse.ui.workbench.help" itemType="typeToolBarContribution" x="-1" y="-1"/>
 </coolbarLayout>
-<page focus="true" label="Workspace - Debug">
+<page focus="true" label="Workspace - C/C++">
 <editors>
 <editorArea activeWorkbook="DefaultEditorWorkbook">
 <info part="DefaultEditorWorkbook">
@@ -36,6 +37,7 @@
 <part id="0"/>
 <part id="1"/>
 <part id="2"/>
+<part id="3"/>
 </presentation>
 </folder>
 </info>
@@ -46,8 +48,11 @@
 <editor id="org.eclipse.cdt.ui.editor.asm.AsmEditor" name="circ_FIR_DP.asm" partName="circ_FIR_DP.asm" path="H:/RTDSP/lab4/RTDSP/circ_FIR_DP.asm" title="circ_FIR_DP.asm" tooltip="RTDSP/circ_FIR_DP.asm" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/RTDSP/circ_FIR_DP.asm"/>
 </editor>
-<editor focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="circular.c" partName="circular.c" path="H:/RTDSP/lab4/RTDSP/circular.c" title="circular.c" tooltip="RTDSP/circular.c" workbook="DefaultEditorWorkbook">
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="circular.c" partName="circular.c" path="H:/RTDSP/lab4/RTDSP/circular.c" title="circular.c" tooltip="RTDSP/circular.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/RTDSP/circular.c"/>
+</editor>
+<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="non-circular.c" partName="non-circular.c" path="H:/RTDSP/lab4/RTDSP/non-circular.c" title="non-circular.c" tooltip="RTDSP/non-circular.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/RTDSP/non-circular.c"/>
 </editor>
 </editors>
 <views>
@@ -55,9 +60,6 @@
 <viewState StatesFile="H:/RTDSP/lab4/.metadata/.plugins/com.ti.ccstudio.debug.registers.ui/expressions.xml" columnName.0="Name" columnName.1="Value" columnName.2="Address" columnName.3="Type" columnName.4="Format" columnWidth.0="150" columnWidth.1="150" columnWidth.2="150" columnWidth.3="150" columnWidth.4="80" numberOfVisibleColumns="5"/>
 </view>
 <view id="org.eclipse.ui.console.ConsoleView" partName="Console">
-<viewState/>
-</view>
-<view id="org.eclipse.ui.views.ContentOutline" partName="Outline">
 <viewState/>
 </view>
 <view id="org.eclipse.cdt.ui.CView" partName="C/C++ Projects">
@@ -97,11 +99,11 @@
 <view id="com.ti.ccstudio.debug.registers.ui.Variables" partName="Local (1)">
 <viewState columnName.0="Name" columnName.1="Value" columnName.2="Address" columnName.3="Type" columnName.4="Format" columnWidth.0="150" columnWidth.1="150" columnWidth.2="150" columnWidth.3="150" columnWidth.4="80" numberOfVisibleColumns="5"/>
 </view>
-<view id="com.ti.ccstudio.debug.ui.TIDisassemblyView" partName="Disassembly (C$RL12)">
+<view id="com.ti.ccstudio.debug.ui.TIDisassemblyView" partName="Disassembly">
 <viewState/>
 </view>
 <view id="org.eclipse.ui.views.ProblemView" partName="Problems">
-<viewState columnWidth0="268" columnWidth1="93" columnWidth2="168" columnWidth3="78" columnWidth4="0" horizontalPosition="0" verticalPosition="0">
+<viewState columnWidth0="518" columnWidth1="102" columnWidth2="177" columnWidth3="87" columnWidth4="0" horizontalPosition="0" verticalPosition="0">
 <columnOrder columnOrderIndex="0"/>
 <columnOrder columnOrderIndex="1"/>
 <columnOrder columnOrderIndex="2"/>
@@ -110,7 +112,7 @@
 </viewState>
 </view>
 </views>
-<perspectives activePart="org.eclipse.debug.ui.DebugView" activePerspective="org.eclipse.debug.ui.DebugPerspective">
+<perspectives activePart="org.eclipse.cdt.ui.editor.CEditor" activePerspective="org.eclipse.cdt.ui.CPerspective">
 <perspective editorAreaVisible="1" fixed="0" version="0.016">
 <descriptor class="org.eclipse.cdt.internal.ui.CPerspectiveFactory" id="org.eclipse.cdt.ui.CPerspective" label="C/C++"/>
 <alwaysOnActionSet id="com.ti.ccstudio.debug.ui.licensing"/>
@@ -169,7 +171,6 @@
 <perspective_action id="org.eclipse.team.ui.TeamSynchronizingPerspective"/>
 <perspective_action id="org.eclipse.cdt.ui.CPerspective"/>
 <view id="org.eclipse.cdt.ui.CView"/>
-<view id="org.eclipse.ui.views.ContentOutline"/>
 <view id="org.eclipse.ui.console.ConsoleView"/>
 <view id="org.eclipse.ui.views.ProblemView"/>
 <layout>
@@ -194,15 +195,13 @@
 </info>
 <info part="org.eclipse.ui.editorss" ratio="0.249499" ratioLeft="249" ratioRight="749" relationship="2" relative="topLeft"/>
 <info folder="true" part="topRight" ratio="0.74899864" ratioLeft="561" ratioRight="188" relationship="2" relative="org.eclipse.ui.editorss">
-<folder activePageID="org.eclipse.ui.views.ContentOutline" appearance="2" expanded="2">
-<page content="org.eclipse.ui.views.ContentOutline" label="Outline"/>
-<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
-<part id="0"/>
-</presentation>
+<folder appearance="2" expanded="2">
+<page content="org.eclipse.ui.views.ContentOutline" label="LabelNotFound"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
 </folder>
 </info>
 <info folder="true" part="org.eclipse.ui.internal.ViewStack@60090d" ratio="0.6997167" ratioLeft="494" ratioRight="212" relationship="4" relative="org.eclipse.ui.editorss">
-<folder activePageID="org.eclipse.ui.views.ProblemView" appearance="2" expanded="2">
+<folder activePageID="org.eclipse.ui.console.ConsoleView" appearance="2" expanded="2">
 <page content="org.eclipse.ui.console.ConsoleView" label="Console"/>
 <page content="org.eclipse.ui.views.ProblemView" label="Problems"/>
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
@@ -320,7 +319,7 @@
 <info part="org.eclipse.ui.editorss" ratio="0.29411766" ratioLeft="215" ratioRight="516" relationship="4" relative="org.eclipse.debug.internal.ui.NavigatorFolderView"/>
 <info folder="true" part="org.eclipse.debug.internal.ui.OutlineFolderView" ratio="0.75033736" ratioLeft="1112" ratioRight="370" relationship="2" relative="org.eclipse.ui.editorss">
 <folder activePageID="com.ti.ccstudio.debug.ui.TIDisassemblyView" appearance="2" expanded="2">
-<page content="com.ti.ccstudio.debug.ui.TIDisassemblyView" label="Disassembly (C$RL12)"/>
+<page content="com.ti.ccstudio.debug.ui.TIDisassemblyView" label="Disassembly"/>
 <page content="com.ti.ccstudio.memory.ui.view.TIMemoryView" label="LabelNotFound"/>
 <page content="org.eclipse.ui.views.ContentOutline" label="LabelNotFound"/>
 <page content="com.ti.ccstudio.debug.ui.views.KernelObjects" label="LabelNotFound"/>
@@ -356,112 +355,15 @@
 <navigationHistory>
 <editors>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/RTDSP/circular.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/RTDSP/asm.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.asm.AsmEditor" path="/RTDSP/circ_FIR_DP.asm"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.asm.AsmEditor" path="/RTDSP/circ_FIR_DP.asm"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/RTDSP/asm.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/RTDSP/circular.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/RTDSP/non-circular.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.systemInPlaceEditor" path="/RTDSP/dsp_bios_.tcf"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.DefaultTextEditor" path="/RTDSP/dsp_bios_.tcf"/>
 </editors>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5281" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5639" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5281" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5639" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="2996" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="3464" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5281" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5639" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5281" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5639" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5290" y="5"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="3464" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5205" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5261" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5205" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5261" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5639" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5205" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5639" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5205" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5639" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5534" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5364" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5558" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5433" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5364" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5400" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5364" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5444" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5488" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5444" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5592" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="3464" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="5382" y="0"/>
-</item>
-<item historyLabel="circular.c" index="0">
-<position info="not_deleted" x="3464" y="0"/>
-</item>
 <item historyLabel="circular.c" index="0">
 <position info="not_deleted" x="5227" y="0"/>
 </item>
@@ -504,8 +406,111 @@
 <item historyLabel="circular.c" index="0">
 <position info="not_deleted" x="5226" y="0"/>
 </item>
-<item active="true" historyLabel="circular.c" index="0">
+<item historyLabel="circular.c" index="0">
 <position info="not_deleted" x="5767" y="0"/>
+</item>
+<item historyLabel="asm.c" index="1">
+<position info="not_deleted" x="439" y="0"/>
+</item>
+<item historyLabel="circ_FIR_DP.asm" index="2">
+<position/>
+</item>
+<item historyLabel="asm.c" index="1">
+<position info="not_deleted" x="439" y="0"/>
+</item>
+<item historyLabel="circ_FIR_DP.asm" index="2">
+<position/>
+</item>
+<item historyLabel="circular.c" index="0">
+<position/>
+</item>
+<item historyLabel="circ_FIR_DP.asm" index="2">
+<position/>
+</item>
+<item historyLabel="asm.c" index="1">
+<position/>
+</item>
+<item historyLabel="circ_FIR_DP.asm" index="3">
+<position info="not_deleted" x="717" y="0"/>
+</item>
+<item historyLabel="asm.c" index="1">
+<position/>
+</item>
+<item historyLabel="circ_FIR_DP.asm" index="3">
+<position info="not_deleted" x="717" y="0"/>
+</item>
+<item historyLabel="asm.c" index="1">
+<position/>
+</item>
+<item historyLabel="circ_FIR_DP.asm" index="3">
+<position info="not_deleted" x="717" y="0"/>
+</item>
+<item historyLabel="asm.c" index="1">
+<position/>
+</item>
+<item historyLabel="circ_FIR_DP.asm" index="3">
+<position info="not_deleted" x="717" y="0"/>
+</item>
+<item historyLabel="asm.c" index="1">
+<position/>
+</item>
+<item historyLabel="circ_FIR_DP.asm" index="3">
+<position/>
+</item>
+<item historyLabel="asm.c" index="1">
+<position info="not_deleted" x="2936" y="0"/>
+</item>
+<item historyLabel="circ_FIR_DP.asm" index="3">
+<position info="not_deleted" x="2906" y="0"/>
+</item>
+<item historyLabel="asm.c" index="1">
+<position info="not_deleted" x="2936" y="0"/>
+</item>
+<item historyLabel="circ_FIR_DP.asm" index="3">
+<position info="not_deleted" x="2906" y="0"/>
+</item>
+<item historyLabel="asm.c" index="4">
+<position/>
+</item>
+<item historyLabel="circular.c" index="5">
+<position info="not_deleted" x="3464" y="0"/>
+</item>
+<item historyLabel="circular.c" index="5">
+<position info="not_deleted" x="5226" y="0"/>
+</item>
+<item historyLabel="circ_FIR_DP.asm" index="3">
+<position/>
+</item>
+<item historyLabel="circular.c" index="5">
+<position info="not_deleted" x="5210" y="7"/>
+</item>
+<item historyLabel="non-circular.c" index="6">
+<position/>
+</item>
+<item historyLabel="dsp_bios_.tcf" index="7"/>
+<item historyLabel="non-circular.c" index="6">
+<position info="not_deleted" x="923" y="0"/>
+</item>
+<item historyLabel="dsp_bios_.tcf" index="8">
+<position/>
+</item>
+<item historyLabel="non-circular.c" index="6">
+<position info="not_deleted" x="923" y="0"/>
+</item>
+<item historyLabel="circular.c" index="5">
+<position info="not_deleted" x="3464" y="0"/>
+</item>
+<item historyLabel="circular.c" index="5">
+<position info="not_deleted" x="3656" y="0"/>
+</item>
+<item historyLabel="circular.c" index="5">
+<position info="not_deleted" x="5226" y="0"/>
+</item>
+<item historyLabel="circular.c" index="5">
+<position info="not_deleted" x="5724" y="0"/>
+</item>
+<item active="true" historyLabel="non-circular.c" index="6">
+<position info="not_deleted" x="923" y="0"/>
 </item>
 </navigationHistory>
 <stickyState>
@@ -530,6 +535,12 @@
 </trimLayout>
 </window>
 <mruList>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.ui.DefaultTextEditor" name="dsp_bios_.tcf" tooltip="RTDSP/dsp_bios_.tcf">
+<persistable path="/RTDSP/dsp_bios_.tcf"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="non-circular.c" tooltip="RTDSP/non-circular.c">
+<persistable path="/RTDSP/non-circular.c"/>
+</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="circular.c" tooltip="RTDSP/circular.c">
 <persistable path="/RTDSP/circular.c"/>
 </file>
@@ -538,9 +549,6 @@
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="asm.c" tooltip="RTDSP/asm.c">
 <persistable path="/RTDSP/asm.c"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="non-circular.c" tooltip="RTDSP/non-circular.c">
-<persistable path="/RTDSP/non-circular.c"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="initio.c" tooltip="RTDSP/initio.c">
 <persistable path="/RTDSP/initio.c"/>

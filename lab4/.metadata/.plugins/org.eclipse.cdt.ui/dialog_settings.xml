@@ -2,4 +2,8 @@
 <section name="Workbench">
 	<section name="outline_presenter_bounds">
 	</section>
+	<section name="com.ti.common.managedbuild.ui.wizards.project.ProjectPropertiesPage">
+	</section>
+	<section name="!CProjectWizard!">
+	</section>
 </section>

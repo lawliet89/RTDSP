@@ -59,13 +59,13 @@ _circ_FIR_DP:
 		; set circular mode using the AMR 
 
 		MVC.S2			AMR,B13		;(0) Save contents of AMR reg to B13
-		MVK.S2			00000000B,B2;(0) 
-		MVKLH.S2		00000000B,B2;(0)
+		MVK.S2			00001001B,B2 ;(0) BK0. block size is 1024 bytes
+		MVKLH.S2		00000100B,B2 ;(0) set A5 to be circular buffering addressing mode using BK0
 		MVC.S2			B2,AMR		;(0) set AMR reg
 
 		; get the data passed from C
 
-		LDDW.D1			*A6,A11:A10	;(4) Get the 32 bit data for read_samp put it in A11:A10 
+		LDDW.D1			*A6,A11:A10	;(4) Get the 64 bit data for read_samp put it in A11:A10 
 		LDW.D1			*A4,A5		;(4) Get the address of the circ_ptr, dereference then place in A5
 		NOP 4						; A5 now holds address pointing into delay_circ
 
