@@ -116,7 +116,7 @@ loop:
 	
 		; restore previous buffering mode
 
-		MVC.S2			B13,AMR		;(0) restore  AMR reg to previous contents
+	||	MVC.S2			B13,AMR		;(0) restore  AMR reg to previous contents
 			
 		; return to C code
 
