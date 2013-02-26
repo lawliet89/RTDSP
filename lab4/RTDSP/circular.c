@@ -58,10 +58,10 @@ DSK6713_AIC23_CodecHandle H_Codec;
 #define N 88
 
 // include the coefficients
-#include "fir_coef_float.txt"
+#include "fir_coef.txt"
 
 // define the buffer
-float buffer[N] = {0};
+double buffer[N] = {0};
 
 // index of the current "current" (zero) sample
 int index = 0;
@@ -129,12 +129,12 @@ void init_HWI(void)
 /******************** WRITE YOUR INTERRUPT SERVICE ROUTINE HERE***********************/  
 
 void ISR_AIC(void){
-	float *i = b;
-	float *bEnd = b + N;	// one after last element
-	float *offset = buffer + index;
-	float *bufferEnd = buffer + N; // one after last element
+	double *i = b;
+	double *bEnd = b + N;	// one after last element
+	double *offset = buffer + index;
+	double *bufferEnd = buffer + N; // one after last element
 	
-	float result = 0;
+	double result = 0;
 	*offset = mono_read_16Bit();	// read and write to current "zero" sample
 	
 	for (; offset < bufferEnd; ++i, ++offset)
