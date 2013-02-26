@@ -11,7 +11,8 @@ ORDERED_OBJS += \
 $(GEN_CMDS_QUOTED) \
 "./dsp_bios_cfg_c.obj" \
 "./dsp_bios_cfg.obj" \
-"./circular.obj" \
+"./circ_FIR_DP.obj" \
+"./asm.obj" \
 -l"C:/EEE/CCStudio4.1/ccsv4\C6000\dsk6713\lib\dsk6713bslccsv4.lib" \
 -l"C:/EEE/CCStudio4.1/ccsv4\C6000\csl\lib\csl6713.lib" \
 -l"rts6700.lib" \
@@ -118,9 +119,9 @@ RTDSP.out: $(GEN_CMDS) $(OBJS)
 # Other Targets
 clean:
 	-$(RM) $(GEN_CMDS__QTD)$(GEN_SRCS__QTD)$(C6000_EXECUTABLE_OUTPUTS__QTD) "RTDSP.out"
-	-$(RM) ".\circular.obj" ".\dsp_bios_cfg.obj" ".\dsp_bios_cfg_c.obj" 
+	-$(RM) ".\asm.obj" ".\circ_FIR_DP.obj" ".\dsp_bios_cfg.obj" ".\dsp_bios_cfg_c.obj" 
 	-$(RM) ".\dsp_bios_cfg.pp" 
-	-$(RM) ".\circular.pp" ".\dsp_bios_cfg_c.pp" 
+	-$(RM) ".\asm.pp" ".\dsp_bios_cfg_c.pp" 
 	-@echo ' '
 
 .PHONY: all clean dependents

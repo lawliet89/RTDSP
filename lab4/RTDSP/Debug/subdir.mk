@@ -4,10 +4,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../circular.c 
+../asm.c 
 
 TCF_SRCS += \
 ../dsp_bios_.tcf 
+
+ASM_SRCS += \
+../circ_FIR_DP.asm 
 
 GEN_SRCS += \
 ./dsp_bios_cfg.cmd \
@@ -18,7 +21,8 @@ GEN_CMDS += \
 ./dsp_bios_cfg.cmd 
 
 OBJS += \
-./circular.obj \
+./asm.obj \
+./circ_FIR_DP.obj \
 ./dsp_bios_cfg.obj \
 ./dsp_bios_cfg_c.obj 
 
@@ -26,11 +30,12 @@ S??_DEPS += \
 ./dsp_bios_cfg.pp 
 
 C_DEPS += \
-./circular.pp \
+./asm.pp \
 ./dsp_bios_cfg_c.pp 
 
 OBJS__QTD += \
-".\circular.obj" \
+".\asm.obj" \
+".\circ_FIR_DP.obj" \
 ".\dsp_bios_cfg.obj" \
 ".\dsp_bios_cfg_c.obj" 
 
@@ -43,11 +48,14 @@ GEN_SRCS__QTD += \
 ".\dsp_bios_cfg_c.c" 
 
 C_DEPS__QTD += \
-".\circular.pp" \
+".\asm.pp" \
 ".\dsp_bios_cfg_c.pp" 
 
 C_SRCS_QUOTED += \
-"../circular.c" 
+"../asm.c" 
+
+ASM_SRCS_QUOTED += \
+"../circ_FIR_DP.asm" 
 
 TCF_SRCS_QUOTED += \
 "../dsp_bios_.tcf" 
@@ -57,10 +65,17 @@ GEN_CMDS_QUOTED += \
 
 
 # Each subdirectory must supply rules for building sources it contributes
-circular.obj: ../circular.c $(GEN_OPTS)
+asm.obj: ../asm.c $(GEN_OPTS)
 	@echo 'Building file: $<'
 	@echo 'Invoking: Compiler'
-	"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/bin/cl6x" -mv6700 -g -O2 --define="_DEBUG" --define="CHIP_6713" --include_path="C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/include" --include_path="C:/EEE/CCStudio4.1/ccsv4/C6000/dsk6713/include" --include_path="C:/EEE/CCStudio4.1/ccsv4/C6000/csl/include" --include_path="H:/RTDSP/lab4/RTDSP/Debug" --include_path="C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/bios/include" --include_path="C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/rtdx/include/c6000" --diag_warning=225 --preproc_with_compile --preproc_dependency="circular.pp" $(GEN_OPTS_QUOTED) $(subst #,$(wildcard $(subst $(SPACE),\$(SPACE),$<)),"#")
+	"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/bin/cl6x" -mv6700 -g -O2 --define="_DEBUG" --define="CHIP_6713" --include_path="C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/include" --include_path="C:/EEE/CCStudio4.1/ccsv4/C6000/dsk6713/include" --include_path="C:/EEE/CCStudio4.1/ccsv4/C6000/csl/include" --include_path="H:/RTDSP/lab4/RTDSP/Debug" --include_path="C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/bios/include" --include_path="C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/rtdx/include/c6000" --diag_warning=225 --preproc_with_compile --preproc_dependency="asm.pp" $(GEN_OPTS_QUOTED) $(subst #,$(wildcard $(subst $(SPACE),\$(SPACE),$<)),"#")
+	@echo 'Finished building: $<'
+	@echo ' '
+
+circ_FIR_DP.obj: ../circ_FIR_DP.asm $(GEN_OPTS)
+	@echo 'Building file: $<'
+	@echo 'Invoking: Compiler'
+	"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/bin/cl6x" -mv6700 -g -O2 --define="_DEBUG" --define="CHIP_6713" --include_path="C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/include" --include_path="C:/EEE/CCStudio4.1/ccsv4/C6000/dsk6713/include" --include_path="C:/EEE/CCStudio4.1/ccsv4/C6000/csl/include" --include_path="H:/RTDSP/lab4/RTDSP/Debug" --include_path="C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/bios/include" --include_path="C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/rtdx/include/c6000" --diag_warning=225 $(GEN_OPTS_QUOTED) $(subst #,$(wildcard $(subst $(SPACE),\$(SPACE),$<)),"#")
 	@echo 'Finished building: $<'
 	@echo ' '
 

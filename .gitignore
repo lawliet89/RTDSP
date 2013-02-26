@@ -29,8 +29,12 @@
 #.buildpath
 
 .history/
-Debug/
-temp/
+Debug/*
+temp/*
 *.o
 *.exe
 .running
+*.log
+*.obj
+*.snap
+*.pp

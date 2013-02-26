@@ -58,45 +58,46 @@
 _circ_FIR_DP:
 		; set circular mode using the AMR 
 
-		MVC.S2			AMR,B13		;(0) Save contents of AMR reg to B13
-		MVK.S2			00001001B,B2 ;(0) BK0. block size is 1024 bytes
-		MVKLH.S2		00000100B,B2 ;(0) set A5 to be circular buffering addressing mode using BK0
-		MVC.S2			B2,AMR		;(0) set AMR reg
+		MVC .S2			AMR,B13		;(0) Save contents of AMR reg to B13
+		MVK .S2			4H,B2 ;(0) BK0. block size is 1024 bytes
+		MVKLH .S2		9H,B2 ;(0) set A5 to be circular buffering addressing mode using BK0
+		MVC .S2			B2,AMR		;(0) set AMR reg
 
 		; get the data passed from C
 
-		LDDW.D1			*A6,A11:A10	;(4) Get the 64 bit data for read_samp put it in A11:A10 
-		LDW.D1			*A4,A5		;(4) Get the address of the circ_ptr, dereference then place in A5
+		LDDW .D1		*A6,A11:A10	;(4) Get the 64 bit data for read_samp put it in A11:A10 
+		LDW .D1			*A4,A5		;(4) Get the address of the circ_ptr, dereference then place in A5
 		NOP 4						; A5 now holds address pointing into delay_circ
 
-		STW.D1			A11,*--A5	;(0) Store new input sample (MSB) to delay_circ array
-		STW.D1			A10,*--A5 	;(0) Store new input sample (LSB) to delay_circ array   
+		STW .D1			A11,*--A5	;(0) Store new input sample (MSB) to delay_circ array
+		STW .D1			A10,*--A5 	;(0) Store new input sample (LSB) to delay_circ array   
 	
 
-		STW.D1			A5,*A4		;(0) write back the decremented pointer to circ_ptr
+		STW .D1			A5,*A4		;(0) write back the decremented pointer to circ_ptr
 									; this points to the end of the MSB of where the next sample
 									; will be stored on the next call to this function 
 
-		ZERO.S1			A14			;(0) zero accumulator LSB
-		ZERO.S1			A15			;(0) zero accumulator MSB
+		ZERO .S1		A14			;(0) zero accumulator LSB
+		ZERO .S1		A15			;(0) zero accumulator MSB
 
-        MV.S2X 			A8, B0      ;(0) move parameter (numCoefs) passed from C into b0 
+        MV .S2X 		A8, B0      ;(0) move parameter (numCoefs) passed from C into b0 
 		
 		;********************************** loop begin **********************************
 		
 loop:	
-		
 
 		; ************************* INSERT YOUR MAC CODE HERE ****************************
+		LDDW .D1		*A5++, A11:A10 ; (4) loads the (delayed) sample into A11:A10, and post increment pointer
+	||	LDDW .D2		*B4++, B11:B10 ; (4) load the coefficient into B11:B10, and post increment pointer
+		NOP	4
+		MPYDP .M1X		A11:A10, B11:B10, A11:A10	; (9, 4) DP multiply
+		NOP 9
+		ADDDP .L1		A15:A14, A11:A10, A15:A14	; (6, 2) DP ADD
+		NOP 6
 
 
 
-
-
-		; MAC must use 64 bit IEEE double floating point data obtained from arrays defined in C
-
-
-
+		; MAC must use 64 bit IEEE double floating point data obtained from arrays defined in C
 
 
 		; ********************************************************************************
