@@ -102,12 +102,12 @@ loop:
 		NOP 3
 		
 		[B0] B .S2 			loop			; (5) loop back if b0 is not zero
-	||	LDDW .D1		*A5++, A9:A8 ; (4) loads the (delayed) sample into A9:A8, and post increment pointer
-	||	LDDW .D2		*B4++, B9:B8 ; (4) load the coefficient into B9:B8, and post increment pointer
+	||	[B0] LDDW .D1		*A5++, A9:A8 ; (4) loads the (delayed) sample into A9:A8, and post increment pointer
+	||	[B0] LDDW .D2		*B4++, B9:B8 ; (4) load the coefficient into B9:B8, and post increment pointer
 		
 		
-		LDDW .D1		*A5++, A11:A10 ; (4) loads the (delayed) sample into A11:A10, and post increment pointer
-	||	LDDW .D2		*B4++, B11:B10 ; (4) load the coefficient into B11:B10, and post increment pointer
+		[B0] LDDW .D1		*A5++, A11:A10 ; (4) loads the (delayed) sample into A11:A10, and post increment pointer
+	||	[B0] LDDW .D2		*B4++, B11:B10 ; (4) load the coefficient into B11:B10, and post increment pointer
 		NOP 2
 		
 		ADDDP .L1		A1:A0, A3:A2, A1:A0	; (6, 2) DP ADD
