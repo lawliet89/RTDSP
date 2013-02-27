@@ -34,24 +34,25 @@
 ; circ_FIR_DP( &circ_ptr, &coef[0], &read_samp, &filtered_samp, N );
 ;
 ; ***************************** Register Assignments *************************************
-;   See 7.3 Register Conventions of spru187o for register convention and usage
 
-; A0 MSB Accumulator 1 (final)		    B0 MSB Accumulator 2
-; A1 LSB "				"				B1 LSB Accumulator 2
+; A0 LSB Multiplication  result			B0 Loop Counter
+; A1 MSB "				"				B1
 ; A2									B2 Used to set AMR to circular mode
 ; A3									B3 Return to C Address
-; A4 &circ_ptr (arg 1)					B4 &coef[k] (arg 2)
+; A4 &circ_ptr							B4 &coef[k]
 ; A5 circ_ptr							B5
-; A6 &read_samp	(arg 3)					B6 &filtered_samp (arg 4)
+; A6 &read_samp							B6 &filtered_samp
 ; A7									B7
-; A8 Number of Coefs (N) from C	(arg 5)	B8  LSB coef[k] 1
-; A9 									B9	MSB		"
-; A10 LSB delay_circ[j]	1				B10 LSB coef[k] 2
+; A8 Number of Coefs (N) 				B8
+; A9									B9
+; A10 LSB delay_circ[j]					B10 LSB coef[k]
 ; A11 MSB	"							B11 MSB  "
-; A12 LSB delay_circ[j] 2				B12 Loop Counter
-; A13 MSB	"							B13 Temp Store for previous AMR register value
-; A14                       			B14 Data page pointer (DO NOT USE)
-; A15 Frame pointer			            B15 Stack pointer (DO NOT USE)
+; A12 									B12
+; A13 									B13 Temp Store for previous AMR register value
+; A14 MSB Accumulator 					B14
+; A15 LSB 	"							B15
+;  See Real Time Digital Signal Processing by Nasser Kehtarnavaz (page 146) for more 
+;  info on mixing C and Assembly.
 ; ****************************************************************************************
 
 _circ_FIR_DP:
@@ -69,17 +70,16 @@ _circ_FIR_DP:
 		NOP 4						; A5 now holds address pointing into delay_circ
 
 		STW .D1			A11,*--A5	;(0) Store new input sample (MSB) to delay_circ array
-	||	ZERO .S1		A0			;(0) zero accumulator LSB
-	||	ZERO .S2		B0  		;(0) 
+	||	ZERO .S1		A14			;(0) zero accumulator LSB
 		STW .D1			A10,*--A5 	;(0) Store new input sample (LSB) to delay_circ array   
-	||	ZERO .S1		A1			;(0) zero accumulator MSB
-	||	ZERO .S2		B1			;(0)
+	||	ZERO .S1		A15			;(0) zero accumulator MSB
+	
 
 		STW .D1			A5,*A4		;(0) write back the decremented pointer to circ_ptr
 									; this points to the end of the MSB of where the next sample
 									; will be stored on the next call to this function 
 
-    ||  MV .S2X 		A8, B12      ;(0) move parameter (numCoefs) passed from C into B12 (Loop counter)
+    ||  MV .S2X 		A8, B0      ;(0) move parameter (numCoefs) passed from C into b0 
 		
 		;********************************** loop begin **********************************
 		
@@ -87,38 +87,32 @@ loop:
 
 		; ************************* INSERT YOUR MAC CODE HERE ****************************
 		LDDW .D1		*A5++, A11:A10 ; (4) loads the (delayed) sample into A11:A10, and post increment pointer
-	||	LDDW .D2		*B4++, B9:B8 ; (4) load the coefficient into B11:B10, and post increment pointer
-	
-		LDDW .D1		*A5++, A13:A12 ; (4) loads the (delayed) sample into A11:A10, and post increment pointer
-	||	LDDW .D2		*B4++, B11:B10 ; (4) load the coefficient into B11:B10, and post increment pointer	
-			
-		NOP	3
-		MPYDP .M1X		A11:A10, B9:B8, A11:A10	; (9, 4) DP multiply. takes four cycles to read registers
-		MPYDP .M2X		B11:B10, A13:A12, B11:B10	; (9, 4) DP multiply. takes four cycles to read registers		
-				
-		NOP 7			; reduced by one delay slot due to the way MPYDP and ADDDP reads/writes registers (lower first)
-		ADDDP .L1		A1:A0, A11:A10, A1:A0	; (6, 2) DP ADD
-		ADDDP .L2		B1:B0, B11:B10, B1:B0	; (6, 2) DP ADD
-		
+	||	LDDW .D2		*B4++, B11:B10 ; (4) load the coefficient into B11:B10, and post increment pointer
+		NOP	4
+		MPYDP .M1X		A11:A10, B11:B10, A11:A10	; (9, 4) DP multiply
+		NOP 9
+		ADDDP .L1		A15:A14, A11:A10, A15:A14	; (6, 2) DP ADD
 		NOP 6
-		
+
+
+
+		; MAC must use 64 bit IEEE double floating point data obtained from arrays defined in C
+
+
 		; ********************************************************************************
 		
 		; manage loop
 
-        SUB.D2 			B12,2,B12        ; (0) b12 - 1 -> b12
+        SUB.D2 			B0,1,B0			; (0) b0 - 1 -> b0
    [B0] B.S2 			loop			; (5) loop back if b0 is not zero
         NOP 			5						
 		
 		;********************************** loop end **********************************
 
-		; add separate values up
-		ADDDP .L1X	A1:A0, B1:B0, A1:A0	; (6, 2)
-		NOP 5		; because we are storing lower half first
 		; send the result of MAC back to C
 
-		STW.D2			A0,*B6		;(0) Write accumulator (LSB) into filtered_samp 
-		STW.D2			A1,*+B6[1]	;(0) Write accumulator (MSB) into filtered_samp 	
+		STW.D2			A14,*B6		;(0) Write accumulator (LSB) into filtered_samp 
+		STW.D2			A15,*+B6[1]	;(0) Write accumulator (MSB) into filtered_samp 	
 	
 		; restore previous buffering mode
 
