@@ -85,44 +85,39 @@ _circ_FIR_DP:
 									; this points to the end of the MSB of where the next sample
 									; will be stored on the next call to this function 
 		
-		;********************************** loop begin **********************************
-		; prime the pipeline - prologue
+		;********************************** loop prologue **********************************
+		; prime the pipeline 
 		LDDW .D1		*A5++, A9:A8 ; (4) loads the (delayed) sample into A9:A8, and post increment pointer
 	||	LDDW .D2		*B4++, B9:B8 ; (4) load the coefficient into B9:B8, and post increment pointer
 	
 		LDDW .D1		*A5++, A11:A10 ; (4) loads the (delayed) sample into A11:A10, and post increment pointer
 	||	LDDW .D2		*B4++, B11:B10 ; (4) load the coefficient into B11:B10, and post increment pointer
-		
 		NOP 3
 loop:	
 
 		; ************************* loop kernel	 ****************************
-		SUB .D2 		B0,2,B0			; (0) b0 - 2 -> b0
-	||	MPYDP .M1X		A9:A8, B9:B8, A3:A2	; (9, 4) DP multiply
+		MPYDP .M1X		A9:A8, B9:B8, A3:A2	; (9, 4) DP multiply
 		MPYDP .M2X		B11:B10, A11:A10, B7:B6	; (9, 4) DP multiply
+	||	SUB .L2 		B0,2,B0			; (0) b0 - 2 -> b0	
 		NOP 3
 		
-		LDDW .D1		*A5++, A9:A8 ; (4) loads the (delayed) sample into A9:A8, and post increment pointer
+		[B0] B .S2 			loop			; (5) loop back if b0 is not zero
+	||	LDDW .D1		*A5++, A9:A8 ; (4) loads the (delayed) sample into A9:A8, and post increment pointer
 	||	LDDW .D2		*B4++, B9:B8 ; (4) load the coefficient into B9:B8, and post increment pointer
 		
-		[B0] B .S2 			loop			; (5) loop back if b0 is not zero
-	||	LDDW .D1		*A5++, A11:A10 ; (4) loads the (delayed) sample into A11:A10, and post increment pointer
+		
+		LDDW .D1		*A5++, A11:A10 ; (4) loads the (delayed) sample into A11:A10, and post increment pointer
 	||	LDDW .D2		*B4++, B11:B10 ; (4) load the coefficient into B11:B10, and post increment pointer
 		NOP 2
 		
 		ADDDP .L1		A1:A0, A3:A2, A1:A0	; (6, 2) DP ADD
-		ADDDP .L2		B3:B2, B7:B6, B3:B2	; (6, 2) DP ADD
-
-		; ********************************************************************************
-		; manage loop
-
-        
+		ADDDP .L2		B3:B2, B7:B6, B3:B2	; (6, 2) DP ADD      
    
-        NOP 			5						
+        					
 		
-		;********************************** loop end **********************************
+		;********************************** loop epilogue **********************************
 		; add both accumulators up
-		
+		NOP 			5		; for the final addition to be complete
 		ADDDP .L1X		A1:A0, B3:B2, A1:A0	; (6, 2) DP ADD
 		NOP 5
 		
