@@ -35,16 +35,16 @@
 ;
 ; ***************************** Register Assignments *************************************
 
-; A0 MSB Accumulator 					B0 Loop Counter
-; A1 LSB 	"							B1 Moved return to C Address
-; A2 MSB Multiplied result				B2 Used to set AMR to circular mode
-; A3 LSB	"		"					B3 Return to C Address (original)
+; A0 LSB Accumulator 1					B0 Loop Counter
+; A1 MSB 	"							B1 Moved return to C Address
+; A2 LSB Multiplied result	1			B2 Used to set AMR to circular mode		- then reused LSB Accumulator 2
+; A3 MSB	"		"					B3 Return to C Address (original)		- then reused MSB "
 ; A4 &circ_ptr	- possible reuse		B4 &coef[k] - don't use for calc	
 ; A5 circ_ptr	- don't use for calc	B5 Moved &filtered_samp
-; A6 &read_samp	- possible reuse		B6 &filtered_samp - (original)
-; A7									B7
-; A8 LSB delay_circ[j]	1				B8 	LSB coef[k] 1
-; A9 MSB "								B9	MSB	"
+; A6 &read_samp	- possible reuse		B6 &filtered_samp - (original)			- then reused LSB Multiplied result 2
+; A7									B7													  MSB "
+; A8 N, then LSB delay_circ[j] 1 		B8 	LSB coef[k] 1
+; A9 		 MSB "						B9	MSB	"
 ; A10 LSB delay_circ[j]	2				B10 LSB coef[k] 2
 ; A11 MSB	"							B11 MSB  "
 ; A12 									B12
@@ -57,44 +57,43 @@
 
 _circ_FIR_DP:
 		; set circular mode using the AMR 
-		MVC .S2			AMR,B13		;(0) Save contents of AMR reg to B13
+		MVC .S2			AMR,B13		;(0) Save contents of AMR reg to B13	
 		MVK .S2			4H,B2 		;(0) Lower half. set A5 to be circular buffering addressing mode using BK0
 		MVKLH .S2		9H,B2 		;(0) Upper half. Set BK0 to work for 1024 bytes
 		MVC .S2			B2,AMR		;(0) set AMR reg
 
 		; get the data passed from C
 
-		LDDW .D1		*A6,A11:A10	;(4) Get the 64 bit data for read_samp put it in A9:A8
+		LDDW .D1		*A6,A9:A8	;(4) Get the 64 bit data for read_samp put it in A9:A8
+    ||  MV .S2X 		A8, B0      ;(0) move parameter (numCoefs) passed from C into b0 		
 		LDW .D1			*A4,A5		;(4) Get the address of the circ_ptr, dereference then place in A5
 	||	MV .S2			B3, B1		;(0) move return to C address
 		MV .S2			B6, B5		;(0) move &filtered_samp
 		NOP 3						; A5 now holds address pointing into delay_circ
 
-		STW .D1			A11,*--A5	;(0) Store new input sample (MSB) to delay_circ array
+		STW .D1			A9,*--A5	;(0) Store new input sample (MSB) to delay_circ array
 	||	ZERO .S1		A0			;(0) zero accumulator LSB
-		STW .D1			A10,*--A5 	;(0) Store new input sample (LSB) to delay_circ array   
+		STW .D1			A8,*--A5 	;(0) Store new input sample (LSB) to delay_circ array   
 	||	ZERO .S1		A1			;(0) zero accumulator MSB
 	
 
 		STW .D1			A5,*A4		;(0) write back the decremented pointer to circ_ptr
 									; this points to the end of the MSB of where the next sample
 									; will be stored on the next call to this function 
-
-    ||  MV .S2X 		A8, B0      ;(0) move parameter (numCoefs) passed from C into b0 
 		
 		;********************************** loop begin **********************************
 		; prime the pipeline - prologue
-		LDDW .D1		*A5++, A11:A10 ; (4) loads the (delayed) sample into A11:A10, and post increment pointer
-	||	LDDW .D2		*B4++, B11:B10 ; (4) load the coefficient into B11:B10, and post increment pointer
+		LDDW .D1		*A5++, A9:A8 ; (4) loads the (delayed) sample into A9:A8, and post increment pointer
+	||	LDDW .D2		*B4++, B9:B8 ; (4) load the coefficient into B9:B8, and post increment pointer
 		NOP 4
 loop:	
 
 		; ************************* loop kernel	 ****************************
 
-		MPYDP .M1X		A11:A10, B11:B10, A3:A2	; (9, 4) DP multiply
+		MPYDP .M1X		A9:A8, B9:B8, A3:A2	; (9, 4) DP multiply
 		NOP 4
-		LDDW .D1		*A5++, A11:A10 ; (4) loads the (delayed) sample into A11:A10, and post increment pointer
-	||	LDDW .D2		*B4++, B11:B10 ; (4) load the coefficient into B11:B10, and post increment pointer
+		LDDW .D1		*A5++, A9:A8 ; (4) loads the (delayed) sample into A9:A8, and post increment pointer
+	||	LDDW .D2		*B4++, B9:B8 ; (4) load the coefficient into B9:B8, and post increment pointer
 	
 		NOP 3
 		ADDDP .L1		A1:A0, A3:A2, A1:A0	; (6, 2) DP ADD
