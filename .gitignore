@@ -38,3 +38,8 @@ temp/*
 *.obj
 *.snap
 *.pp
+Debug/
+.log
+*.index
+*.map
+*.out

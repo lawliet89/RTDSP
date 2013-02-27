@@ -1,6 +1,6 @@
 ;******************************************************************************
 ;* TMS320C6x C/C++ Codegen                                         PC v6.1.15 *
-;* Date/Time created: Wed Feb 27 13:49:25 2013                                *
+;* Date/Time created: Wed Feb 27 15:37:45 2013                                *
 ;******************************************************************************
 	.compiler_opts --c64p_l1d_workaround=default --endian=little --hll_source=on --mem_model:code=near --mem_model:const=data --mem_model:data=far_aggregates --silicon_version=6700 --symdebug:dwarf 
 
@@ -271,7 +271,7 @@ $C$DW$23	.dwtag  DW_TAG_variable, DW_AT_name("index")
 	.dwattr $C$DW$23, DW_AT_location[DW_OP_addr _index]
 	.dwattr $C$DW$23, DW_AT_type(*$C$DW$T$10)
 	.dwattr $C$DW$23, DW_AT_external
-;	C:\EEE\CCStudio4.1\ccsv4\tools\compiler\c6000\bin\opt6x.exe C:\\Users\\ywc110\\AppData\\Local\\Temp\\054522 C:\\Users\\ywc110\\AppData\\Local\\Temp\\054524 
+;	C:\EEE\CCStudio4.1\ccsv4\tools\compiler\c6000\bin\opt6x.exe C:\\Users\\ywc110\\AppData\\Local\\Temp\\062922 C:\\Users\\ywc110\\AppData\\Local\\Temp\\062924 
 	.sect	".text"
 	.clink
 	.global	_init_hardware
@@ -678,7 +678,7 @@ $C$DW$L$_main$4$E:
 	.dwcfi	cfa_offset, 0
 
 $C$DW$34	.dwtag  DW_TAG_TI_loop
-	.dwattr $C$DW$34, DW_AT_name("H:\RTDSP\lab4\RTDSP\Debug\asm.asm:$C$L1:1:1361972965")
+	.dwattr $C$DW$34, DW_AT_name("H:\RTDSP\lab4\RTDSP\Debug\asm.asm:$C$L1:1:1361979466")
 	.dwattr $C$DW$34, DW_AT_TI_begin_file("../asm.c")
 	.dwattr $C$DW$34, DW_AT_TI_begin_line(0x5e)
 	.dwattr $C$DW$34, DW_AT_TI_end_line(0x5f)
