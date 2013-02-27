@@ -35,10 +35,10 @@
 ;
 ; ***************************** Register Assignments *************************************
 
-; A0 LSB Multiplication  result			B0 Loop Counter
-; A1 MSB "				"				B1
-; A2									B2 Used to set AMR to circular mode
-; A3									B3 Return to C Address
+; A0 MSB Accumulator 					B0 Loop Counter
+; A1 LSB 	"							B1
+; A2 MSB Multiplied result				B2 Used to set AMR to circular mode
+; A3 LSB	"		"					B3 Return to C Address
 ; A4 &circ_ptr							B4 &coef[k]
 ; A5 circ_ptr							B5
 ; A6 &read_samp							B6 &filtered_samp
@@ -49,15 +49,14 @@
 ; A11 MSB	"							B11 MSB  "
 ; A12 									B12
 ; A13 									B13 Temp Store for previous AMR register value
-; A14 MSB Accumulator 					B14
-; A15 LSB 	"							B15
+; A14 									B14 Data pointer (DO NOT USE)
+; A15 Frame Pointer						B15 Stack Pointer (DO NOT USE)
 ;  See Real Time Digital Signal Processing by Nasser Kehtarnavaz (page 146) for more 
 ;  info on mixing C and Assembly.
 ; ****************************************************************************************
 
 _circ_FIR_DP:
 		; set circular mode using the AMR 
-
 		MVC .S2			AMR,B13		;(0) Save contents of AMR reg to B13
 		MVK .S2			4H,B2 		;(0) Lower half. set A5 to be circular buffering addressing mode using BK0
 		MVKLH .S2		9H,B2 		;(0) Upper half. Set BK0 to work for 1024 bytes
@@ -70,9 +69,9 @@ _circ_FIR_DP:
 		NOP 4						; A5 now holds address pointing into delay_circ
 
 		STW .D1			A11,*--A5	;(0) Store new input sample (MSB) to delay_circ array
-	||	ZERO .S1		A14			;(0) zero accumulator LSB
+	||	ZERO .S1		A0			;(0) zero accumulator LSB
 		STW .D1			A10,*--A5 	;(0) Store new input sample (LSB) to delay_circ array   
-	||	ZERO .S1		A15			;(0) zero accumulator MSB
+	||	ZERO .S1		A1			;(0) zero accumulator MSB
 	
 
 		STW .D1			A5,*A4		;(0) write back the decremented pointer to circ_ptr
@@ -82,37 +81,37 @@ _circ_FIR_DP:
     ||  MV .S2X 		A8, B0      ;(0) move parameter (numCoefs) passed from C into b0 
 		
 		;********************************** loop begin **********************************
-		
-loop:	
-
-		; ************************* INSERT YOUR MAC CODE HERE ****************************
+		; prime the pipeline - prologue
 		LDDW .D1		*A5++, A11:A10 ; (4) loads the (delayed) sample into A11:A10, and post increment pointer
 	||	LDDW .D2		*B4++, B11:B10 ; (4) load the coefficient into B11:B10, and post increment pointer
-		NOP	4
-		MPYDP .M1X		A11:A10, B11:B10, A11:A10	; (9, 4) DP multiply
-		NOP 9
-		ADDDP .L1		A15:A14, A11:A10, A15:A14	; (6, 2) DP ADD
-		NOP 6
+		NOP 4
+loop:	
 
+		; ************************* loop kernel	 ****************************
 
-
-		; MAC must use 64 bit IEEE double floating point data obtained from arrays defined in C
+		MPYDP .M1X		A11:A10, B11:B10, A3:A2	; (9, 4) DP multiply
+		NOP 4
+		LDDW .D1		*A5++, A11:A10 ; (4) loads the (delayed) sample into A11:A10, and post increment pointer
+	||	LDDW .D2		*B4++, B11:B10 ; (4) load the coefficient into B11:B10, and post increment pointer
+	
+		NOP 3
+		ADDDP .L1		A1:A0, A3:A2, A1:A0	; (6, 2) DP ADD
 
 
 		; ********************************************************************************
-		
+		; no epilogue required
 		; manage loop
 
-        SUB.D2 			B0,1,B0			; (0) b0 - 1 -> b0
-   [B0] B.S2 			loop			; (5) loop back if b0 is not zero
+        SUB .D2 			B0,1,B0			; (0) b0 - 1 -> b0
+   [B0] B .S2 			loop			; (5) loop back if b0 is not zero
         NOP 			5						
 		
 		;********************************** loop end **********************************
 
 		; send the result of MAC back to C
 
-		STW.D2			A14,*B6		;(0) Write accumulator (LSB) into filtered_samp 
-		STW.D2			A15,*+B6[1]	;(0) Write accumulator (MSB) into filtered_samp 	
+		STW.D2			A0,*B6		;(0) Write accumulator (LSB) into filtered_samp 
+		STW.D2			A1,*+B6[1]	;(0) Write accumulator (MSB) into filtered_samp 	
 	
 		; restore previous buffering mode
 
