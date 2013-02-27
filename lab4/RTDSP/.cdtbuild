@@ -22,7 +22,7 @@
 <listOptionValue builtIn="false" value="225"/>
 </option>
 <option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.SILICON_VERSION.941878437" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.SILICON_VERSION" value="6700" valueType="string"/>
-<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.OPT_LEVEL.753803286" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.OPT_LEVEL.2" valueType="enumerated"/>
+<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.OPT_LEVEL.753803286" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.OPT_LEVEL" value="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.OPT_LEVEL.3" valueType="enumerated"/>
 <option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.DEFINE.371486274" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.DEFINE" valueType="definedSymbols">
 <listOptionValue builtIn="false" value="&quot;_DEBUG&quot;"/>
 <listOptionValue builtIn="false" value="&quot;CHIP_6713&quot;"/>
@@ -35,6 +35,9 @@
 <listOptionValue builtIn="false" value="&quot;${BIOS_INCLUDE_DIR}&quot;"/>
 <listOptionValue builtIn="false" value="&quot;${RTDX_INCLUDE_DIR}&quot;"/>
 </option>
+<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.KEEP_ASM.431247779" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.KEEP_ASM" value="true" valueType="boolean"/>
+<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.SOURCE_INTERLIST.1171443779" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.SOURCE_INTERLIST" value="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.SOURCE_INTERLIST.C_SRC_INTERLIST" valueType="enumerated"/>
+<option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.DEBUG_SOFTWARE_PIPELINE.908336356" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.compilerID.DEBUG_SOFTWARE_PIPELINE" value="true" valueType="boolean"/>
 </tool>
 <tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.linkerDebug.815953133" name="C6000 Linker" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.linkerDebug">
 <option id="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.OUTPUT_FILE.331283233" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.linkerID.OUTPUT_FILE" value="&quot;RTDSP.out&quot;" valueType="string"/>
@@ -55,7 +58,7 @@
 </option>
 </tool>
 <tool id="com.ti.rtsc.buildDefinitions.DSPBIOS_5.40.tool.98552723" name="TConf Script Compiler" superClass="com.ti.rtsc.buildDefinitions.DSPBIOS_5.40.tool"/>
-<macros/>
+<macros expandEnvironmentMacros="true"/>
 </toolChain>
 <resourceConfiguration exclude="true" id="com.ti.ccstudio.buildDefinitions.C6000.Debug.1451776913./RTDSP/non-circular.c" name="non-circular.c" rcbsApplicability="disable" resourcePath="/RTDSP/non-circular.c" toolsToInvoke="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.2061461017./RTDSP/non-circular.c">
 <tool id="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.2061461017./RTDSP/non-circular.c" name="C6000 Compiler" superClass="com.ti.ccstudio.buildDefinitions.C6000_6.1.exe.compilerDebug.2061461017"/>
