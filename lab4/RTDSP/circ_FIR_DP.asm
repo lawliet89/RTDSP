@@ -36,16 +36,16 @@
 ; ***************************** Register Assignments *************************************
 
 ; A0 MSB Accumulator 					B0 Loop Counter
-; A1 LSB 	"							B1
+; A1 LSB 	"							B1 Moved return to C Address
 ; A2 MSB Multiplied result				B2 Used to set AMR to circular mode
-; A3 LSB	"		"					B3 Return to C Address
-; A4 &circ_ptr							B4 &coef[k]
-; A5 circ_ptr							B5
-; A6 &read_samp							B6 &filtered_samp
+; A3 LSB	"		"					B3 Return to C Address (original)
+; A4 &circ_ptr	- possible reuse		B4 &coef[k] - don't use for calc	
+; A5 circ_ptr	- don't use for calc	B5 Moved &filtered_samp
+; A6 &read_samp	- possible reuse		B6 &filtered_samp - (original)
 ; A7									B7
-; A8 Number of Coefs (N) 				B8
-; A9									B9
-; A10 LSB delay_circ[j]					B10 LSB coef[k]
+; A8 LSB delay_circ[j]	1				B8 	LSB coef[k] 1
+; A9 MSB "								B9	MSB	"
+; A10 LSB delay_circ[j]	2				B10 LSB coef[k] 2
 ; A11 MSB	"							B11 MSB  "
 ; A12 									B12
 ; A13 									B13 Temp Store for previous AMR register value
@@ -64,9 +64,11 @@ _circ_FIR_DP:
 
 		; get the data passed from C
 
-		LDDW .D1		*A6,A11:A10	;(4) Get the 64 bit data for read_samp put it in A11:A10 
+		LDDW .D1		*A6,A11:A10	;(4) Get the 64 bit data for read_samp put it in A9:A8
 		LDW .D1			*A4,A5		;(4) Get the address of the circ_ptr, dereference then place in A5
-		NOP 4						; A5 now holds address pointing into delay_circ
+	||	MV .S2			B3, B1		;(0) move return to C address
+		MV .S2			B6, B5		;(0) move &filtered_samp
+		NOP 3						; A5 now holds address pointing into delay_circ
 
 		STW .D1			A11,*--A5	;(0) Store new input sample (MSB) to delay_circ array
 	||	ZERO .S1		A0			;(0) zero accumulator LSB
@@ -110,16 +112,16 @@ loop:
 
 		; send the result of MAC back to C
 
-		STW.D2			A0,*B6		;(0) Write accumulator (LSB) into filtered_samp 
-		STW.D2			A1,*+B6[1]	;(0) Write accumulator (MSB) into filtered_samp 	
+		STW .D2			A0,*B5		;(0) Write accumulator (LSB) into filtered_samp 
+		STW .D2			A1,*+B5[1]	;(0) Write accumulator (MSB) into filtered_samp 	
 	
 		; restore previous buffering mode
 
-	||	MVC.S2			B13,AMR		;(0) restore  AMR reg to previous contents
+	||	MVC .S2			B13,AMR		;(0) restore  AMR reg to previous contents
 			
 		; return to C code
 
-lend:   B.S2 			B3			; (5) branch to b3 (register b3 holds the return address)
+lend:   B .S2 			B1			; (5) branch to b3 (register b3 holds the return address)
         NOP 			5           
         
         .end
