@@ -112,7 +112,7 @@ all: RTDSP.out
 RTDSP.out: $(GEN_CMDS) $(OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Linker'
-	"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/bin/cl6x" -mv6700 -g -O2 --define="_DEBUG" --define="CHIP_6713" --diag_warning=225 -z -m"RTDSP.map" --warn_sections -i"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/lib" -i"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/include" -i"C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/rtdx/lib/c6000" -i"C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/bios/lib" --reread_libs --rom_model -o "RTDSP.out" $(ORDERED_OBJS)
+	"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/bin/cl6x" -mv6700 -g -O3 --define="_DEBUG" --define="CHIP_6713" --diag_warning=225 --debug_software_pipeline -k --c_src_interlist -z -m"RTDSP.map" --warn_sections -i"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/lib" -i"C:/EEE/CCStudio4.1/ccsv4/tools/compiler/c6000/include" -i"C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/rtdx/lib/c6000" -i"C:/EEE/CCStudio4.1/bios_5_41_02_14/packages/ti/bios/lib" --reread_libs --rom_model -o "RTDSP.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

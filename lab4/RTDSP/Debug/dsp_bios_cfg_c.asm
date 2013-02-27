@@ -1,6 +1,6 @@
 ;******************************************************************************
 ;* TMS320C6x C/C++ Codegen                                         PC v6.1.15 *
-;* Date/Time created: Wed Feb 27 12:42:46 2013                                *
+;* Date/Time created: Wed Feb 27 13:49:26 2013                                *
 ;******************************************************************************
 	.compiler_opts --c64p_l1d_workaround=default --endian=little --hll_source=on --mem_model:code=near --mem_model:const=data --mem_model:data=far_aggregates --silicon_version=6700 --symdebug:dwarf 
 
@@ -32,7 +32,7 @@ $C$DW$CU	.dwtag  DW_TAG_compile_unit
 	.dwattr $C$DW$CU, DW_AT_producer("TMS320C6x C/C++ Codegen PC v6.1.15 Copyright (c) 1996-2010 Texas Instruments Incorporated")
 	.dwattr $C$DW$CU, DW_AT_TI_version(0x01)
 	.dwattr $C$DW$CU, DW_AT_comp_dir("H:\RTDSP\lab4\RTDSP\Debug")
-;	C:\EEE\CCStudio4.1\ccsv4\tools\compiler\c6000\bin\opt6x.exe C:\\Users\\ywc110\\AppData\\Local\\Temp\\068322 C:\\Users\\ywc110\\AppData\\Local\\Temp\\068324 
+;	C:\EEE\CCStudio4.1\ccsv4\tools\compiler\c6000\bin\opt6x.exe C:\\Users\\ywc110\\AppData\\Local\\Temp\\041722 C:\\Users\\ywc110\\AppData\\Local\\Temp\\041724 
 
 ;******************************************************************************
 ;* TYPE INFORMATION                                                           *
