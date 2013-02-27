@@ -72,9 +72,13 @@ _circ_FIR_DP:
 		NOP 3						; A5 now holds address pointing into delay_circ
 
 		STW .D1			A9,*--A5	;(0) Store new input sample (MSB) to delay_circ array
+		
 	||	ZERO .S1		A0			;(0) zero accumulator LSB
+	||	ZERO .S2		B2
+	
 		STW .D1			A8,*--A5 	;(0) Store new input sample (LSB) to delay_circ array   
 	||	ZERO .S1		A1			;(0) zero accumulator MSB
+	||	ZERO .S2		B3
 	
 
 		STW .D1			A5,*A4		;(0) write back the decremented pointer to circ_ptr
@@ -85,30 +89,41 @@ _circ_FIR_DP:
 		; prime the pipeline - prologue
 		LDDW .D1		*A5++, A9:A8 ; (4) loads the (delayed) sample into A9:A8, and post increment pointer
 	||	LDDW .D2		*B4++, B9:B8 ; (4) load the coefficient into B9:B8, and post increment pointer
-		NOP 4
+	
+		LDDW .D1		*A5++, A11:A10 ; (4) loads the (delayed) sample into A11:A10, and post increment pointer
+	||	LDDW .D2		*B4++, B11:B10 ; (4) load the coefficient into B11:B10, and post increment pointer
+		
+		NOP 3
 loop:	
 
 		; ************************* loop kernel	 ****************************
 
 		MPYDP .M1X		A9:A8, B9:B8, A3:A2	; (9, 4) DP multiply
-		NOP 4
+		MPYDP .M2X		B11:B10, A11:A10, B7:B6	; (9, 4) DP multiply
+		NOP 3
+		
 		LDDW .D1		*A5++, A9:A8 ; (4) loads the (delayed) sample into A9:A8, and post increment pointer
 	||	LDDW .D2		*B4++, B9:B8 ; (4) load the coefficient into B9:B8, and post increment pointer
+		LDDW .D1		*A5++, A11:A10 ; (4) loads the (delayed) sample into A11:A10, and post increment pointer
+	||	LDDW .D2		*B4++, B11:B10 ; (4) load the coefficient into B11:B10, and post increment pointer
 	
-		NOP 3
+		NOP 2
 		ADDDP .L1		A1:A0, A3:A2, A1:A0	; (6, 2) DP ADD
-
+		ADDDP .L2		B3:B2, B7:B6, B3:B2	; (6, 2) DP ADD
 
 		; ********************************************************************************
-		; no epilogue required
 		; manage loop
 
-        SUB .D2 			B0,1,B0			; (0) b0 - 1 -> b0
+        SUB .D2 			B0,2,B0			; (0) b0 - 2 -> b0
    [B0] B .S2 			loop			; (5) loop back if b0 is not zero
         NOP 			5						
 		
 		;********************************** loop end **********************************
-
+		; add both accumulators up
+		
+		ADDDP .L1X		A1:A0, B3:B2, A1:A0	; (6, 2) DP ADD
+		NOP 5
+		
 		; send the result of MAC back to C
 
 		STW .D2			A0,*B5		;(0) Write accumulator (LSB) into filtered_samp 
@@ -120,7 +135,7 @@ loop:
 			
 		; return to C code
 
-lend:   B .S2 			B1			; (5) branch to b3 (register b3 holds the return address)
+lend:   B .S2 			B1			; (5) branch to b1 (moved C return address)
         NOP 			5           
         
         .end
