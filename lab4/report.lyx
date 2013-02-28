@@ -2413,8 +2413,12 @@ MPYDP
 MPYDP
 \family default
  still needs 8 delay slots.
- The delay slot requirements of these LDDW instructions will be met by the
- time the values are used again in the next loops's 
+ The delay slot requirements of these 
+\family typewriter
+LDDW
+\family default
+ instructions will be met by the time the values are used again in the next
+ loops's 
 \family typewriter
 MPYDP 
 \family default
@@ -2556,7 +2560,11 @@ status open
 
 \begin_layout Standard
 The results are written back to the address provided by the C caller, and
- the AMR register is restored before returning to C.
+ the 
+\family typewriter
+AMR
+\family default
+ register is restored before returning to C.
 \end_layout
 
 \begin_layout Standard
