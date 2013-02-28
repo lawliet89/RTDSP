@@ -35,22 +35,22 @@
 ;
 ; ***************************** Register Assignments *************************************
 
-; A0 LSB Accumulator 1					B0 Loop Counter
-; A1 MSB 	"							B1 Moved return to C Address
-; A2 LSB Multiplied result	1			B2 Used to set AMR to circular mode		- then reused LSB Accumulator 2
-; A3 MSB	"		"					B3 Return to C Address (original)		- then reused MSB "
-; A4 &circ_ptr	- possible reuse		B4 &coef[k] - don't use for calc	
-; A5 circ_ptr	- don't use for calc	B5 Moved &filtered_samp
-; A6 &read_samp	- possible reuse		B6 &filtered_samp - (original)			- then reused LSB Multiplied result 2
-; A7									B7													  MSB "
-; A8 N, then LSB delay_circ[j] 1 		B8 	LSB coef[k] 1
-; A9 		 MSB "						B9	MSB	"
-; A10 LSB delay_circ[j]	2				B10 LSB coef[k] 2
-; A11 MSB	"							B11 MSB  "
-; A12 									B12
-; A13 									B13 Temp Store for previous AMR register value
-; A14 									B14 Data pointer (DO NOT USE)
-; A15 Frame Pointer						B15 Stack Pointer (DO NOT USE)
+; A0 LSB Accumulator 1                    B0 Loop Counter
+; A1 MSB     "                            B1 Moved return to C Address
+; A2 LSB Multiplied result    1           B2 Used to set AMR to circular mode - then reused LSB Accumulator 2
+; A3 MSB    "        "                    B3 Return to C Address (original)   - then reused MSB "
+; A4 &circ_ptr    - possible reuse        B4 &coef[k] - don't use for calc    
+; A5 circ_ptr    - don't use for calc     B5 Moved &filtered_samp
+; A6 &read_samp    - possible reuse       B6 &filtered_samp - (original) - then reused LSB Multiplied result 2
+; A7                                      B7                                           MSB "
+; A8 N, then LSB delay_circ[j] 1          B8 LSB coef[k] 1
+; A9         MSB "                        B9 MSB    "
+; A10 LSB delay_circ[j]    2              B10 LSB coef[k] 2
+; A11 MSB    "                            B11 MSB  "
+; A12                                     B12
+; A13                                     B13 Temp Store for previous AMR register value
+; A14                                     B14 Data pointer (DO NOT USE)
+; A15 Frame Pointer                       B15 Stack Pointer (DO NOT USE)
 ;  See Real Time Digital Signal Processing by Nasser Kehtarnavaz (page 146) for more 
 ;  info on mixing C and Assembly.
 ; ****************************************************************************************
