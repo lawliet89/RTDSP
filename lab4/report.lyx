@@ -199,14 +199,17 @@ The frequency response of the generated filter is given on the following
 \end_layout
 
 \begin_layout Standard
-\begin_inset External
-	template PDFPages
-	filename figure.pdf
+\begin_inset Graphics
+	filename figure.png
+	scale 90
 	rotateAngle 90
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
 \begin_inset Newpage pagebreak
 \end_inset
 
