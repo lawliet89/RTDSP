@@ -891,7 +891,7 @@ Naive Implementation
 
 \begin_layout Standard
 A simple version of the circular buffer was first implemented to ensure
- that it worked correct.
+ that it worked correctly.
  The code listing can be found in 
 \begin_inset CommandInset ref
 LatexCommand formatted
