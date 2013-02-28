@@ -28,8 +28,9 @@
 # PDT-specific
 #.buildpath
 
+*/.history/*
 .history/
-Debug/*
+*/Debug/*
 temp/*
 *.o
 *.exe
@@ -38,7 +39,7 @@ temp/*
 *.obj
 *.snap
 *.pp
-Debug/
+*/Debug/
 .log
 *.index
 *.map

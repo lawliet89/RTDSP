@@ -119,7 +119,10 @@ loop:
         ; add both accumulators up
         NOP 5        ; for the final addition to be complete
         ADDDP .L1X        A1:A0, B3:B2, A1:A0    ; (6, 2) DP ADD
-        NOP 5
+		NOP
+        ; return to C code    
+lend:   B .S2             B1            ; (5) branch to b1 (moved C return address)
+		NOP 3
         
         ; send the result of MAC back to C
 
@@ -129,10 +132,5 @@ loop:
         ; restore previous buffering mode
 
     ||  MVC .S2            B13,AMR        ;(0) restore  AMR reg to previous contents
-            
-        ; return to C code
-
-lend:   B .S2             B1            ; (5) branch to b1 (moved C return address)
-        NOP 5           
         
         .end
