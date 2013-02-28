@@ -1572,6 +1572,16 @@ seen
  The phase is also roughly linear during in the passband.
 \end_layout
 
+\begin_layout Standard
+\begin_inset Graphics
+	filename Measurement/circular-trace.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Assembly Implementation
 \end_layout
@@ -1760,7 +1770,12 @@ The number of cycles taken between the start, and the end of the ISR routine
  The C code in this case do not change much through the various optimisation
  level.
  This is because the compiler does not optimise the assembly code, and the
- assembly code has a constant number of clock cycles.
+ assembly code has a constant number of clock cycles (including the five
+ 
+\family typewriter
+NOPs
+\family default
+ after the branch back to C).
  This linear and straightforward implementation of the MAC operation in
  assembly actually performs worse than the Non-Circular Buffer implemented
  in C at higher levels of optimisation.
@@ -1837,7 +1852,7 @@ None
 \begin_inset Text
 
 \begin_layout Plain Layout
-2589
+2594
 \end_layout
 
 \end_inset
@@ -2508,11 +2523,7 @@ MPYDP
 ADDDP
 \family default
  instruction to complete execution before adding the two accumulators up.
- Five 
-\family typewriter
-NOPs
-\family default
- are added for 
+ Five delay slots are needed for this 
 \family typewriter
 ADDDP
 \family default
@@ -2548,23 +2559,19 @@ status open
         ADDDP .L1X        A1:A0, B3:B2, A1:A0    ; (6, 2) DP ADD
 \end_layout
 
-\begin_layout Plain Layout
-
-        NOP 5
-\end_layout
-
 \end_inset
 
 
 \end_layout
 
 \begin_layout Standard
-The results are written back to the address provided by the C caller, and
- the 
+Taking advantage of the five delay slots after a branch, the branch back
+ to C instruction is executed while the results of the MAC is written back
+ to C and the previous 
 \family typewriter
 AMR
 \family default
- register is restored before returning to C.
+ register value is restored.
 \end_layout
 
 \begin_layout Standard
@@ -2575,46 +2582,46 @@ status open
 
 \begin_layout Plain Layout
 
-        ; send the result of MAC back to C
+        NOP 
 \end_layout
 
 \begin_layout Plain Layout
 
-        STW .D2            A0,*B5        ;(0) Write accumulator (LSB) into
- filtered_samp 
-\end_layout
-
-\begin_layout Plain Layout
-
-        STW .D2            A1,*+B5[1]    ;(0) Write accumulator (MSB) into
- filtered_samp  
-\end_layout
-
-\begin_layout Plain Layout
-
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-       ; restore previous buffering mode
-\end_layout
-
-\begin_layout Plain Layout
-
-    ||  MVC .S2            B13,AMR        ;(0) restore  AMR reg to previous
- contents                      ; return to C code
+        ; return to C code     
 \end_layout
 
 \begin_layout Plain Layout
 
 lend:   B .S2             B1            ; (5) branch to b1 (moved C return
- address)
+ address) 	
 \end_layout
 
 \begin_layout Plain Layout
 
-        NOP 5    
+        NOP 3                  ; send the result of MAC back to C
+\end_layout
+
+\begin_layout Plain Layout
+
+        STW .D2            A0,*B5        ;(0) Write accumulator (LSB) into
+ filtered_samp          
+\end_layout
+
+\begin_layout Plain Layout
+
+        STW .D2            A1,*+B5[1]    ;(0) Write accumulator (MSB) into
+ filtered_samp                   
+\end_layout
+
+\begin_layout Plain Layout
+
+        ; restore previous buffering mode
+\end_layout
+
+\begin_layout Plain Layout
+
+    ||  MVC .S2            B13,AMR        ;(0) restore  AMR reg to previous
+ contents
 \end_layout
 
 \end_inset
@@ -2780,6 +2787,22 @@ Level 2
 
 \begin_layout Subsubsection
 Spectrum Analyser Traces
+\end_layout
+
+\begin_layout Standard
+The output for the spectrum analyser is given below.
+ As before, the -12 dB offset that occurs has been corrected in the trace
+ below.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Measurement/asm-trace.png
+	scale 50
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section

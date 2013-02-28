@@ -44,3 +44,4 @@ temp/*
 *.index
 *.map
 *.out
+Thumbs.db
