@@ -46,3 +46,4 @@ temp/*
 *.out
 Debug/
 Debug/*
+Thumbs.db

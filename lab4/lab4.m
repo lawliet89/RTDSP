@@ -29,7 +29,8 @@ ylabel('Gain');
 
 % magnitude bode plot
 subplot(2,2,2)
-semilogx (omega, mag2db(abs(h)));
+%semilogx (omega, mag2db(abs(h)));
+plot (omega, mag2db(abs(h)));
 xlim([10 fs/2]);
 grid minor;
 xlabel('Frequency (Hz)');
@@ -37,7 +38,8 @@ ylabel('Gain (dB)');
 
 % phase bode plot
 subplot(2,2,4)
-semilogx (omega, unwrap(angle(h)));
+%semilogx (omega, unwrap(angle(h)));
+plot (omega, unwrap(angle(h)));
 xlim([10 fs/2]);
 grid minor;
 xlabel('Frequency (Hz)');

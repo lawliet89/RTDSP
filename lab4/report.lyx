@@ -25,10 +25,19 @@
   xleftmargin=12pt,          % left margin
   frame=leftline
 }
+\lfoot{ywc110 \& rs5010}
+\cfoot{}
+\rfoot{\thepage}
 \end_preamble
 \use_default_options true
+\begin_modules
+figs-within-sections
+tabs-within-sections
+eqs-within-sections
+customHeadersFooters
+\end_modules
 \maintain_unincluded_children false
-\language english
+\language british
 \language_package default
 \inputencoding auto
 \fontencoding global
@@ -43,7 +52,7 @@
 \font_tt_scale 100
 
 \graphics default
-\default_output_format default
+\default_output_format pdf5
 \output_sync 0
 \bibtex_command default
 \index_command default
@@ -87,7 +96,7 @@
 \quotes_language english
 \papercolumns 1
 \papersides 1
-\paperpagestyle default
+\paperpagestyle fancy
 \tracking_changes false
 \output_changes false
 \html_math_output 0
@@ -103,6 +112,25 @@ RTDSP Lab 4
 
 \begin_layout Author
 Yong Wen Chua (ywc110) & Ryan Savitski (rs5010)
+\end_layout
+
+\begin_layout Section*
+Declaration
+\end_layout
+
+\begin_layout Standard
+Declaration: We confirm that this submission is our own work.
+ In it, we give references and citations whenever we refer to or use the
+ published, or unpublished, work of others.
+ We are aware that this course is bound by penalties as set out in the College
+ examination offenses policy.
+ 
+\end_layout
+
+\begin_layout Standard
+Signed:
+\bar under
+ Yong Wen Chua & Ryan Savitski
 \end_layout
 
 \begin_layout Standard
@@ -171,14 +199,17 @@ The frequency response of the generated filter is given on the following
 \end_layout
 
 \begin_layout Standard
-\begin_inset External
-	template PDFPages
-	filename figure.pdf
+\begin_inset Graphics
+	filename figure.png
+	scale 90
 	rotateAngle 90
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
 \begin_inset Newpage pagebreak
 \end_inset
 
@@ -322,7 +353,7 @@ for (i = 0; i < N; i++)
 \end_layout
 
 \begin_layout Subsection
-Oscilloscpe Traces
+Oscilloscope Traces
 \end_layout
 
 \begin_layout Standard
@@ -353,7 +384,7 @@ status collapsed
 
 \begin_layout Plain Layout
 200 Hz input, with almost zero output.
- This is in the stopband.
+ This is in the stop-band.
 \end_layout
 
 \end_inset
@@ -537,7 +568,7 @@ status collapsed
 
 \begin_layout Plain Layout
 3000 Hz input, with zero output.
- This is within the second stopband.
+ This is within the second stop-band.
 \end_layout
 
 \end_inset
@@ -863,7 +894,7 @@ Naive Implementation
 
 \begin_layout Standard
 A simple version of the circular buffer was first implemented to ensure
- that it worked correct.
+ that it worked correctly.
  The code listing can be found in 
 \begin_inset CommandInset ref
 LatexCommand formatted
@@ -980,7 +1011,7 @@ A loop is then started to perform the Multiply and Accumulate (MAC) operation
 result
 \family default
 .
- Proper circular offet buffering is calculated using the method described
+ Proper circular offset buffering is calculated using the method described
  earlier in this section.
 \end_layout
 
@@ -1213,7 +1244,7 @@ index
 \end_inset
 
  is the total number of coefficients.
- The varaibles are declared in the same way as in 
+ The variables are declared in the same way as in 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "sub:Code-Description"
@@ -1334,7 +1365,7 @@ for
 for
 \family default
  loop.
- To acheive circular buffering without 
+ To achieve circular buffering without 
 \family typewriter
 if/else
 \family default
@@ -1572,6 +1603,16 @@ seen
  The phase is also roughly linear during in the passband.
 \end_layout
 
+\begin_layout Standard
+\begin_inset Graphics
+	filename Measurement/circular-trace.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Assembly Implementation
 \end_layout
@@ -1630,7 +1671,7 @@ E1
 \family default
  stage of the pipeline before its results can be used.
  For floating point instructions, a second number will indicate the number
- of latency cycles afte the 
+ of latency cycles after the 
 \family typewriter
 E1
 \family default
@@ -1659,7 +1700,7 @@ A5
 \family default
 to use circular buffering with a block size of 1024 bytes.
  The MAC loop then simply consists of code to load the sample data and the
- coefficients, mulitply them together, and finally add them to an accumulator.
+ coefficients, multiply them together, and finally add them to an accumulator.
  The straightforward loop code is given below:
 \end_layout
 
@@ -1760,7 +1801,12 @@ The number of cycles taken between the start, and the end of the ISR routine
  The C code in this case do not change much through the various optimisation
  level.
  This is because the compiler does not optimise the assembly code, and the
- assembly code has a constant number of clock cycles.
+ assembly code has a constant number of clock cycles (including the five
+ 
+\family typewriter
+NOPs
+\family default
+ after the branch back to C).
  This linear and straightforward implementation of the MAC operation in
  assembly actually performs worse than the Non-Circular Buffer implemented
  in C at higher levels of optimisation.
@@ -1837,7 +1883,7 @@ None
 \begin_inset Text
 
 \begin_layout Plain Layout
-2589
+2594
 \end_layout
 
 \end_inset
@@ -1943,6 +1989,15 @@ There are various techniques that can be employed to take advantage of the
  that utilise different functional units to be executed in parallel, and
  also to understand how the pipeline works for the various instructions
  so as to interleave instructions.
+ Some of the techniques used by the compiler (described in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sec:Compiler-Optimisation"
+
+\end_inset
+
+) are also used.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -2010,14 +2065,6 @@ Software pipelining for loops is the third area for optimisation.
  utilised during their delay slots, subject to their latencies, if any.
  Software pipelining, along with loop unrolling are techniques used by compilers
  to optimise code.
- This will be examined in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "sec:Compiler-Optimisation"
-
-\end_inset
-
-.
  In software pipelining, the pipeline is first primed using a pipeline prologue.
  The main loop kernel is then executed for the required number of times,
  with several loop cycles unrolled to execute interleaved.
@@ -2099,9 +2146,9 @@ status open
 \end_layout
 
 \begin_layout Standard
-The sample that is just read is then loaded by deferencing its address pointer,
- along with the address of the circular buffer by dereferencing its address
- pointer.
+The sample that is just read is then loaded by dereferencing its address
+ pointer, along with the address of the circular buffer by dereferencing
+ its address pointer.
  At the same time, some registers are moved out of the way to prepare for
  the MAC loop.
  The register usage is described in the comments in the listing in 
@@ -2418,7 +2465,7 @@ MPYDP
 LDDW
 \family default
  instructions will be met by the time the values are used again in the next
- loops's 
+ loop’s 
 \family typewriter
 MPYDP 
 \family default
@@ -2508,11 +2555,7 @@ MPYDP
 ADDDP
 \family default
  instruction to complete execution before adding the two accumulators up.
- Five 
-\family typewriter
-NOPs
-\family default
- are added for 
+ Five delay slots are needed for this 
 \family typewriter
 ADDDP
 \family default
@@ -2548,23 +2591,19 @@ status open
         ADDDP .L1X        A1:A0, B3:B2, A1:A0    ; (6, 2) DP ADD
 \end_layout
 
-\begin_layout Plain Layout
-
-        NOP 5
-\end_layout
-
 \end_inset
 
 
 \end_layout
 
 \begin_layout Standard
-The results are written back to the address provided by the C caller, and
- the 
+Taking advantage of the five delay slots after a branch, the branch back
+ to C instruction is executed while the results of the MAC is written back
+ to C and the previous 
 \family typewriter
 AMR
 \family default
- register is restored before returning to C.
+ register value is restored.
 \end_layout
 
 \begin_layout Standard
@@ -2575,51 +2614,71 @@ status open
 
 \begin_layout Plain Layout
 
-        ; send the result of MAC back to C
+        NOP 
 \end_layout
 
 \begin_layout Plain Layout
 
-        STW .D2            A0,*B5        ;(0) Write accumulator (LSB) into
- filtered_samp 
-\end_layout
-
-\begin_layout Plain Layout
-
-        STW .D2            A1,*+B5[1]    ;(0) Write accumulator (MSB) into
- filtered_samp  
-\end_layout
-
-\begin_layout Plain Layout
-
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-       ; restore previous buffering mode
-\end_layout
-
-\begin_layout Plain Layout
-
-    ||  MVC .S2            B13,AMR        ;(0) restore  AMR reg to previous
- contents                      ; return to C code
+        ; return to C code     
 \end_layout
 
 \begin_layout Plain Layout
 
 lend:   B .S2             B1            ; (5) branch to b1 (moved C return
- address)
+ address) 	
 \end_layout
 
 \begin_layout Plain Layout
 
-        NOP 5    
+        NOP 3                  ; send the result of MAC back to C
+\end_layout
+
+\begin_layout Plain Layout
+
+        STW .D2            A0,*B5        ;(0) Write accumulator (LSB) into
+ filtered_samp          
+\end_layout
+
+\begin_layout Plain Layout
+
+        STW .D2            A1,*+B5[1]    ;(0) Write accumulator (MSB) into
+ filtered_samp                   
+\end_layout
+
+\begin_layout Plain Layout
+
+        ; restore previous buffering mode
+\end_layout
+
+\begin_layout Plain Layout
+
+    ||  MVC .S2            B13,AMR        ;(0) restore  AMR reg to previous
+ contents
 \end_layout
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+It should be noted that with this optimisation, the number of coefficients,
+ 
+\begin_inset Formula $N$
+\end_inset
+
+, 
+\series bold
+MUST 
+\series default
+be a multiple of four.
+ If the number of coefficients is not a multiple of four, additional coefficient
+s with values of zero should be added to make 
+\begin_inset Formula $N$
+\end_inset
+
+ a multiple of four.
+ Otherwise, the code will compute the result wrongly.
 \end_layout
 
 \begin_layout Subsubsection
@@ -2782,6 +2841,22 @@ Level 2
 Spectrum Analyser Traces
 \end_layout
 
+\begin_layout Standard
+The output for the spectrum analyser is given below.
+ As before, the -12 dB offset that occurs has been corrected in the trace
+ below.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename Measurement/asm-trace.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 \begin_inset CommandInset label
 LatexCommand label
@@ -2792,7 +2867,585 @@ name "sec:Compiler-Optimisation"
 Compiler Optimisation
 \end_layout
 
+\begin_layout Standard
+The various optimisations performed by the compiler are described in the
+ 
+\family typewriter
+SPRU187O
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://www.ti.com/general/docs/lit/getliterature.tsp?literatureNumber=spru187o&file
+Type=pdf
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\family default
+ document.
+ Optimisation might result in a larger code size.
+ The various clock cycles required for the different levels of optimisations
+ from previous sections are copied in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "tab:Comparison-of-the"
+
+\end_inset
+
+, for comparison.
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Optimisation Level
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Non-circular Buffer
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Optimised Circular Buffer
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+None
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5825
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4526
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Level 0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4829
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2898
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Level 2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1719
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+746
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Comparison-of-the"
+
+\end_inset
+
+Comparison of the performance of the code at various compiler optimisation
+ levels.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When no optimisation is done, the compiler generally generates assembly
+ code 
+\begin_inset Quotes eld
+\end_inset
+
+as-is
+\begin_inset Quotes erd
+\end_inset
+
+ with no optimisation done to the code.
+ This usually results in the fastest compilation time, and is easiest to
+ debug (but with performance trade-off.).
+ The section will examine the various optimisation performed by the compiler
+ at various levels and examine how they could contribute to the increase
+ in performance seen in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "tab:Comparison-of-the"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Level 0 Optimisation
+\end_layout
+
+\begin_layout Standard
+As can be seen from 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "tab:Comparison-of-the"
+
+\end_inset
+
+, level 0 results in some improvements in code performance (although not
+ as drastic as level 2), with the non-circular and circular buffer achieving
+ 17.1% and 36.0% improvement respectively.
+ 
+\end_layout
+
+\begin_layout Standard
+The compiler will attempt to simplify the control-flow-graph (i.e.
+ 
+\family typewriter
+if/else, for, switch
+\family default
+ etc.
+ statements).
+ The code for both the different implementations do not use as much of these
+ control statements, and thus not much improvement will arise from there.
+ The compiler will also attempt to eliminate unused code, which is not present
+ in both implementations.
+ Next, the compiler will attempt to simplify statements and expressions.
+ The implementations do not generally contain overly complicated expressions,
+ and statements.
+ However, the following statements contain expressions that always evaluate
+ to the same constant values, and the compiler might attempt to 
+\begin_inset Quotes eld
+\end_inset
+
+collapse
+\begin_inset Quotes erd
+\end_inset
+
+ them into a constant value at compile-time, rather than ask them to be
+ computed at run-time.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+// from non-circular buffer
+\end_layout
+
+\begin_layout Plain Layout
+
+i = N-1;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// from circular buffer
+\end_layout
+
+\begin_layout Plain Layout
+
+double *bEnd = b + N;
+\end_layout
+
+\begin_layout Plain Layout
+
+double *bufferEnd = buffer + N
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The compiler will also attempt to inline functions marked with the keyword
+ 
+\family typewriter
+inline
+\family default
+.
+ However, the keyword was not used in both implementations.
+ The compiler will assign variables to registers, reducing the amount of
+ memory access.
+ This might have contributed a significant amount of code performance improvemen
+ts to both implementation.
+ It is likely that the circular buffer implementation benefited more from
+ this optimisation, due to its use of pointers, which would have resulted
+ in unnecessary amounts of dereferencing of pointers to pointers) .
+\end_layout
+
+\begin_layout Standard
+Finally, the compiler will attempt to perform loop rotation (or loop inversion)
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+See 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://llvm.org/devmtg/2009-10/ScalarEvolutionAndLoopOptimization.pdf
+\end_layout
+
+\end_inset
+
+ and 
+\begin_inset Flex URL
+status collapsed
+
+\begin_layout Plain Layout
+
+http://en.wikipedia.org/wiki/Loop_inversion
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
+ Consider the following 
+\family typewriter
+for
+\family default
+ loop in C code which will be transformed (essentially) by the compiler
+ into an equivalent 
+\family typewriter
+while
+\family default
+ loop in assembly.
+ This results in two branches being run continually in a loop, and branches,
+ whether taken or not, could lead to pipeline stalls (or in this architecture
+ additional 
+\family typewriter
+NOPs
+\family default
+ being inserted, which are wasteful if not optimised properly).
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+for (i = ; i < N; ++i) doSomething(); 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// transformed into
+\end_layout
+
+\begin_layout Plain Layout
+
+i = 0;
+\end_layout
+
+\begin_layout Plain Layout
+
+while (i < N) { // conditional branch to after end of loop if i >= N
+\end_layout
+
+\begin_layout Plain Layout
+
+	doSomething();
+\end_layout
+
+\begin_layout Plain Layout
+
+	++i;
+\end_layout
+
+\begin_layout Plain Layout
+
+} // unconditional branch to start of loop
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Loop rotation replaces the whole 
+\family typewriter
+while
+\family default
+ block with an if block containing a 
+\family typewriter
+do..while
+\family default
+ loop, which reduces the number of branches in the loop to one.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+i = 0;
+\end_layout
+
+\begin_layout Plain Layout
+
+if (i < N){ // conditional branch to after end of loop if i >= N OUTSIDE
+ the loop
+\end_layout
+
+\begin_layout Plain Layout
+
+	do{
+\end_layout
+
+\begin_layout Plain Layout
+
+		doSomething();
+\end_layout
+
+\begin_layout Plain Layout
+
+		i++;
+\end_layout
+
+\begin_layout Plain Layout
+
+	} while (i < N); // conditional branch to beginning of loop if i < N
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This technique contributes a significant improvement in both implementations.
+ This technique also enable code that are loop-invariant to be moved out
+ of the loop themselves
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+See 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+http://en.wikipedia.org/wiki/Loop-invariant_code_motion
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Level 2 Optimisation
+\end_layout
+
+\begin_layout Standard
+Level 2 optimisation performs all the optimisation in Levels 0 and 1.
+ The optimisation performed in Level 1 (Performs local copy/constant propagation
+, Removes unused assignments , and Eliminates local common expressions)
+ are not applicable to the implementations.
+ As seen from 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "tab:Comparison-of-the"
+
+\end_inset
+
+, the non-circular and circular buffer implementation saw a 64.4% and 74.3%
+ improvement in performance when compared to Level 0 optimisation.
+ 
+\end_layout
+
+\begin_layout Standard
+The compiler attempts to perform various loop optimisation such as software
+ pipelining and loop unrolling as described in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:Optimisation-Techniques"
+
+\end_inset
+
+.
+ These optimisations contribute the most to the improvement in performance,
+ seeing that most of the code is spent in loops.
+ 
+\end_layout
+
+\begin_layout Standard
+The compiler also attempts to convert array references in loops to incremented
+ pointer form, which was what was done already in the circular buffer implementa
+tion.
+ In this case, it is the fact that the circular buffer only loops over the
+ values once, rather than twice by the non-circular buffer, that gives it
+ the performance advantage.
+ 
+\end_layout
+
+\begin_layout Standard
+The various global optimisation done by the compiler is not relevant.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
+\start_of_appendix
 Code Listings
 \end_layout
 

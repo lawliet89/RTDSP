@@ -1,16 +1,16 @@
 ; ***************************************************************************************
-;			        DEPARTMENT OF ELECTRICAL AND ELECTRONIC ENGINEERING
-;					               IMPERIAL COLLEGE LONDON 
+;                    DEPARTMENT OF ELECTRICAL AND ELECTRONIC ENGINEERING
+;                                   IMPERIAL COLLEGE LONDON 
 ;
-; 				       EE 3.19: Real Time Digital Signal Processing
-;					         Course  by: Dr Paul Mitcheson
+;                        EE 3.19: Real Time Digital Signal Processing
+;                             Course  by: Dr Paul Mitcheson
 ;
-;				  LAB 4: Double precision FIR using Circular Buffer Hardware
+;                  LAB 4: Double precision FIR using Circular Buffer Hardware
 ;
-; 				           *********** circ_FIR_DP.ASM ***********
+;                            *********** circ_FIR_DP.ASM ***********
 ;
 ; ***************************************************************************************
-; 				        	 Written by D. Harvey: 18 Jan 2010
+;                              Written by D. Harvey: 18 Jan 2010
 ;
 ; ***************************************************************************************
 ;
@@ -20,14 +20,14 @@
 ;
 ; ***************************** _circ_FIR_DP description ********************************
 ;
-;		The input delay buffer has a data length of (size in bytes)/(data type length).
-;				The buffer you create must have a power of 2 size in bytes  
-;	i.e its length in bytes must equal 2^X bytes (where X is integer between 1 and 32).
+;        The input delay buffer has a data length of (size in bytes)/(data type length).
+;                The buffer you create must have a power of 2 size in bytes  
+;    i.e its length in bytes must equal 2^X bytes (where X is integer between 1 and 32).
 ;
-; 			Also ensure that its data length (size in bytes/8) is longer than the
-;			coefficient array data length. The buffer will need to be data aligned 
-;			using  #pragma DATA_ALIGN(delay_buff_name, B) before it is defined
-;					 where B is your chosen delay buffer size in bytes. 
+;             Also ensure that its data length (size in bytes/8) is longer than the
+;            coefficient array data length. The buffer will need to be data aligned 
+;            using  #pragma DATA_ALIGN(delay_buff_name, B) before it is defined
+;                     where B is your chosen delay buffer size in bytes. 
 ;
 ; circ_FIR_DP function call in C;
 ;
@@ -118,12 +118,12 @@ loop:
         ;********************************** loop epilogue **********************************
         ; add both accumulators up
         NOP 5        ; for the final addition to be complete
-        ADDDP .L1X        A1:A0, B3:B2, A1:A0    ; (6, 2) DP ADD
-		NOP
+        ADDDP .L1X        A1:A0, B3:B2, A1:A0    ; (6, 2) DP ADD 
+        NOP
         ; return to C code    
 lend:   B .S2             B1            ; (5) branch to b1 (moved C return address)
-		NOP 3
-        
+        NOP 3
+    
         ; send the result of MAC back to C
 
         STW .D2            A0,*B5        ;(0) Write accumulator (LSB) into filtered_samp 
