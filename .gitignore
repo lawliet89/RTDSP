@@ -44,3 +44,5 @@ temp/*
 *.index
 *.map
 *.out
+Debug/
+Debug/*
