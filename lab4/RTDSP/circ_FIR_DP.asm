@@ -47,35 +47,35 @@
 ; A9         MSB "                        B9 MSB    "
 ; A10 LSB delay_circ[j]    2              B10 LSB coef[k] 2
 ; A11 MSB    "                            B11 MSB  "
-; A12                                     B12
-; A13                                     B13 Temp Store for previous AMR register value
-; A14                                     B14 Data pointer (DO NOT USE)
+; A12 LSB delay_circ[N-j] 1               B12 LSB delay_circ[N-j] 2   
+; A13 MSB    "                            B13 MSB       "          used to save and restore AMR
+; A14 temp AMR storage                    B14 Data pointer (DO NOT USE)
 ; A15 Frame Pointer                       B15 Stack Pointer (DO NOT USE)
-;  See Real Time Digital Signal Processing by Nasser Kehtarnavaz (page 146) for more 
-;  info on mixing C and Assembly.
+
 ; ****************************************************************************************
 
 _circ_FIR_DP:
         ; set circular mode using the AMR 
-        MVC .S2           AMR,B13        ;(0) Save contents of AMR reg to B13    
+        MVC .S2           AMR,B13        ;(0) Save contents of AMR reg to B13 
         MVK .S2           4H,B2         ;(0) Lower half. set A5 to be circular buffering addressing mode using BK0
+    ||  MV .S1X           B13, A14      ;(0) move previous AMR to temp storage
         MVKLH .S2         9H,B2         ;(0) Upper half. Set BK0 to work for 1024 bytes
         MVC .S2           B2,AMR        ;(0) set AMR reg
 
         ; get the data passed from C
 
-        LDDW .D1          *A6,A9:A8    ;(4) Get the 64 bit data for read_samp put it in A9:A8
+        LDDW .D1          *A6,A11:A10    ;(4) Get the 64 bit data for read_samp put it in A9:A8
     ||  MV .S2X           A8, B0      ;(0) move parameter (numCoefs) passed from C into b0         
         LDW .D1           *A4,A5        ;(4) Get the address of the circ_ptr, dereference then place in A5
-    ||  MV .S2            B3, B1        ;(0) move return to C address
-        MV .S2            B6, B5        ;(0) move &filtered_samp
-        NOP 3                        ; A5 now holds address pointing into delay_circ
+    ||  MV .S1X           B3, A15        ;(0) move return to C address
+    ||  MV .S2            B6, B5        ;(0) move &filtered_samp
+        NOP 4                        ; A5 now holds address pointing into delay_circ
 
-        STW .D1           A9,*--A5    ;(0) Store new input sample (MSB) to delay_circ array   
+        STW .D1           A11,*--A5    ;(0) Store new input sample (MSB) to delay_circ array   
     ||  ZERO .S1          A0            ;(0) zero accumulator LSB
     ||  ZERO .S2          B2
     
-        STW .D1           A8,*--A5     ;(0) Store new input sample (LSB) to delay_circ array   
+        STW .D1           A10,*--A5     ;(0) Store new input sample (LSB) to delay_circ array   
     ||  ZERO .S1          A1            ;(0) zero accumulator MSB
     ||  ZERO .S2          B3
     
@@ -83,6 +83,10 @@ _circ_FIR_DP:
         STW .D1           A5,*A4        ;(0) write back the decremented pointer to circ_ptr
                                     ; this points to the end of the MSB of where the next sample
                                     ; will be stored on the next call to this function 
+ 
+        MV .S1            A5, A4	           ; (0) copy A5 to A4
+        LDDW .D1          *++A4[A8],A7:A6	   ; (4) Load junk info into unused registers, just to advance the A4 register to ehe end of the buffer using circular buffering
+        MV .S2X           A4, B1               ; (0) copy to B1
         
         ;********************************** loop prologue **********************************
         ; prime the pipeline 
@@ -119,10 +123,11 @@ loop:
         ; add both accumulators up
         NOP 5        ; for the final addition to be complete
         ADDDP .L1X        A1:A0, B3:B2, A1:A0    ; (6, 2) DP ADD 
-        NOP
+        MV .S2X           A15, B1        ;(0) move return to C address
         ; return to C code    
-lend:   B .S2             B1            ; (5) branch to b1 (moved C return address)
-        NOP 3
+lend:   B .S2             B1            ; (5) branch to b1 
+	    MV .S2X           A14, B13      ;(0) move previous AMR to B side
+        NOP 2
     
         ; send the result of MAC back to C
 
