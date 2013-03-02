@@ -191,7 +191,7 @@ The corner frequency is expected to be
 
 \begin_layout Standard
 The Tustin Transform is given by 
-\begin_inset Formula $s=\frac{2}{T_{s}}\frac{Z-1}{Z+1}$
+\begin_inset Formula $s=\frac{2}{T_{s}}\frac{z-1}{z+1}$
 \end_inset
 
 of which case we have 
@@ -203,35 +203,19 @@ of which case we have
 \end_inset
 
 .
- Then, the Z-domain transfer function is given by 
+ Then, the Z-domain transfer function can be given by 
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{alignat*}{1}
-H(Z) & =\frac{1}{1+RC(\frac{2}{T_{s}}\frac{Z-1}{Z+1})}\\
- & =\frac{T_{s}+T_{s}Z^{-1}}{T_{s}+2RC+(T_{s}-2RC)Z^{-1}}\\
- & =\frac{\frac{T_{s}}{T_{s}+2RC}+\frac{T_{s}}{T_{s}+2RC}Z^{-1}}{1+\frac{T_{s}-2RC}{T_{s}+2RC}Z^{-1}}
+H(z) & =\frac{1}{1+RC(\frac{2}{T_{s}}\frac{z-1}{z+1})}\\
+ & =\frac{T_{s}+T_{s}z^{-1}}{T_{s}+2RC+(T_{s}-2RC)Z^{-1}}\\
+ & =\frac{}{}
 \end{alignat*}
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-So the coefficients 
-\begin_inset Formula $b_{0}=b_{1}=\frac{T_{s}}{T_{s}+2RC}=0.05882352941176471$
-\end_inset
-
-, and 
-\begin_inset Formula $a_{1}=\frac{T_{s}-2RC}{T_{s}+2RC}=-0.8823529411764705$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
 
 \end_layout
 

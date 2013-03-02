@@ -153,13 +153,17 @@ LatexCommand tableofcontents
 Single-pole Low Pass Filter
 \end_layout
 
+\begin_layout Subsection
+Derivation
+\end_layout
+
 \begin_layout Standard
 The resistor has a value of 
-\begin_inset Formula $R=1k\Omega$
+\begin_inset Formula $R=1\unit{k\Omega}$
 \end_inset
 
  and the capacitor, a value of 
-\begin_inset Formula $C=1\mu F$
+\begin_inset Formula $C=1\unit{\mu F}$
 \end_inset
 
 .
@@ -173,7 +177,7 @@ The resistor has a value of
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\frac{V_{out}}{V_{in}}=\frac{\frac{1}{j\omega C}}{\frac{1}{j\omega C}+R}=\frac{1}{1+RCj\omega}
+H(j\omega)=\frac{V_{out}}{V_{in}}=\frac{\frac{1}{j\omega C}}{\frac{1}{j\omega C}+R}=\frac{1}{1+RCj\omega}
 \]
 
 \end_inset
@@ -182,7 +186,53 @@ The resistor has a value of
 \end_layout
 
 \begin_layout Standard
+The corner frequency is expected to be 
+\begin_inset Formula $\omega_{c}=\frac{1}{RC}=\frac{1}{1000\times10^{-6}}=1000\unit{Hz}$
+\end_inset
 
+.
+\end_layout
+
+\begin_layout Standard
+The Tustin Transform is given by 
+\begin_inset Formula $s=\frac{2}{T_{s}}\frac{Z-1}{Z+1}$
+\end_inset
+
+of which case we have 
+\begin_inset Formula $s=j\omega$
+\end_inset
+
+, and 
+\begin_inset Formula $T_{s}=\frac{1}{8000}=125\unit{\mu s}$
+\end_inset
+
+.
+ Then, the Z-domain transfer function is given by 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{alignat*}{1}
+H(Z) & =\frac{1}{1+RC(\frac{2}{T_{s}}\frac{Z-1}{Z+1})}\\
+ & =\frac{T_{s}+T_{s}Z^{-1}}{T_{s}+2RC+(T_{s}-2RC)Z^{-1}}\\
+ & =\frac{\frac{T_{s}}{T_{s}+2RC}+\frac{T_{s}}{T_{s}+2RC}Z^{-1}}{1+\frac{T_{s}-2RC}{T_{s}+2RC}Z^{-1}}
+\end{alignat*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+So the coefficients 
+\begin_inset Formula $b_{0}=b_{1}=\frac{T_{s}}{T_{s}+2RC}=0.05882352941176471$
+\end_inset
+
+, and 
+\begin_inset Formula $a_{1}=\frac{T_{s}-2RC}{T_{s}+2RC}=-0.8823529411764705$
+\end_inset
+
+.
 \end_layout
 
 \end_body
