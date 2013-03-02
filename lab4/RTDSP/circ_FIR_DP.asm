@@ -95,7 +95,11 @@ _circ_FIR_DP:
     
         LDDW .D1          *A5++, A11:A10 ; (4) loads the (delayed) sample into A11:A10, and post increment pointer
     ||  LDDW .D2          *B4++, B11:B10 ; (4) load the coefficient into B11:B10, and post increment pointer
-        NOP 4
+
+        LDDW .D1          *--A4, A13:A12 ; (4) 1 - loads the N-jth sample into A13:A12, pre-decrement pointer
+    ||  LDDW .D2          *--B1[2], B13:B12 ; (4) 2 - loads the N-jth sample into A15:A14, pre-decrement pointer
+
+        NOP 3
 loop:    
 
         ; ************************* loop kernel     ****************************
@@ -112,7 +116,11 @@ loop:
         
         [B0] LDDW .D1     *A5++, A11:A10 ; (4) loads the (delayed) sample into A11:A10, and post increment pointer
     ||  [B0] LDDW .D2     *B4++, B11:B10 ; (4) load the coefficient into B11:B10, and post increment pointer
-        NOP 3
+
+        LDDW .D1          *--A4[2], A13:A12 ; (4) 1 - loads the N-jth sample into A13:A12, pre-decrement pointer
+    ||  LDDW .D2          *--B1[2], B13:B12 ; (4) 2 - loads the N-jth sample into A15:A14, pre-decrement pointer
+
+        NOP 2
         
         ADDDP .L1         A1:A0, A3:A2, A1:A0    ; (6, 2) DP ADD
     ||  ADDDP .L2         B3:B2, B7:B6, B3:B2    ; (6, 2) DP ADD      
