@@ -101,24 +101,26 @@ loop:    ; ************************* loop kernel     ***************************
 		NOP
     
     	[B0] B .S2             loop            ; (5) loop back if b0 is not zero 
-    ||  LDDW .D1          *A5++, A11:A10 ; (4) 2 - loads the (delayed) sample into A11:A10, and post increment pointer
-    ||  LDDW .D2          *B4++, B11:B10 ; (4) 2 - load the coefficient into B11:B10, and post increment pointer       
-    
-        MPYDP .M1X        A9:A8, B9:B8, A3:A2    ; (9, 4) 1 - DP multiply
-    ||  MPYDP .M2X        B11:B10, A11:A10, B7:B6    ; (9, 4) 2 - DP multiply
-    ||  [!B1] ADDDP .L1         A1:A0, A3:A2, A1:A0    ; (6, 2) DP ADD
-    ||  [!B1] ADDDP .L2         B3:B2, B7:B6, B3:B2    ; (6, 2) DP ADD         
     ||  LDDW .D1          *A5++, A9:A8 ; (4) 1 - loads the (delayed) sample into A9:A8, and post increment pointer
-    ||  LDDW .D2          *B4++, B9:B8 ; (4) 1 - load the coefficient into B9:B8, and post increment pointer  
+    ||  LDDW .D2          *B4++, B9:B8 ; (4) 1 - load the coefficient into B9:B8, and post increment pointer      
+    ||  MPYDP .M1X        A9:A8, B9:B8, A3:A2    ; (9, 4) 1 - DP multiply
+    ||  [!B1] ADDDP .L1         A1:A0, A3:A2, A1:A0    ; (6, 2) 1 - DP ADD
+    
+    
+        LDDW .D1          *A5++, A11:A10 ; (4) 2 - loads the (delayed) sample into A11:A10, and post increment pointer
+    ||  LDDW .D2          *B4++, B11:B10 ; (4) 2 - load the coefficient into B11:B10, and post increment pointer       
+    ||  MPYDP .M2X        B11:B10, A11:A10, B7:B6    ; (9, 4) 2 - DP multiply
+    ||  [!B1] ADDDP .L2         B3:B2, B7:B6, B3:B2    ; (6, 2) 2 - DP ADD         
+    
 
         ;********************************** loop epilogue **********************************
-    	; Move Sum of A43 away for safe storage
+    	; Move Sum of A43 away for safe storage -- will be destroyed in two more cycles
     	MV .D1            A1, A15
     ||	MV .S1            A0, A14
     ||  MV .D2            B3, B1
     ||  MV .S2            B2, B0
         NOP	
-        ;  Sum A44 is semi complete
+        ;  Sum A44 is semi complete, trash sum A45 will be done in 3-4 more cycles
         ADDDP .L1         A1:A0, A15:A14, A15:A14
     ||  ADDDP .L2         B3:B2, B1:B0, B1:B0
     
