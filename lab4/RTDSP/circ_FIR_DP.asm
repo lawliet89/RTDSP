@@ -58,15 +58,15 @@
 _circ_FIR_DP:
 		MVC.S2			AMR,B13		;(0) Save contents of AMR reg to B13
 	||	STW .D2           B3, *++B15    ; (0) save return to C to stack
+	||  LDDW.D1			*A6,A11:A10	;(4) Get the 32 bit data for read_samp put it in A11:A10 
+	
 		STW .D2           B6, *++B15    ; (0) save &filtered_samp to stack
 	||	MVK.S2			4H,B2 ;(0)Set AMR to allow A5 to be used for circular addressing with BK0
+	||  LDW.D1			*A4,A5		;(4) Get the address of the circ_ptr, dereference then place in A5
 		MVKLH.S2		9H,B2 ;(0)Set BK0 to allow for 1024 bytes addressing
 		MVC.S2			B2,AMR		;(0) set AMR reg
 		
-
-		LDDW.D1			*A6,A11:A10	;(4) Get the 32 bit data for read_samp put it in A11:A10 
-		LDW.D1			*A4,A5		;(4) Get the address of the circ_ptr, dereference then place in A5
-		NOP 4						; A5 now holds address pointing into delay_circ
+		NOP 2						; A5 now holds address pointing into delay_circ
 
 		STW .D1			A11,*--A5	;(0) Store new input sample (MSB) to delay_circ array
 	||	ZERO .S1			A1			;(0) zero accumulator LSB
@@ -81,12 +81,13 @@ _circ_FIR_DP:
 									; will be stored on the next call to this function 
 
     ||  MV .L2X 			A8, B0      ;(0) move parameter (numCoefs) passed from C into b0 
-	||	MVK .S2 10, B1				
+	||	MVK .S2 10, B1		;(0) setup countdown to start addition	
 		
 		
-		ADD .L2 B0, B1, B0
-		|| B .S2 loop
-		nop
+		ADD .L2 B0, B1, B0 ;(0) Branch needs 10/2=5 iterations to setup and running. 
+	||  B .S2 loop	;(0) Loop is only 4 cycles, 
+					; so we need to kickstart the branch back for loop iteration 1
+		NOP         ; NOP to allow the branch for Loop iteration 1 to happen right at the end
 		
 		;********************************** loop begin **********************************
 		
