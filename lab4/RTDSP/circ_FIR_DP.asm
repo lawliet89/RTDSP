@@ -59,6 +59,10 @@ _circ_FIR_DP:
 		; set circular mode using the AMR 
 
 		MVC.S2			AMR,B13		;(0) Save contents of AMR reg to B13
+		STW .D2           B13, *++B15    ; (0) save AMR to stack
+		STW .D2           B3, *++B15    ; (0) save return to C to stack
+;		STW .D2           B6, *++B15    ; (0) save &filtered_samp to stack
+;		STW .D2T1           A15, *++B15    ; (0) save return to C to stack
 		MVK.S2			4H,B2;(0) 
 		MVKLH.S2		9H,B2;(0)
 		MVC.S2			B2,AMR		;(0) set AMR reg
@@ -112,6 +116,12 @@ loop:
 		ADDDP .L1 A15:A14, A13:A12, A13:A12
 		
 		NOP 6
+;		LDW .D2T1          *B15--, A15   
+;		LDW .D2           *B15--, B6   ; (4) get &filtered_samp from stack
+		LDW .D2           *B15--, B0   ; (4) get return to C from stack
+		LDW .D2           *B15--, B1   ; (4) get AMR from stack
+		
+		NOP 4
 		
 		; send the result of MAC back to C
 
@@ -120,11 +130,11 @@ loop:
 	
 		; restore previous buffering mode
 
-		MVC.S2			B13,AMR		;(0) restore  AMR reg to previous contents
+		MVC.S2			B1,AMR		;(0) restore  AMR reg to previous contents
 			
 		; return to C code
 
-lend:   B.S2 			B3			; (5) branch to b3 (register b3 holds the return address)
+lend:   B.S2 			B0			; (5) branch to b3 (register b3 holds the return address)
         NOP 			5           
         
         .end
