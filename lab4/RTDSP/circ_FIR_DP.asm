@@ -82,7 +82,9 @@ _circ_FIR_DP:
 									; will be stored on the next call to this function 
 
 		ZERO.S1			A1			;(0) zero accumulator LSB
+	||	ZERO .S2		B3
 		ZERO.S1			A0			;(0) zero accumulator MSB
+	||	ZERO .S2		B2
 
         MV.S2X 			A8, B0      ;(0) move parameter (numCoefs) passed from C into b0 
 		
