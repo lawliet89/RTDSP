@@ -56,42 +56,34 @@
 ; ****************************************************************************************
 
 _circ_FIR_DP:
-		; set circular mode using the AMR 
-
 		MVC.S2			AMR,B13		;(0) Save contents of AMR reg to B13
-		STW .D2           B3, *++B15    ; (0) save return to C to stack
+	||	STW .D2           B3, *++B15    ; (0) save return to C to stack
 		STW .D2           B6, *++B15    ; (0) save &filtered_samp to stack
-;		STW .D2T1           A15, *++B15    ; (0) save return to C to stack
-		MVK.S2			4H,B2;(0) 
-		MVKLH.S2		9H,B2;(0)
+	||	MVK.S2			4H,B2 ;(0)Set AMR to allow A5 to be used for circular addressing with BK0
+		MVKLH.S2		9H,B2 ;(0)Set BK0 to allow for 1024 bytes addressing
 		MVC.S2			B2,AMR		;(0) set AMR reg
 		
-		
-
-		; get the data passed from C
 
 		LDDW.D1			*A6,A11:A10	;(4) Get the 32 bit data for read_samp put it in A11:A10 
 		LDW.D1			*A4,A5		;(4) Get the address of the circ_ptr, dereference then place in A5
 		NOP 4						; A5 now holds address pointing into delay_circ
 
-		STW.D1			A11,*--A5	;(0) Store new input sample (MSB) to delay_circ array
+		STW .D1			A11,*--A5	;(0) Store new input sample (MSB) to delay_circ array
+	||	ZERO .S1			A1			;(0) zero accumulator LSB
+	||	ZERO .S2		B3
+		
 		STW.D1			A10,*--A5 	;(0) Store new input sample (LSB) to delay_circ array   
-	
+	||	ZERO.S1			A0			;(0) zero accumulator MSB
+	||	ZERO .S2		B2
 
 		STW.D1			A5,*A4		;(0) write back the decremented pointer to circ_ptr
 									; this points to the end of the MSB of where the next sample
 									; will be stored on the next call to this function 
 
-		ZERO.S1			A1			;(0) zero accumulator LSB
-	||	ZERO .S2		B3
-		ZERO.S1			A0			;(0) zero accumulator MSB
-	||	ZERO .S2		B2
-
-        MV .S2X 			A8, B0      ;(0) move parameter (numCoefs) passed from C into b0 
-	||	MV .L2     		B6, B12
+    ||  MV .L2X 			A8, B0      ;(0) move parameter (numCoefs) passed from C into b0 
+	||	MVK .S2 10, B1				
 		
 		
-		MVK .S2 10, B1
 		ADD .L2 B0, B1, B0
 		|| B .S2 loop
 		nop
