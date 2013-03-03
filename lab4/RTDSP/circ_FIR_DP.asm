@@ -88,8 +88,8 @@ _circ_FIR_DP:
 		
 		
 		
-		MVK .S1 5, A2
-		ADD .L2 B0, A2, B0
+		MVK .S2 5, B1
+		ADD .L2 B0, B1, B0
 		|| B .S2 loop
 		nop
 		
@@ -98,14 +98,14 @@ _circ_FIR_DP:
 loop:	
 		nop
 		[B0] SUB .S2 B0,1,B0
-	||  [A2] SUB .S1 A2,1,A2
+	||  [B1] SUB .D2 B1,1,B1
 	
 		[B0] B .S2 loop
 		
 		LDDW .D1 *A5++, A11:A10
 	||	LDDW .D2 *B4++, B11:B10
 	||	MPYDP .M1 A11:A10, B11:B10, A1:A0
-	|| [!A2] ADDDP .L1 A1:A0, A15:A14, A15:A14
+	|| [!B1] ADDDP .L1 A1:A0, A15:A14, A15:A14
 	
 		
 		
