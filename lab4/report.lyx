@@ -1380,8 +1380,12 @@ while (coeffptr < coeffEndptr-3)
 
 \begin_layout Plain Layout
 
-// take care of non-integral leftover iterations if (modunroll==1) result
- += (*coeffptr++) * (*sampleptr++); 	
+// take care of non-integral leftover iterations 
+\end_layout
+
+\begin_layout Plain Layout
+
+if (modunroll==1) result += (*coeffptr++) * (*sampleptr++); 	
 \end_layout
 
 \begin_layout Plain Layout
@@ -3149,8 +3153,10 @@ It should be noted that with this optimisation, the number of coefficients,
 MUST 
 \series default
 be a multiple of two.
- If the number of coefficients is not a multiple of four, additional coefficient
-s with values of zero should be added to make 
+ If the number of coefficients is not a multiple of 
+two
+\lang british
+, additional coefficients with values of zero should be added to make 
 \begin_inset Formula $N$
 \end_inset
 
