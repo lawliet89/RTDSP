@@ -59,13 +59,14 @@ _circ_FIR_DP:
 		; set circular mode using the AMR 
 
 		MVC.S2			AMR,B13		;(0) Save contents of AMR reg to B13
-		STW .D2           B13, *++B15    ; (0) save AMR to stack
 		STW .D2           B3, *++B15    ; (0) save return to C to stack
 ;		STW .D2           B6, *++B15    ; (0) save &filtered_samp to stack
 ;		STW .D2T1           A15, *++B15    ; (0) save return to C to stack
 		MVK.S2			4H,B2;(0) 
 		MVKLH.S2		9H,B2;(0)
 		MVC.S2			B2,AMR		;(0) set AMR reg
+		
+		
 
 		; get the data passed from C
 
@@ -86,8 +87,8 @@ _circ_FIR_DP:
 		ZERO.S1			A0			;(0) zero accumulator MSB
 	||	ZERO .S2		B2
 
-        MV.S2X 			A8, B0      ;(0) move parameter (numCoefs) passed from C into b0 
-		
+        MV .S2X 			A8, B0      ;(0) move parameter (numCoefs) passed from C into b0 
+	||	MV .L2     		B6, B12
 		
 		
 		MVK .S2 5, B1
@@ -102,6 +103,11 @@ loop:
 	    [B1] SUB .D2 B1,1,B1
 	
 		[B0] B .S2 loop
+;	||	LDDW .D1 *A5++, A11:A10
+;	||	LDDW .D2 *B4++, B11:B10
+;	||	MPYDP .M2X B11:B10, A11:A10, B3:B2
+;	|| [!B1] ADDDP .L1 B7:B6, B3:B2, B7:B6
+		
 		
 		LDDW .D1 *A5++, A9:A8
 	||	LDDW .D2 *B4++, B9:B8
@@ -120,14 +126,13 @@ loop:
 ;		LDW .D2T1          *B15--, A15   
 ;		LDW .D2           *B15--, B6   ; (4) get &filtered_samp from stack
 		LDW .D2           *B15--, B0   ; (4) get return to C from stack
-		LDW .D2           *B15--, B1   ; (4) get AMR from stack
 		
 		NOP 4
 		
 		; send the result of MAC back to C
 
-		STW.D2			A14,*B6		;(0) Write accumulator (LSB) into filtered_samp 
-		STW.D2			A15,*+B6[1]	;(0) Write accumulator (MSB) into filtered_samp 	
+		STW.D2			A14,*B12		;(0) Write accumulator (LSB) into filtered_samp 
+		STW.D2			A15,*+B12[1]	;(0) Write accumulator (MSB) into filtered_samp 	
 	
 		; restore previous buffering mode
 
