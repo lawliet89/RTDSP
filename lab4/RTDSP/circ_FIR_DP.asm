@@ -102,9 +102,9 @@ loop:
 	
 		[B0] B .S2 loop
 		
-		LDDW .D1 *A5++, A11:A10
-	||	LDDW .D2 *B4++, B11:B10
-	||	MPYDP .M1X A11:A10, B11:B10, A3:A2
+		LDDW .D1 *A5++, A9:A8
+	||	LDDW .D2 *B4++, B9:B8
+	||	MPYDP .M1X A9:A8, B9:B8, A3:A2
 	|| [!B1] ADDDP .L1 A1:A0, A3:A2, A1:A0
 	
 		
