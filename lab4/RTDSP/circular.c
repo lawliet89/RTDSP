@@ -134,15 +134,41 @@ void ISR_AIC(void){
 	double *offset = buffer + index;
 	double *bufferEnd = buffer + N; // one after last element
 	
+	int loopcnt = bufferEnd-offset;
+	char modunroll = loopcnt%4;
+	
 	double result = 0;
+	double result2 = 0;
+	double result3 = 0;
+	double result4 = 0;
 	*offset = mono_read_16Bit();	// read and write to current "zero" sample
 	
-	for (; offset < bufferEnd; ++i, ++offset)
-		result += (*i) * (*offset);
+	while(offset < bufferEnd-3)
+	{
+		result += (*i++) * (*offset++);
+		result2 += (*i++) * (*offset++);
+		result3 += (*i++) * (*offset++);
+		result4 += (*i++) * (*offset++);
+	}
 	
+	// take care of the odd case because the above would miss it
+	if (modunroll>0) result += (*i++) * (*offset++);
+	if (modunroll>1) result2 += (*i++) * (*offset++);
+	if (modunroll>2) result3 += (*i++) * (*offset++);
+	
+    offset = buffer;
+    while (i < bEnd-3)
+    {
+    	result += (*i++) * (*offset++);
+		result2 += (*i++) * (*offset++);
+		result3 += (*i++) * (*offset++);
+		result4 += (*i++) * (*offset++);
+    }
+	if (modunroll==1) result += (*i++) * (*offset++);
+	if (modunroll==1 || modunroll==2) result2 += (*i++) * (*offset++);
+	if (modunroll==1 || modunroll==2 || modunroll==3) result3 += (*i++) * (*offset++);
     
-    for (offset = buffer; i < bEnd; ++i, ++offset)
-        result += (*i) * (*offset);
+    result = result + result2 + result3 + result4;
         
 	// advance index
 	index = (index == 0) ? N-1 : index-1;
