@@ -123,27 +123,21 @@ void init_HWI(void)
 
 /******************** WRITE YOUR INTERRUPT SERVICE ROUTINE HERE***********************/  
 
-void ISR_AIC(void){
-	  int i;
-	  Int16 output;
-	  Int16 sample = mono_read_16Bit();	// read
-	 
-	  // Handle the buffer
-	  for (i = N-1; i > 0; i--)
-	  	buffer[i] = buffer[i-1];
-	  	
-	  buffer[0] = sample;
-	  output = convoluteNonCircular();
-	  mono_write_16Bit(output);	// write
-}
-
-// Perform convolution
-Int16 convoluteNonCircular(void){
-	double output = 0;
+void ISR_AIC(void)
+{
 	int i;
+	double output = 0;	  	
+	 
+	// shift buffer
+	for (i = N-1; i != 0; --i)
+		buffer[i] = buffer[i-1];
+	  
+	// new sample
+	buffer[0] = mono_read_16Bit();
 	
-	for (i = 0; i < N; i++)
+	// mac loop
+	for (i = 0; i < N; ++i)
 		output += b[i] * buffer[i];
-	
-	return (Int16) round(output);
+	  	
+	  mono_write_16Bit(output);	// write
 }
