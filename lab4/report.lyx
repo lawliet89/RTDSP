@@ -3153,10 +3153,8 @@ It should be noted that with this optimisation, the number of coefficients,
 MUST 
 \series default
 be a multiple of two.
- If the number of coefficients is not a multiple of 
-two
-\lang british
-, additional coefficients with values of zero should be added to make 
+ If the number of coefficients is not a multiple of two, additional coefficients
+ with values of zero should be added to make 
 \begin_inset Formula $N$
 \end_inset
 
@@ -3318,6 +3316,27 @@ o2
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+It should be noted that the assemblty code could be further optimised.
+ The coefficients for an even tap filter are symmetrical.
+ Thus, we can reduce number of MAC iterations by adding the 
+\begin_inset Formula $i$
+\end_inset
+
+th and 
+\begin_inset Formula $N-i$
+\end_inset
+
+th samples together to multiply by the 
+\begin_inset Formula $i$
+\end_inset
+
+th coefficient.
+ This should roughly half the number of clockk cycles for the code.
+ However, it would also result in additional complexity and the pipeline
+ depth would roughly go up by 4.
 \end_layout
 
 \begin_layout Subsubsection
