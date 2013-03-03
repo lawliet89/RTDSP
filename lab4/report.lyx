@@ -2237,6 +2237,10 @@ reference "sub:Optimised-Assembly-Implementatio"
  parallel.
 \end_layout
 
+\begin_layout Subsection*
+Code Setup
+\end_layout
+
 \begin_layout Standard
 The assembly function first starts off by setting the AMR register is set
  to have a value of 
@@ -2372,6 +2376,7 @@ ed.
 
 \begin_layout Standard
 \begin_inset listings
+lstparams "language={[x86masm]Assembler},morekeywords={MVC, MVK, MVKLH, LDDW, LDW, STW, ZERO, MV, SUB, B, MPYDP, ADDDP}"
 inline false
 status open
 
@@ -2435,17 +2440,76 @@ status open
 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection*
 Pipeline Description
+\end_layout
+
+\begin_layout Standard
+The pipeline used in the implementation is complicated and warrants explanation.
+ It can be summarised in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Pipeline-description-diagram."
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection*
+Branch Considerations
+\end_layout
+
+\begin_layout Standard
+The loop for the MAC operations takes four cycles.
+ Thus, a branch operation for the end of the 
+\begin_inset Formula $i$
+\end_inset
+
+th loop iteration must be scheculed on the 
+\begin_inset Formula $i-1$
+\end_inset
+
+th loop iteration.
+ In addition, the branch for the end of the first loop iteration must be
+ scheduled 2 cycles before the start of the first loop iteration.
+ This also results in a spurious loop being inserted at the end.
+ Consider that there are 
+\begin_inset Formula $N$
+\end_inset
+
+ loop iterations expected.
+ At loop iteration 
+\begin_inset Formula $N-1$
+\end_inset
+
+, the branch back to the start of the loop for loop iteration 
+\begin_inset Formula $N$
+\end_inset
+
+ will be scheduled.
+ In normal operations, the loop DOES NOT branch back to the beginning of
+ the loop in the final loop iteration.
+\end_layout
+
+\begin_layout Subsubsection*
+Instructions Properties
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
+\begin_inset Graphics
+	filename pipeline.png
+	scale 88
+	rotateAngle 90
+
+\end_inset
+
 
 \end_layout
 
@@ -2467,154 +2531,170 @@ Pipeline description diagram.
 
 \end_layout
 
-\begin_layout Plain Layout
-
-\end_layout
-
 \end_inset
 
 
 \end_layout
 
 \begin_layout Standard
-The loop prologue, described in as part of the software pipeline is then
- primed to load the first two sets of sample values and coefficients into
- the respective registers so as to perform two MAC operations in parallel
- to separate accumulators.
- The 
+It should be noted that how the various instructions reads and writes registers,
+ and their respective latency and delay slots play an important role in
+ the operation of the pipeline.
+ Without them, the pipeline would fail.
+ Consider the following instructions being issued to the 
 \family typewriter
-LDDW
+E1
 \family default
- instructions for each pair of values are loaded in the same execute packet,
- and the next pair of values are loaded in the subsequent execute packet.
- The instruction requires four delays slots before the registers are fully
- written.
+ stage of the pipeline at cycle 
+\begin_inset Formula $i$
+\end_inset
+
+:
 \end_layout
 
-\begin_layout Standard
-\begin_inset listings
-lstparams "language={[x86masm]Assembler},morekeywords={MVC, MVK, MVKLH, LDDW, LDW, STW, ZERO, MV, SUB, B, MPYDP, ADDDP}"
-inline false
-status open
+\begin_layout Itemize
+LDDW writes the results to the registers at 
+\begin_inset Formula $i+4$
+\end_inset
 
-\begin_layout Plain Layout
-
-        ;********************************** loop prologue **********************
-************
-\end_layout
-
-\begin_layout Plain Layout
-
-        ; prime the pipeline
-\end_layout
-
-\begin_layout Plain Layout
-
-       LDDW .D1          *A5++, A9:A8 ; (4) loads the (delayed) sample into
- A9:A8, and post increment pointer 
-\end_layout
-
-\begin_layout Plain Layout
-
-   ||  LDDW .D2          *B4++, B9:B8 ; (4) load the coefficient into B9:B8,
- and post increment pointer 
-\end_layout
-
-\begin_layout Plain Layout
 
 \end_layout
 
-\begin_layout Plain Layout
+\begin_layout Itemize
+MPYDP reads the input registers from 
+\begin_inset Formula $i$
+\end_inset
 
-       LDDW .D1          *A5++, A11:A10 ; (4) loads the (delayed) sample
- into A11:A10, and post increment pointer
+ to 
+\begin_inset Formula $i+3$
+\end_inset
+
+, and outputs the lower half of the result at 
+\begin_inset Formula $i+8$
+\end_inset
+
+ and the upper half at 
+\begin_inset Formula $i+9$
+\end_inset
+
+
 \end_layout
 
-\begin_layout Plain Layout
+\begin_layout Itemize
+ADDDP reads the lower half input at 
+\begin_inset Formula $i$
+\end_inset
 
-   ||  LDDW .D2          *B4++, B11:B10 ; (4) load the coefficient into B11:B10,
- and post increment pointer 
-\end_layout
+ and the upper half at 
+\begin_inset Formula $i+1$
+\end_inset
 
-\begin_layout Plain Layout
+, and outputs the lower half of the result at 
+\begin_inset Formula $i+3$
+\end_inset
 
-       NOP 4
-\end_layout
-
+ and the upper half at 
+\begin_inset Formula $i+4$
 \end_inset
 
 
 \end_layout
 
 \begin_layout Standard
-The loop kernel is then executed next.
- The loop kernel will be executed 
-\begin_inset Formula $N$
-\end_inset
+Each iteration of a MAC operation basically involves all of the three instructio
+ns order in this order.
+\end_layout
 
- number of times, where 
-\begin_inset Formula $N$
-\end_inset
+\begin_layout Subsubsection*
+Pipeline Operation
+\end_layout
 
- is the number of coefficients provided by the caller in C.
- In one execute packet, the kernel first attempts to multiply the two pairs
- of values loaded in the previous loop cycle (or in the loop prologue).
- It also performs a decrement of the loop counter by two.
- The 
-\family typewriter
-MPYDP
-\family default
- requires 8 delay slots (one less than 9, as described in 
+\begin_layout Standard
+Refer to 
 \begin_inset CommandInset ref
 LatexCommand formatted
-reference "sub:Optimisation-Techniques"
+reference "fig:Pipeline-description-diagram."
 
 \end_inset
 
-).
- 
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "language={[x86masm]Assembler},morekeywords={MVC, MVK, MVKLH, LDDW, LDW, STW, ZERO, MV, SUB, B, MPYDP, ADDDP}"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-        ; ************************* loop kernel     ****************************
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-       MPYDP .M1X        A9:A8, B9:B8, A3:A2    ; (9, 4) DP multiply 
-\end_layout
-
-\begin_layout Plain Layout
-
-   ||  MPYDP .M2X        B11:B10, A11:A10, B7:B6    ; (9, 4) DP multiply
- 
-\end_layout
-
-\begin_layout Plain Layout
-
-   ||  SUB .S2           B0,2,B0            ; (0) b0 - 2 -> b0    
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-After three execute packets with 
+.
+ It can be seen from the lower diagram that the pipeline only fills up fully
+ at the fifth loop iteration.
+ Thus, we need a separate counter (register 
 \family typewriter
-NOPs
+B1
 \family default
-, there are exactly five execute packets in the kernel, and thus the conditional
- branch instruction is executed.
+) to only allow accumulation to occur at the fifth loop iteration.
+ Also, this means that we have to add 5 more iterations to the loop.
+\end_layout
+
+\begin_layout Standard
+Both sides of architecture are used for the MAC operation.
+ This results in side A and side B (see 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Pipeline-description-diagram."
+
+\end_inset
+
+) being multiplied and accumulated separately.
+ The accumulated results from both sides need to be added together at the
+ end.s
+\end_layout
+
+\begin_layout Standard
+Due to the fact that the 
+\family typewriter
+ADDDP
+\family default
+ instruction is issued before the results from the previous invocation is
+ complete, this will result in two separate accmulated sums for every other
+ set of coefficients and samples being swapped in and out of the registers
+ for each side of the functional units.
+ Thus, there are virtually four data paths in operation at one go.
+ At the end of the loop, the accumulated result from one of the virtual
+ data pths must be prevented from being overwritten by the other virtual
+ data path.
+\end_layout
+
+\begin_layout Standard
+At the end of the loops, due to the added loop iterations so that the pipeline
+ can be filled up, spurious operations will be performed, as described in
+ the diagram.
+ We must be careful not to use the registers that can be filled up with
+ spurious data.
+\end_layout
+
+\begin_layout Subsection*
+Loop Code
+\end_layout
+
+\begin_layout Standard
+First, the extra counter 
+\family typewriter
+B1
+\family default
+ required to kickstart the 
+\family typewriter
+ADDDP
+\family default
+ instructions at the fifth iteration is initialised to 10.
+ This coutner is added to the loop counter 
+\family typewriter
+B0
+\family default
+.
+ 
+\family typewriter
+B1
+\family default
+ is initialsed to 10 because the loop counter subtracts by two each time
+ (two coefficients/samples are loaded to each side) and thus 
+\family typewriter
+B1
+\family default
+ has to be multipled by 2.
+ The branch necessary for the first loop iteration is also performed.
 \end_layout
 
 \begin_layout Standard
@@ -2622,6 +2702,348 @@ NOPs
 lstparams "language={[x86masm]Assembler},morekeywords={MVC, MVK, MVKLH, LDDW, LDW, STW, ZERO, MV, SUB, B, MPYDP, ADDDP}"
 inline false
 status open
+
+\begin_layout Plain Layout
+
+    ||  MV .L2X           A8, B0      ;(0) move parameter (numCoefs) passed
+ from C into b0 
+\end_layout
+
+\begin_layout Plain Layout
+
+    ||  MVK .S2           10, B1        ;(0) setup countdown to start addition
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+        ADD               .L2 B0, B1, B0 ;(0) Branch needs 10/2=5 iterations
+ to setup and running.
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+    ||  B .S2             loop    ;(0) Loop is only 4 cycles, 
+\end_layout
+
+\begin_layout Plain Layout
+
+                                  ; so we need to kickstart the branch back
+ for loop iteration 1
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		NOP                       ; NOP to allow the branch for Loop iteration
+ 1 to happen right at the end
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The loop proper begins.
+ Sides A and Sides B perform the MAC accordingly.
+ This set of code results in the pipeline described in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Pipeline-description-diagram."
+
+\end_inset
+
+.
+ The conditional execution is done so as to prevent some of the spurious
+ operations from occurring at the end of the loop.
+ As describied above, to prevent one virtual data path on side B from overwritin
+g the other virtual data path, we must move the registers that store the
+ result for side B accumulation away.
+ This happens at the end of the loop.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language={[x86masm]Assembler},morekeywords={MVC, MVK, MVKLH, LDDW, LDW, STW, ZERO, MV, SUB, B, MPYDP, ADDDP}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+loop:    
+\end_layout
+
+\begin_layout Plain Layout
+
+        [B0] SUB .S2      B0,2,B0  ;(0) Decrement loop counter by 2, because
+ we are doing two calculations togerher
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+        [B1] SUB .D2      B1,2,B1  ; (0) countdown to allow start of addition.
+ Countdown is done by two
+\end_layout
+
+\begin_layout Plain Layout
+
+                                   ; because the loop counter is decremented
+ by two.
+ And since we added B0
+\end_layout
+
+\begin_layout Plain Layout
+
+                                   ; and B1 together before the loop, we
+ must also double B1's value and subtract
+\end_layout
+
+\begin_layout Plain Layout
+
+                                   ; by 2 each time
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+        [B0] B .S2        loop          ;(5) for current iteration i, kickstart
+ the branch back for iteration i+1
+\end_layout
+
+\begin_layout Plain Layout
+
+    ||  [B0] LDDW .D1     *A5++, A11:A10 ; (4) B - Load delayed sample
+\end_layout
+
+\begin_layout Plain Layout
+
+    ||  [B0] LDDW .D2     *B4++, B11:B10 ; (4) B - Load coefficient
+\end_layout
+
+\begin_layout Plain Layout
+
+    ||  [B0] MPYDP .M2X   B11:B10, A11:A10, B3:B2 ; (9,4) B - Multiply
+\end_layout
+
+\begin_layout Plain Layout
+
+    || [!B1] ADDDP .L2    B7:B6, B3:B2, B7:B6 ; (6,2) B - Accumulate
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+        [B0] LDDW .D1     *A5++, A9:A8 ; (4) A - Load delayed sample
+\end_layout
+
+\begin_layout Plain Layout
+
+    ||  [B0] LDDW .D2     *B4++, B9:B8 ; (4) A - Load coefficient
+\end_layout
+
+\begin_layout Plain Layout
+
+    ||  [B0] MPYDP .M1X   A9:A8, B9:B8, A3:A2 ; (9,4) A - Multiply
+\end_layout
+
+\begin_layout Plain Layout
+
+    || [!B1] ADDDP .L1    A1:A0, A3:A2, A1:A0 ; (6,2) A - Accumulate
+\end_layout
+
+\begin_layout Plain Layout
+
+    || [!B0] MV .S2       B6, B12 ; (0) for the final iteration this cycle,
+ the LH result for B-Addition-44 is 
+\end_layout
+
+\begin_layout Plain Layout
+
+                                  ; written on this cycle.
+ We move the LH result for B-Addition-43 out of the
+\end_layout
+
+\begin_layout Plain Layout
+
+                                  ; way to prevent losing them
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We then continue the moves for the upper half of the B-side and do the same
+ for the A-side.
+ A-side move is done one cycle later because its MAC operations are one
+ cycle behind that of B-side.
+ Both virtual data paths are then added.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language={[x86masm]Assembler},morekeywords={MVC, MVK, MVKLH, LDDW, LDW, STW, ZERO, MV, SUB, B, MPYDP, ADDDP}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+        MV .D1            A0, A12 ; (0) the UH result for A-Addition-44 is
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+                                  ; written on this cycle.
+ We move the UH result for A-Addition-43 out of the
+\end_layout
+
+\begin_layout Plain Layout
+
+                                  ; way to prevent losing them
+\end_layout
+
+\begin_layout Plain Layout
+
+    ||  MV .S2            B7, B13 ; (0) the UH result for B-Addition-44 is
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+                                  ; written on this cycle.
+ We move the UH result for B-Addition-43 out of the
+\end_layout
+
+\begin_layout Plain Layout
+
+                                  ; way to prevent losing them
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+        MV .D1            A1, A13 ; (0) the LH result for A-Addition-44 is
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+                                  ; written on this cycle.
+ We move the LH result for A-Addition-43 out of the
+\end_layout
+
+\begin_layout Plain Layout
+
+                                  ; way to prevent losing them
+\end_layout
+
+\begin_layout Plain Layout
+
+    ||  ADDDP .L2         B7:B6, B13:B12, B13:B12  ; (6,2) the supurious
+ B-Addition-45 will write the LH result in
+\end_layout
+
+\begin_layout Plain Layout
+
+                                                   ; 2 cycles after this.
+ Better start adding result of B-Addition-44
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+        ADDDP .L1         A1:A0, A13:A12, A13:A12  ; (6,2) the supurious
+ A-Addition-45 will write the LH result in
+\end_layout
+
+\begin_layout Plain Layout
+
+                                                   ; 2 cycles after this.
+ Better start adding result of A-Addition-44
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection*
+Code Cleanup
+\end_layout
+
+\begin_layout Standard
+The registers saved to stack will be restored, and the accumulated values
+ from A-side and B-side are added up.
+ They are then saved to address and the code returns to C.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language={[x86masm]Assembler},morekeywords={MVC, MVK, MVKLH, LDDW, LDW, STW, ZERO, MV, SUB, B, MPYDP, ADDDP}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+        LDW .D2           *B15--, B6   ; (4) get &filtered_samp from stack
+\end_layout
+
+\begin_layout Plain Layout
+
+        LDW .D2           *B15--, B0   ; (4) get return to C from stack
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
 
 \begin_layout Plain Layout
 
@@ -2630,182 +3052,14 @@ status open
 
 \begin_layout Plain Layout
 
-        [B0] B .S2             loop            ; (5) loop back if b0 is not
- zero
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The next two pairs of values are then loaded.
- These 
-\family typewriter
-LDDW
-\family default
- instructions can actually be scheduled in the execute packet right after
- the 
-\family typewriter
-MPYDP
-\family default
- instruction as they write to the registers only on the fourth delay slot,
- but doing so would not change the number of cycles as the 
-\family typewriter
-MPYDP
-\family default
- still needs 8 delay slots.
- The delay slot requirements of these 
-\family typewriter
-LDDW
-\family default
- instructions will be met by the time the values are used again in the next
-\family typewriter
-MPYDP 
-\family default
-instructions.
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "language={[x86masm]Assembler},morekeywords={MVC, MVK, MVKLH, LDDW, LDW, STW, ZERO, MV, SUB, B, MPYDP, ADDDP}"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-   ||  [B0] LDDW .D1     *A5++, A9:A8 ; (4) loads the (delayed) sample into
- A9:A8, and post increment pointer 
+        ADDDP .L1X        A13:A12, B13:B12, A13:A12 ; (6,2) Add the results
+ of Side A and B together 
 \end_layout
 
 \begin_layout Plain Layout
 
-   ||  [B0] LDDW .D2     *B4++, B9:B8 ; (4) load the coefficient into B9:B8,
- and post increment pointer 
+        
 \end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-       [B0] LDDW .D1     *A5++, A11:A10 ; (4) loads the (delayed) sample
- into A11:A10, and post increment pointer 
-\end_layout
-
-\begin_layout Plain Layout
-
-   ||  [B0] LDDW .D2     *B4++, B11:B10 ; (4) load the coefficient into B11:B10,
- and post increment pointer
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Three more 
-\family typewriter
-NOPs
-\family default
- are then performed to meet 
-\family typewriter
-MPYDP's
-\family default
- delay slots requirement, and then the various accumulators are added.
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "language={[x86masm]Assembler},morekeywords={MVC, MVK, MVKLH, LDDW, LDW, STW, ZERO, MV, SUB, B, MPYDP, ADDDP}"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-       ADDDP .L1         A1:A0, A3:A2, A1:A0    ; (6, 2) DP ADD 
-\end_layout
-
-\begin_layout Plain Layout
-
-   ||  ADDDP .L2         B3:B2, B7:B6, B3:B2    ; (6, 2) DP ADD    
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The epilogue of the loop is now performed.
- Five delay slots (one less than required, with similar reasons as 
-\family typewriter
-MPYDP
-\family default
-) are inserted for the final 
-\family typewriter
-ADDDP
-\family default
- instruction to complete execution before adding the two accumulators up.
- Five delay slots are needed for this 
-\family typewriter
-ADDDP
-\family default
- to complete.
- This is, again, one less than required because the lower half of the result
- will be used first later on.
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "language={[x86masm]Assembler},morekeywords={MVC, MVK, MVKLH, LDDW, LDW, STW, ZERO, MV, SUB, B, MPYDP, ADDDP}"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-        ;********************************** loop epilogue **********************
-************
-\end_layout
-
-\begin_layout Plain Layout
-
-        ; add both accumulators up
-\end_layout
-
-\begin_layout Plain Layout
-
-        NOP 5        ; for the final addition to be complete
-\end_layout
-
-\begin_layout Plain Layout
-
-        ADDDP .L1X        A1:A0, B3:B2, A1:A0    ; (6, 2) DP ADD
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Taking advantage of the five delay slots after a branch, the branch back
- to C instruction is executed while the results of the MAC is written back
- to C and the previous 
-\family typewriter
-AMR
-\family default
- register value is restored.
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "language={[x86masm]Assembler},morekeywords={MVC, MVK, MVKLH, LDDW, LDW, STW, ZERO, MV, SUB, B, MPYDP, ADDDP}"
-inline false
-status open
 
 \begin_layout Plain Layout
 
@@ -2814,41 +3068,69 @@ status open
 
 \begin_layout Plain Layout
 
-        ; return to C code     
 \end_layout
 
 \begin_layout Plain Layout
 
-lend:   B .S2             B1            ; (5) branch to b1 (moved C return
- address) 	
+        ; return to C code
 \end_layout
 
 \begin_layout Plain Layout
 
-        NOP 3                  ; send the result of MAC back to C
 \end_layout
 
 \begin_layout Plain Layout
 
-        STW .D2            A0,*B5        ;(0) Write accumulator (LSB) into
- filtered_samp          
+lend:   B.S2              B0            ; (5) branch to b3 (register b3 holds
+ the return address)    
 \end_layout
 
 \begin_layout Plain Layout
 
-        STW .D2            A1,*+B5[1]    ;(0) Write accumulator (MSB) into
- filtered_samp                   
+        NOP     3
 \end_layout
 
 \begin_layout Plain Layout
 
-        ; restore previous buffering mode
+        
 \end_layout
 
 \begin_layout Plain Layout
 
-    ||  MVC .S2            B13,AMR        ;(0) restore  AMR reg to previous
- contents
+        ; send the result of MAC back to C
+\end_layout
+
+\begin_layout Plain Layout
+
+        STW.D2            A12,*B6        ;(0) Write accumulator (LSB) into
+ filtered_samp 
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+        STW.D2            A13,*+B6[1]    ;(0) Write accumulator (MSB) into
+ filtered_samp     
+\end_layout
+
+\begin_layout Plain Layout
+
+    ||  MVC.S2            B1,AMR        ;(0) restore  AMR reg to previous
+ contents      
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+        .end
 \end_layout
 
 \end_inset
@@ -2866,13 +3148,13 @@ It should be noted that with this optimisation, the number of coefficients,
 \series bold
 MUST 
 \series default
-be a multiple of four.
+be a multiple of two.
  If the number of coefficients is not a multiple of four, additional coefficient
 s with values of zero should be added to make 
 \begin_inset Formula $N$
 \end_inset
 
- a multiple of four.
+ a multiple of two.
  Otherwise, the code will compute the result wrongly.
 \end_layout
 
@@ -3102,179 +3384,7 @@ Type=pdf
 \family default
  document.
  Optimisation might result in a larger code size.
- The various clock cycles required for the different levels of optimisations
- from previous sections are copied in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "tab:Comparison-of-the"
-
-\end_inset
-
-, for comparison.
-\end_layout
-
-\begin_layout Standard
-\noindent
-\align center
-\begin_inset Float table
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\noindent
-\align center
-\begin_inset Tabular
-<lyxtabular version="3" rows="4" columns="3">
-<features tabularvalignment="middle">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<column alignment="center" valignment="top" width="0">
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-Optimisation Level
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-Non-circular Buffer
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-Optimised Circular Buffer
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-None
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-5825
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-4526
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-Level 0
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-4829
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-2898
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-Level 2
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-1719
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-746
-\end_layout
-
-\end_inset
-</cell>
-</row>
-</lyxtabular>
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "tab:Comparison-of-the"
-
-\end_inset
-
-Comparison of the performance of the code at various compiler optimisation
- levels.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
+ 
 \end_layout
 
 \begin_layout Standard
@@ -3292,32 +3402,11 @@ as-is
  debug (but with performance trade-off.).
  The section will examine the various optimisation performed by the compiler
  at various levels and examine how they could contribute to the increase
- in performance seen in 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "tab:Comparison-of-the"
-
-\end_inset
-
-.
+ in performance.
 \end_layout
 
 \begin_layout Subsection
 Level 0 Optimisation
-\end_layout
-
-\begin_layout Standard
-As can be seen from 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "tab:Comparison-of-the"
-
-\end_inset
-
-, level 0 results in some improvements in code performance (although not
- as drastic as level 2), with the non-circular and circular buffer achieving
- 17.1% and 36.0% improvement respectively.
- 
 \end_layout
 
 \begin_layout Standard
@@ -3374,12 +3463,13 @@ i = N-1;
 
 \begin_layout Plain Layout
 
-double *bEnd = b + N;
+double* coeffptr = b;
 \end_layout
 
 \begin_layout Plain Layout
 
-double *bufferEnd = buffer + N
+double* coeffEndptr = b + N; // points to the element AFTER the coefficient
+ array 
 \end_layout
 
 \end_inset
@@ -3600,17 +3690,7 @@ Level 2 Optimisation
 Level 2 optimisation performs all the optimisation in Levels 0 and 1.
  The optimisation performed in Level 1 (Performs local copy/constant propagation
 , Removes unused assignments , and Eliminates local common expressions)
- are not applicable to the implementations.
- As seen from 
-\begin_inset CommandInset ref
-LatexCommand formatted
-reference "tab:Comparison-of-the"
-
-\end_inset
-
-, the non-circular and circular buffer implementation saw a 64.4% and 74.3%
- improvement in performance when compared to Level 0 optimisation.
- 
+ are not applicable to the implementations
 \end_layout
 
 \begin_layout Standard
