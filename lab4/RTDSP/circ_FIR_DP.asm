@@ -92,55 +92,65 @@ _circ_FIR_DP:
 		;********************************** loop begin **********************************
 		
 loop:	
-		[B0] SUB .S2 B0,2,B0
+		[B0] SUB .S2 B0,2,B0  ;(0) Decrement loop counter by 2, because we are doing two calculations togerher
+
 		
-	    [B1] SUB .D2 B1,2,B1
+	    [B1] SUB .D2 B1,2,B1  ; (0) countdown to allow start of addition. Countdown is done by two
+							  ; because the loop counter is decremented by two. And since we added B0
+							  ; and B1 together before the loop, we must also double B1's value and subtract
+							  ; by 2 each time
 	
-		[B0] B .S2 loop
-	||	LDDW .D1 *A5++, A11:A10
-	||	LDDW .D2 *B4++, B11:B10
-	||	MPYDP .M2X B11:B10, A11:A10, B3:B2
-	|| [!B1] ADDDP .L2 B7:B6, B3:B2, B7:B6
+		[B0] B .S2 loop		  ;(5) for current iteration i, kickstart the branch back for iteration i+1
+	||	[B0] LDDW .D1 *A5++, A11:A10 ; (4) B - Load delayed sample
+	||	[B0] LDDW .D2 *B4++, B11:B10 ; (4) B - Load coefficient
+	||	[B0] MPYDP .M2X B11:B10, A11:A10, B3:B2 ; (9,4) B - Multiply
+	|| [!B1] ADDDP .L2 B7:B6, B3:B2, B7:B6 ; (6,2) B - Accumulate
 		
 		
-		LDDW .D1 *A5++, A9:A8
-	||	LDDW .D2 *B4++, B9:B8
-	||	MPYDP .M1X A9:A8, B9:B8, A3:A2
-	|| [!B1] ADDDP .L1 A1:A0, A3:A2, A1:A0
-	||	MV .S2 B6, B12
+		[B0] LDDW .D1 *A5++, A9:A8 ; (4) A - Load delayed sample
+	||	[B0] LDDW .D2 *B4++, B9:B8 ; (4) A - Load coefficient
+	||	[B0] MPYDP .M1X A9:A8, B9:B8, A3:A2 ; (9,4) A - Multiply
+	|| [!B1] ADDDP .L1 A1:A0, A3:A2, A1:A0 ; (6,2) A - Accumulate
+	|| [!B0] MV .S2 B6, B12 ; (0) for the final iteration this cycle, the LH result for B-Addition-44 is 
+							; written on this cycle. We move the LH result for B-Addition-43 out of the
+							; way to prevent losing them
 		
 		
 		;********************************** loop end **********************************
-		MV .D1 A0, A14
-	||	MV .S2 B7, B13
-		MV .D1 A1, A15
-	||	ADDDP .L2 B7:B6, B13:B12, B13:B12
-		
-		ADDDP .L1 A1:A0, A15:A14, A15:A14
+		MV .D1 A0, A14 ; (0) the UH result for A-Addition-44 is 
+					   ; written on this cycle. We move the UH result for A-Addition-43 out of the
+					   ; way to prevent losing them
+	||	MV .S2 B7, B13 ; (0) the UH result for B-Addition-44 is 
+					   ; written on this cycle. We move the UH result for B-Addition-43 out of the
+					   ; way to prevent losing them
 	
-		NOP 6
+		MV .D1 A1, A15 ; (0) the LH result for A-Addition-44 is 
+					   ; written on this cycle. We move the LH result for A-Addition-43 out of the
+					   ; way to prevent losing them
+	||	ADDDP .L2 B7:B6, B13:B12, B13:B12  ; (6,2) the supurious B-Addition-45 will write the LH result in
+										   ; 2 cycles after this. Better start adding result of B-Addition-44
 		
-		ADDDP .L1X A15:A14, B13:B12, A15:A14
-		NOP 6
-;		LDW .D2T1          *B15--, A15   
+		ADDDP .L1 A1:A0, A15:A14, A15:A14  ; (6,2) the supurious A-Addition-45 will write the LH result in
+										   ; 2 cycles after this. Better start adding result of A-Addition-44
+	
 		LDW .D2           *B15--, B6   ; (4) get &filtered_samp from stack
 		LDW .D2           *B15--, B0   ; (4) get return to C from stack
 		
-		NOP 4
+		NOP 3
+		ADDDP .L1X A15:A14, B13:B12, A15:A14 ; (6,2) Add the results of Side A and B together 
 		
-		; send the result of MAC back to C
+		NOP 
 
-		STW.D2			A14,*B6		;(0) Write accumulator (LSB) into filtered_samp 
-		STW.D2			A15,*+B6[1]	;(0) Write accumulator (MSB) into filtered_samp 	
-	
-		; restore previous buffering mode
-
-		MVC.S2			B1,AMR		;(0) restore  AMR reg to previous contents
-			
 		; return to C code
 
-lend:   B.S2 			B0			; (5) branch to b3 (register b3 holds the return address)
-        NOP 			5           
+lend:   B.S2 			B0			; (5) branch to b3 (register b3 holds the return address)	
+		NOP 	3
+		
+		; send the result of MAC back to C
+		STW.D2			A14,*B6		;(0) Write accumulator (LSB) into filtered_samp 
+		
+		STW.D2			A15,*+B6[1]	;(0) Write accumulator (MSB) into filtered_samp 	
+	||	MVC.S2			B1,AMR		;(0) restore  AMR reg to previous contents      
         
         .end
 							
