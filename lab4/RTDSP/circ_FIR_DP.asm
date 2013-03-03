@@ -81,8 +81,8 @@ _circ_FIR_DP:
 									; this points to the end of the MSB of where the next sample
 									; will be stored on the next call to this function 
 
-		ZERO.S1			A14			;(0) zero accumulator LSB
-		ZERO.S1			A15			;(0) zero accumulator MSB
+		ZERO.S1			A1			;(0) zero accumulator LSB
+		ZERO.S1			A0			;(0) zero accumulator MSB
 
         MV.S2X 			A8, B0      ;(0) move parameter (numCoefs) passed from C into b0 
 		
@@ -104,16 +104,16 @@ loop:
 		
 		LDDW .D1 *A5++, A11:A10
 	||	LDDW .D2 *B4++, B11:B10
-	||	MPYDP .M1 A11:A10, B11:B10, A1:A0
-	|| [!B1] ADDDP .L1 A1:A0, A15:A14, A15:A14
+	||	MPYDP .M1X A11:A10, B11:B10, A3:A2
+	|| [!B1] ADDDP .L1 A1:A0, A3:A2, A1:A0
 	
 		
 		
 		;********************************** loop end **********************************
-		MV .D1 A14, A12
-		MV .D1 A15, A13
+		MV .D1 A0, A14
+		MV .D1 A1, A15
 		
-		ADDDP .L1 A15:A14, A13:A12, A13:A12
+		ADDDP .L1 A1:A0, A15:A14, A15:A14
 		
 		NOP 6
 ;		LDW .D2T1          *B15--, A15   
@@ -125,8 +125,8 @@ loop:
 		
 		; send the result of MAC back to C
 
-		STW.D2			A12,*B6		;(0) Write accumulator (LSB) into filtered_samp 
-		STW.D2			A13,*+B6[1]	;(0) Write accumulator (MSB) into filtered_samp 	
+		STW.D2			A14,*B6		;(0) Write accumulator (LSB) into filtered_samp 
+		STW.D2			A15,*+B6[1]	;(0) Write accumulator (MSB) into filtered_samp 	
 	
 		; restore previous buffering mode
 
