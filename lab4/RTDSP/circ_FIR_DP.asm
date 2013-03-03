@@ -91,7 +91,7 @@ _circ_FIR_DP:
 	||	MV .L2     		B6, B12
 		
 		
-		MVK .S2 5, B1
+		MVK .S2 10, B1
 		ADD .L2 B0, B1, B0
 		|| B .S2 loop
 		nop
@@ -99,14 +99,14 @@ _circ_FIR_DP:
 		;********************************** loop begin **********************************
 		
 loop:	
-		[B0] SUB .S2 B0,1,B0
-	    [B1] SUB .D2 B1,1,B1
+		[B0] SUB .S2 B0,2,B0
+	    [B1] SUB .D2 B1,2,B1
 	
 		[B0] B .S2 loop
-;	||	LDDW .D1 *A5++, A11:A10
-;	||	LDDW .D2 *B4++, B11:B10
-;	||	MPYDP .M2X B11:B10, A11:A10, B3:B2
-;	|| [!B1] ADDDP .L1 B7:B6, B3:B2, B7:B6
+	||	LDDW .D1 *A5++, A11:A10
+	||	LDDW .D2 *B4++, B11:B10
+	||	MPYDP .M2X B11:B10, A11:A10, B3:B2
+	|| [!B1] ADDDP .L2 B7:B6, B3:B2, B7:B6
 		
 		
 		LDDW .D1 *A5++, A9:A8
@@ -118,10 +118,15 @@ loop:
 		
 		;********************************** loop end **********************************
 		MV .D1 A0, A14
+	||	MV .D2 B6, B4
 		MV .D1 A1, A15
+	||	MV .D2 B7, B5	
 		
 		ADDDP .L1 A1:A0, A15:A14, A15:A14
+	||	ADDDP .L2 B7:B6, B5:B4, B5:B4
+		NOP 6
 		
+		ADDDP .L1X A15:A14, B5:B4, A15:A14
 		NOP 6
 ;		LDW .D2T1          *B15--, A15   
 ;		LDW .D2           *B15--, B6   ; (4) get &filtered_samp from stack
