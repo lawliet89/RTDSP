@@ -69,7 +69,7 @@ double IIRFilter(double);
 /********************************** Main routine ************************************/
 void main(){      
   // initialise the delay buffer
-  v = (double *) calloc(N-1, sizeof(double);
+  v = (double *) calloc(N-1, sizeof(double));
  
   // initialize board and the audio port
   init_hardware();
