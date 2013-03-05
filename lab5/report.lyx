@@ -552,6 +552,10 @@ A square wave of 100 Hz was input to the DSP, and the maximum output at
 Bandpass Filter: Direct Form II
 \end_layout
 
+\begin_layout Subsection
+Coefficient Calculations
+\end_layout
+
 \begin_layout Standard
 
 \end_layout
