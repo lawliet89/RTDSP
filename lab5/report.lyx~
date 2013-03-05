@@ -187,7 +187,7 @@ H(j\omega)=\frac{V_{out}}{V_{in}}=\frac{\frac{1}{j\omega C}}{\frac{1}{j\omega C}
 
 \begin_layout Standard
 The corner frequency is expected to be 
-\begin_inset Formula $\omega_{c}=\frac{1}{RC}=\frac{1}{1000\times10^{-6}}=1000\unit[rad]{s^{-1}}$
+\begin_inset Formula $\omega_{c}=\frac{1}{RC}=\frac{1}{1000\times10^{-6}}=1000\unit{rad\unit{s^{-1}}}$
 \end_inset
 
 .

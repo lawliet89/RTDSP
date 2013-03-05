@@ -5,7 +5,7 @@
  				      EE 3.19: Real Time Digital Signal Processing
 					       Dr Paul Mitcheson and Daniel Harvey
 
-                                LAB 4 - Circular FIR
+                            LAB 5 - Direct form II Transposed
  ************************************************************************************/
 
 /**************************** Pre-processor statements ******************************/
@@ -54,30 +54,24 @@ DSK6713_AIC23_CodecHandle H_Codec;
 
 
 /******************************* Filter Stuff ********************************/
-// The order of the FIR filter +1
-#define N 88
+// include coefficient
+#include "../PartII/coeff.h"
 
-// include the coefficients
-#include "fir_coef.txt"
+double *v;  // pointer to the delay line buffer (circular)
 
-// define the buffer
-double buffer[N] = {0};
-
-// index of the current "current" (zero) sample
-int index = 0;
-
-// macro that based on the index of the current zero sample,
-// calculate the index of the array to read
-// including handling wrap arounds
-//#define GET_INDEX(index, offset) (index + offset)%N
+int index = 0; // index to the circular buffer
 
  /******************************* Function prototypes ********************************/
 void init_hardware(void);     
 void init_HWI(void);          
 void ISR_AIC(void);    
+double IIRFilter(double); 
 /********************************** Main routine ************************************/
 void main(){      
-	// initialize board and the audio port
+  // initialise the delay buffer
+  v = (double *) calloc(N-1, sizeof(double));
+ 
+  // initialize board and the audio port
   init_hardware();
 	
   /* initialize hardware interrupts */
@@ -126,26 +120,23 @@ void init_HWI(void)
 
 } 
 
-/******************** WRITE YOUR INTERRUPT SERVICE ROUTINE HERE***********************/  
+/******************** ISR and filter code ***********************/  
 
 void ISR_AIC(void){
-	double *i = b;
-	double *bEnd = b + N;	// one after last element
-	double *offset = buffer + index;
-	double *bufferEnd = buffer + N; // one after last element
-	
-	double result = 0;
-	*offset = mono_read_16Bit();	// read and write to current "zero" sample
-	
-	for (; offset < bufferEnd; ++i, ++offset)
-		result += (*i) * (*offset);
-	
+    double output = IIRFilter(mono_read_16Bit());
+	mono_write_16Bit((Int16) output);
+}
+
+// based on Matlab code given at http://ocw.mit.edu/courses/mechanical-engineering/2-161-signal-processing-continuous-and-discrete-fall-2008/lecture-notes/lecture_20.pdf
+double IIRFilter(double x){
+    double y = 0;   // output
+    int i = 0;
+	y = v[0] + b[0]*x;
     
-    for (offset = buffer; i < bEnd; ++i, ++offset)
-        result += (*i) * (*offset);
-        
-	// advance index
-	index = (index == 0) ? N-1 : index-1;
-		
-	mono_write_16Bit(result);	// write
+    // update delay buffer for next iteration
+    for (; i < N-2; i++)
+        v[i] = v[i+1] + b[i+1]*x - a[i+1]*y;
+    
+    v[N-2] = b[N-1]*x - a[N-1]*y;    
+	return y;
 }

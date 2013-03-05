@@ -25,6 +25,7 @@
   xleftmargin=12pt,          % left margin
   frame=leftline
 }
+
 \lfoot{ywc110 \& rs5010}
 \cfoot{}
 \rfoot{\thepage}
@@ -53,7 +54,7 @@ customHeadersFooters
 
 \graphics default
 \default_output_format pdf5
-\output_sync 0
+\output_sync 1
 \bibtex_command default
 \index_command default
 \paperfontsize default
@@ -225,14 +226,384 @@ H(Z) & =\frac{1}{1+RC(\frac{2}{T_{s}}\frac{Z-1}{Z+1})}\\
 
 \begin_layout Standard
 So the coefficients 
-\begin_inset Formula $b_{0}=b_{1}=\frac{T_{s}}{T_{s}+2RC}=0.05882352941176471$
+\begin_inset Formula $b_{0}=b_{1}=\frac{T_{s}}{T_{s}+2RC}\approx0.05882352941176471$
 \end_inset
 
 , and 
-\begin_inset Formula $a_{1}=\frac{T_{s}-2RC}{T_{s}+2RC}=-0.8823529411764705$
+\begin_inset Formula $a_{1}=\frac{T_{s}-2RC}{T_{s}+2RC}\approx-0.8823529411764705$
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Subsection
+Code Implementation
+\end_layout
+
+\begin_layout Standard
+The code listing for the implementation of this simple filter is given in
+ 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:Single-Pole-Low-Pass"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Because this is simply a second order IIR filter, the coefficients and buffers
+ can be simply implemented in small arrays as below:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+// The order of the FIR filter +1
+\end_layout
+
+\begin_layout Plain Layout
+
+#define N 2
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// coefficients
+\end_layout
+
+\begin_layout Plain Layout
+
+double a = -0.8823529411764705;
+\end_layout
+
+\begin_layout Plain Layout
+
+double b[] = {0.05882352941176471, 0.05882352941176471};
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+// define the buffers
+\end_layout
+
+\begin_layout Plain Layout
+
+double inputBuffer[N] = {0};
+\end_layout
+
+\begin_layout Plain Layout
+
+double outputBuffer = 0;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the ISR, after the new sample is read, the input buffer is simply shifted.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+double sample = mono_read_16Bit();	// read
+\end_layout
+
+\begin_layout Plain Layout
+
+	 
+\end_layout
+
+\begin_layout Plain Layout
+
+// Move the input buffer
+\end_layout
+
+\begin_layout Plain Layout
+
+inputBuffer[1] = inputBuffer[0];
+\end_layout
+
+\begin_layout Plain Layout
+
+inputBuffer[0] = sample;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And the output is calculated and saved to the output buffer, before writing
+ to the output.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+// Calculate the difference equation and save to buffer
+\end_layout
+
+\begin_layout Plain Layout
+
+outputBuffer = b[0]*inputBuffer[0] + b[1]*inputBuffer[1] - a*outputBuffer;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+mono_write_16Bit(outputBuffer);
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Filter Response
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Part I/filter.png
+	scale 40
+	rotateAngle 90
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Theoretical-analogue-and"
+
+\end_inset
+
+Theoretical analogue and digital filter response, calculated in Matlab using
+ code in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:Matlab-Single-Pole-Low"
+
+\end_inset
+
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The theoretical frequency response estimated by Matlab is given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Theoretical-analogue-and"
+
+\end_inset
+
+, and the measured frequency response of the implementation is given in
+ .
+ In general, the gain of the implemented filter behaved according to prediction.
+ The phase of the implemented filter, however, has a higher slope, and appears
+ to be linear.
+ This is due to the group delay on the DSP, also observed in the previous
+ lab.
+ 
+\end_layout
+
+\begin_layout Subsection
+Time Constant Measurement
+\end_layout
+
+\begin_layout Standard
+The high-pass filter at the input port has a 
+\end_layout
+
+\begin_layout Standard
+The capacitor in this second order filter causes the output to not fall
+ immediately to the minimum when the square wave input changes from the
+ maximum to the minimum.
+ Instead, the output 
+\begin_inset Formula $q(t)$
+\end_inset
+
+ decays exponentially according to 
+\begin_inset Formula $q(t)=q_{0}e^{-\nicefrac{t}{\tau}}$
+\end_inset
+
+ where 
+\begin_inset Formula $q_{0}$
+\end_inset
+
+ is the maximum value of the output and 
+\begin_inset Formula $\tau$
+\end_inset
+
+ is the time constant.
+ In this filter, 
+\begin_inset Formula $\tau=RC$
+\end_inset
+
+.
+ Thus the measurement of 
+\begin_inset Formula $\tau$
+\end_inset
+
+ would yield the value of the corner frequency 
+\begin_inset Formula $\omega{}_{c}=\nicefrac{1}{\tau}$
+\end_inset
+
+.
+ When 
+\begin_inset Formula $t=\tau$
+\end_inset
+
+, 
+\begin_inset Formula $q(t)=q_{0}e^{-1}$
+\end_inset
+
+, and so the time difference between 
+\begin_inset Formula $q(t_{1})=q_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $q(t_{2})=q_{0}e^{-1}$
+\end_inset
+
+ will give 
+\begin_inset Formula $\Delta t=t_{2}-t_{1}=\tau$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+A square wave of 100 Hz was input to the DSP, and the maximum output at
+ 
+\begin_inset Formula $q_{0}=$
+\end_inset
+
+ was observed.
+ Thus, the time perioid 
+\begin_inset Formula $\Delta t=\unit{\mu s}=\tau$
+\end_inset
+
+ was measured.
+ The corner frequency 
+\begin_inset Formula $\omega_{c}=\nicefrac{1}{\tau}=\unit{rad}\unit{s^{-1}}$
+\end_inset
+
+ was measured.
+ 
+\end_layout
+
+\begin_layout Section
+Bandpass Filter: Direct Form II
+\end_layout
+
+\begin_layout Subsection
+Coefficient Calculations
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Section
+\start_of_appendix
+Code Listing
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Matlab-Single-Pole-Low"
+
+\end_inset
+
+Matlab Single-Pole Low Pass Filter Code
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "Part I/diagram.m"
+lstparams "language=Matlab"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Single-Pole-Low-Pass"
+
+\end_inset
+
+Single-Pole Low Pass Filter Code
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "RTDSP/single-pole.c"
+
+\end_inset
+
+
 \end_layout
 
 \end_body
