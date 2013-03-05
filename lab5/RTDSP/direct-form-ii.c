@@ -69,7 +69,7 @@ double IIRFilter(double);
 /********************************** Main routine ************************************/
 void main(){      
   // initialise the delay buffer
-  v = (double *) calloc(N, sizeof(double);
+  v = (double *) calloc(N, sizeof(double));
  
   // initialize board and the audio port
   init_hardware();
@@ -127,11 +127,12 @@ void ISR_AIC(void){
 	mono_write_16Bit((Int16) output);
 }
 
+// based on difference equation at https://ccrma.stanford.edu/~jos/fp/Direct_Form_II.html
 double IIRFilter(double input){
     double* vPtr = v + index + 1;         // loop index pointer
 	double* vOffset = v + index;  // current v to write to
     double* vEnd = v+N;   // one element after end of buffer
-    double* aPtr = a;
+    double* aPtr = a+1;
     double* aEnd = a+N;
     double* bPtr = b;
     double* bEnd = b+N;
