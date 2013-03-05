@@ -58,7 +58,7 @@ DSK6713_AIC23_CodecHandle H_Codec;
 #define N 2
 
 // coefficients
-double a[] = {0, -0.8823529411764705};
+double a = -0.8823529411764705;
 double b[] = {0.05882352941176471, 0.05882352941176471};
 
 // define the buffers
@@ -133,7 +133,7 @@ void ISR_AIC(void){
 	inputBuffer[0] = sample;
 	
 	// Calculate the difference equation and save to buffer
-	outputBuffer = b[0]*inputBuffer[0] + b[1]*inputBuffer[1] - a[1]*outputBuffer;
+	outputBuffer = b[0]*inputBuffer[0] + b[1]*inputBuffer[1] - a*outputBuffer;
 	
 	
 	mono_write_16Bit(outputBuffer);
