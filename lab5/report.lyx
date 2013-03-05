@@ -229,6 +229,10 @@ So the coefficients
 \end_inset
 
 , and 
+\begin_inset Formula $a_{0}=0$
+\end_inset
+
+ and 
 \begin_inset Formula $a_{1}=\frac{T_{s}-2RC}{T_{s}+2RC}=-0.8823529411764705$
 \end_inset
 

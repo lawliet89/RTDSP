@@ -55,13 +55,15 @@ DSK6713_AIC23_CodecHandle H_Codec;
 
 /******************************* Filter Stuff ********************************/
 // The order of the FIR filter +1
-#define N 88
+#define N 2
 
-// include the coefficients
-#include "fir_coef.txt"
+// coefficients
+double a[] = {0, -0.8823529411764705};
+double b[] = {0.05882352941176471, 0.05882352941176471};
 
-// define the buffer
-Int16 buffer[N] = {0};
+// define the buffers
+double inputBuffer[N] = {0};
+double outputBuffer = 0;
 
  /******************************* Function prototypes ********************************/
 void init_hardware(void);     
@@ -124,26 +126,15 @@ void init_HWI(void)
 /******************** WRITE YOUR INTERRUPT SERVICE ROUTINE HERE***********************/  
 
 void ISR_AIC(void){
-	  int i;
-	  Int16 output;
-	  Int16 sample = mono_read_16Bit();	// read
+	double sample = mono_read_16Bit();	// read
 	 
-	  // Handle the buffer
-	  for (i = N-1; i > 0; i--)
-	  	buffer[i] = buffer[i-1];
-	  	
-	  buffer[0] = sample;
-	  output = convoluteNonCircular();
-	  mono_write_16Bit(output);	// write
-}
-
-// Perform convolution
-Int16 convoluteNonCircular(void){
-	double output = 0;
-	int i;
+	// Move the input buffer
+	inputBuffer[1] = inputBuffer[0];
+	inputBuffer[0] = sample;
 	
-	for (i = 0; i < N; i++)
-		output += b[i] * buffer[i];
+	// Calculate the difference equation and save to buffer
+	outputBuffer = b[0]*inputBuffer[0] + b[1]*inputBuffer[1] - a[1]*outputBuffer;
 	
-	return (Int16) round(output);
+	
+	mono_write_16Bit(outputBuffer);
 }
