@@ -5,7 +5,7 @@
  				      EE 3.19: Real Time Digital Signal Processing
 					       Dr Paul Mitcheson and Daniel Harvey
 
-                                LAB 4 - ASM FIR
+                                LAB 5 - Direct form II
  ************************************************************************************/
 
 /**************************** Pre-processor statements ******************************/
@@ -54,37 +54,24 @@ DSK6713_AIC23_CodecHandle H_Codec;
 
 
 /******************************* Filter Stuff ********************************/
-// The order of the FIR filter + 1
-#define N 88
+// include coefficient
+#include "../PartII/coeff.h"
 
-// The size, in bytes, of the buffer
-#define BUFFER_BYTE_SIZE 1024
+double *v;  // pointer to the delay line buffer (circular)
 
-// the buffer
-double x_buffer[BUFFER_BYTE_SIZE/8] = {0};
-
-// Byte align
-#pragma DATA_ALIGN(x_buffer, BUFFER_BYTE_SIZE)
-
-// pointer to first element
-double *X_PTR = x_buffer;
-
-// include the coefficients
-#include "fir_coef.txt"
-
-// index of the current "current" (zero) sample
-int index = 0;
-
-// Assembly circular FIR
-extern void circ_FIR_DP(double **ptr, double *coef, double *input_samp, double *filtered_samp ,unsigned int numCoefs);
+int index = 0; // index to the circular buffer
 
  /******************************* Function prototypes ********************************/
 void init_hardware(void);     
 void init_HWI(void);          
 void ISR_AIC(void);    
+double IIRFilter(double); 
 /********************************** Main routine ************************************/
 void main(){      
-	// initialize board and the audio port
+  // initialise the delay buffer
+  v = (double *) calloc(N, sizeof(double);
+ 
+  // initialize board and the audio port
   init_hardware();
 	
   /* initialize hardware interrupts */
@@ -133,11 +120,43 @@ void init_HWI(void)
 
 } 
 
-/******************** WRITE YOUR INTERRUPT SERVICE ROUTINE HERE***********************/  
+/******************** ISR and filter code ***********************/  
 
 void ISR_AIC(void){
-	double sample = 0, output = 0;
-	sample = mono_read_16Bit();	// read
-	circ_FIR_DP(&X_PTR, b, &sample, &output, N);
+    double output = IIRFilter(mono_read_16Bit());
 	mono_write_16Bit((Int16) output);
+}
+
+double IIRFilter(double input){
+    double* vPtr = v + index + 1;         // loop index pointer
+	double* vOffset = v + index;  // current v to write to
+    double* vEnd = v+N;   // one element after end of buffer
+    double* aPtr = a;
+    double* aEnd = a+N;
+    double* bPtr = b;
+    double* bEnd = b+N;
+    double output = 0;
+    
+    *vOffset = input;	// read and store 
+    
+	// calculate v for the current input x
+    // v(n) = x(n) - a1 * v(n-1) - a2 * v(n-2) - ...
+    for (; vPtr < vEnd; ++vPtr, ++aPtr)
+        *vOffset -= (*aPtr) * (*vPtr); 
+        
+    for (vPtr = v; aPtr < aEnd; ++vPtr, ++aPtr)
+        *vOffset -= (*aPtr) * (*vPtr); 
+        
+    // calculate output y
+    // y(n) = b0*v(n) + b1*v(n-1) + b2*v(n-2) + ...
+    for (; vOffset < vEnd; ++vOffset, ++bPtr)   // reuse vOffset pointer now
+        output += (*bPtr) * (*vOffset);
+        
+    for (vOffset = v; bPtr < bEnd; ++vOffset, ++bPtr)   // reuse vOffset pointer now
+        output += (*bPtr) * (*vOffset);
+        
+    // decrement index
+    index = (index == 0) ? N-1 : index-1;
+	
+	return output;
 }
