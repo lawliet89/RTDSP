@@ -22,15 +22,15 @@ b = [Ts/(Ts+2*R*C) Ts/(Ts+2*R*C)];
 % plot z-plane
 [H, omega] = freqz(b,a,5012,fs);
 
-subplot(2,1,1) , plot(w, mag2db(abs(h)), 2*pi*omega,mag2db(abs(H)));
-xlim([0, pi*fs]);
-xlabel('Angular Frequency (rad s-1)');
+subplot(2,1,1) , plot(w/(2*pi), mag2db(abs(h)), omega,mag2db(abs(H)));
+xlim([0, fs/2]);
+xlabel('Frequency (Hz)');
 ylabel('Gain (dB)');
 legend('Analogue Filter','Digital Filter');
 grid on;
-subplot(2,1,2),plot(w,unwrap(angle(h)), 2*pi*omega, unwrap(angle(H)));
-xlim([0, pi*fs]);
-xlabel('Angular Frequency (rad s-1)');
+subplot(2,1,2),plot(w/(2*pi),unwrap(angle(h)), omega, unwrap(angle(H)));
+xlim([0, fs/2]);
+xlabel('Frequency (Hz)');
 ylabel('Phase (radians)');
 legend('Analogue Filter','Digital Filter');
 grid on;
