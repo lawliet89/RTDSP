@@ -399,6 +399,8 @@ sideways false
 status collapsed
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Part I/filter.png
 	scale 40
@@ -549,15 +551,421 @@ A square wave of 100 Hz was input to the DSP, and the maximum output at
 \end_layout
 
 \begin_layout Section
-Bandpass Filter: Direct Form II
+Bandpass Filter
 \end_layout
 
 \begin_layout Subsection
-Coefficient Calculations
+Coefficient Computation
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
 
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename PartII/filter.png
+	scale 50
+	rotateAngle 90
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Bandpass-Filter-Frequency"
+
+\end_inset
+
+Bandpass Filter Frequency Response predicted by Matlab.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Based on the specifications given, the coefficients were generated in Matlab
+ using the code in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:Matlab-Bandpass-Filter"
+
+\end_inset
+
+.
+ Then, the coefficients were written to a header file for inclusion later
+ on.
+ The generated header file is given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:Bandpass-Filter-Coefficient"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The frequency response of this filter, as predicted by Matlab is given in
+ 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Bandpass-Filter-Frequency"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Subsection
+Direct Form II Implementation
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename PartII/df2.png
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Direct-Form-II"
+
+\end_inset
+
+Direct Form II Signal Flow Graph.
+ 
+\begin_inset CommandInset href
+LatexCommand href
+name "Source"
+target "https://ccrma.stanford.edu/~jos/fp/Direct_Form_II.html"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Based on the signal flow graph given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Direct-Form-II"
+
+\end_inset
+
+, the following difference equations are obtained, for a filter or order
+ 
+\begin_inset Formula $N$
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{alignat}{1}
+v(n)= & x(n)-a_{1}v(n-1)-a_{2}v(n-2)-...-a_{N}v(n-N)\label{eq:df2_1}\\
+y(n)= & b_{0}v(n)+b_{1}v(n-1)+b_{2}v(n-2)+...+b_{N}v(n-N)\label{eq:df2_2}
+\end{alignat}
+
+\end_inset
+
+where 
+\begin_inset Formula $a_{n}$
+\end_inset
+
+ and 
+\begin_inset Formula $b_{n}$
+\end_inset
+
+ are the nth coefficients, 
+\begin_inset Formula $x(n)$
+\end_inset
+
+ is the nth input, 
+\begin_inset Formula $y(n)$
+\end_inset
+
+ is the nth output, and 
+\begin_inset Formula $v(n)$
+\end_inset
+
+ is the nth entry in the delay buffer line.
+ This implies that the Direct Form II implemenation only requires one delay
+ buffer.
+ The implementation below reflects these set of equations.
+\end_layout
+
+\begin_layout Subsubsection
+Code Operation
+\end_layout
+
+\begin_layout Standard
+The complete code listing for the implementation can be found in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:Bandpass-Filter-Direct"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The required circular delay buffer 
+\family typewriter
+v
+\family default
+ has its pointer declared in the global scope, followed by a variable 
+\family typewriter
+index
+\family default
+ that is used to indicate the next entry to write to in the circular buffer.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+double *v;  // pointer to the delay line buffer (circular)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+int index = 0; // index to the circular buffer
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The buffer is then allocated memory from the heap in 
+\family typewriter
+main()
+\family default
+ using the size N that is defined in the coefficient header (see 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:Bandpass-Filter-Coefficient"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+int main(void){
+\end_layout
+
+\begin_layout Plain Layout
+
+  // initialise the delay buffer
+\end_layout
+
+\begin_layout Plain Layout
+
+  v = (double *) calloc(N, sizeof(double)); 
+\end_layout
+
+\begin_layout Plain Layout
+
+  // ...
+ other code
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\family typewriter
+ISR
+\family default
+ calls a function to implement the filter (as recommended in the notes).
+ The function first initialises a series of pointers to the three arrays
+ for use in the MAC loops.
+ 
+\family typewriter
+vOffset
+\family default
+ points to the entry in the circular buffer that is calculated in this invocatio
+n of the filter (i.e.
+ 
+\begin_inset Formula $v(n)$
+\end_inset
+
+) , and 
+\family typewriter
+vPtr
+\family default
+ points to the one after 
+\family typewriter
+vOffset
+\family default
+ for calculation according to 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:df2_1"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+   double* vPtr = v + index + 1;         // loop index pointer
+\end_layout
+
+\begin_layout Plain Layout
+
+	double* vOffset = v + index;  // current v to write to
+\end_layout
+
+\begin_layout Plain Layout
+
+    double* vEnd = v+N;   // one element after end of buffer
+\end_layout
+
+\begin_layout Plain Layout
+
+    double* aPtr = a+1;   // pointer to a1 (ao is not used for calculation)
+\end_layout
+
+\begin_layout Plain Layout
+
+    double* aEnd = a+N;   // one element after end of a
+\end_layout
+
+\begin_layout Plain Layout
+
+    double* bPtr = b;     // pointer to b0
+\end_layout
+
+\begin_layout Plain Layout
+
+    double* bEnd = b+N;   // one element after end of b
+\end_layout
+
+\begin_layout Plain Layout
+
+    double output = 0;    // output
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The difference equation given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:df2_1"
+
+\end_inset
+
+ is then calculated.
+ The current 
+\family typewriter
+input
+\family default
+ 
+\begin_inset Formula $x(n)$
+\end_inset
+
+ is written to 
+\end_layout
+
+\begin_layout Subsubsection
+Code Performance
+\end_layout
+
+\begin_layout Subsection
+Direct Form II Transposed Implementation
+\end_layout
+
+\begin_layout Subsubsection
+Code Operation
+\end_layout
+
+\begin_layout Subsubsection
+Code Performance
+\end_layout
+
+\begin_layout Subsection
+Performance Comparison
 \end_layout
 
 \begin_layout Section
@@ -572,7 +980,7 @@ name "sub:Matlab-Single-Pole-Low"
 
 \end_inset
 
-Matlab Single-Pole Low Pass Filter Code
+Matlab Single-Pole Low Pass Filter Coefficient Calculation
 \end_layout
 
 \begin_layout Standard
@@ -600,6 +1008,67 @@ Single-Pole Low Pass Filter Code
 \begin_inset CommandInset include
 LatexCommand lstinputlisting
 filename "RTDSP/single-pole.c"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Matlab-Bandpass-Filter"
+
+\end_inset
+
+Matlab Bandpass Filter Coefficient Calculation
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "PartII/design.m"
+lstparams "language=Matlab"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Bandpass-Filter-Coefficient"
+
+\end_inset
+
+Bandpass Filter Coefficient Header
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "PartII/coeff.h"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Bandpass-Filter-Direct"
+
+\end_inset
+
+Bandpass Filter Direct Form II Implementation
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "RTDSP/direct-form-ii.c"
 
 \end_inset
 
