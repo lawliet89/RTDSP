@@ -195,8 +195,8 @@ H(j\omega)=\frac{V_{out}}{V_{in}}=\frac{\frac{1}{j\omega C}}{\frac{1}{j\omega C}
 \end_layout
 
 \begin_layout Standard
-The corner frequency is expected to be 
-\begin_inset Formula $\omega_{c}=\frac{1}{RC}=\frac{1}{1000\times10^{-6}}=1000\unit{rad\unit{s^{-1}}}$
+The corner frequency is expected to be at 
+\begin_inset Formula $\omega_{c}=\frac{1}{RC}=\frac{1}{1000\times10^{-6}}=1000\unit{rad\unit{s^{-1}}\approx160\unit{Hz}}$
 \end_inset
 
 .
@@ -404,7 +404,7 @@ Filter Response
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -458,7 +458,7 @@ reference "sub:Matlab-Single-Pole-Low"
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -523,84 +523,182 @@ Time Constant Measurement
 \end_layout
 
 \begin_layout Standard
-The high-pass filter at the input port has a 
+The high-pass filter at the output port has a cut-off frequency of approximately
+ 7.2 Hz.
+ Thus, the square wave input should be higher than that, but lower than
+ the cut-off frequency of the low-pass filter at about 160 Hz.
+ A square wave of 100 Hz was thus chosen to measure the time constant.
+ 
 \end_layout
 
 \begin_layout Standard
-The capacitor in this second order filter causes the output to not fall
- immediately to the minimum when the square wave input changes from the
- maximum to the minimum.
- Instead, the output 
-\begin_inset Formula $q(t)$
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Part I/TEK0005.JPG
+
 \end_inset
 
- decays exponentially according to 
-\begin_inset Formula $q(t)=q_{0}e^{-\nicefrac{t}{\tau}}$
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Square-wave-uses"
+
 \end_inset
 
- where 
-\begin_inset Formula $q_{0}$
+Time constant measurement.
+ Channel 1 (yellow) shows the square wave input, while Channel 2 (turquoise)
+ shows the output from the DSK.
+\end_layout
+
 \end_inset
 
- is the maximum value of the output and 
-\begin_inset Formula $\tau$
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
 \end_inset
 
- is the time constant.
- In this filter, 
-\begin_inset Formula $\tau=RC$
+
+\end_layout
+
+\begin_layout Standard
+A square wave of peak-to-peak voltage of 2.8 V was output to the DSK, as
+ shown in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Square-wave-uses"
+
 \end_inset
 
 .
- Thus the measurement of 
-\begin_inset Formula $\tau$
+ Because of the potential divider at the input port, the input to the DSK
+ code will be halved.
+ Thus, the output from the DSK is expected to be halved.
+ 
+\end_layout
+
+\begin_layout Standard
+The capacitor in this second order filter causes the output to not rise
+ immediately to the maximum when the square wave input changes from the
+ minimum to the maximum.
+ However, because insuffiient time is allowed for the capacitor in the filter
+ to charge and discharge fully, the output from the DSK is less than half
+ of what is expected, as seen in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Square-wave-uses"
+
 \end_inset
 
- would yield the value of the corner frequency 
-\begin_inset Formula $\omega{}_{c}=\nicefrac{1}{\tau}$
-\end_inset
+ where even though the scale of Channel 2 is halved of that of Channel 1,
+ the output never reaches the level of the square wave input.
+ Also, due to the buffers on the DSK, there is a group delay between the
+ input and the output.
+\end_layout
 
-.
- When 
-\begin_inset Formula $t=\tau$
-\end_inset
-
-, 
-\begin_inset Formula $q(t)=q_{0}e^{-1}$
-\end_inset
-
-, and so the time difference between 
-\begin_inset Formula $q(t_{1})=q_{0}$
+\begin_layout Standard
+If 
+\begin_inset Formula $q_{+}$
 \end_inset
 
  and 
-\begin_inset Formula $q(t_{2})=q_{0}e^{-1}$
+\begin_inset Formula $q_{-}$
 \end_inset
 
- will give 
-\begin_inset Formula $\Delta t=t_{2}-t_{1}=\tau$
+ are the maximum and minimum values of the output respectively, then if
+ the output at 
+\begin_inset Formula $t=0$
+\end_inset
+
+ is 
+\begin_inset Formula $q(0)=q_{-}$
+\end_inset
+
+, then while the capacitor is charging, the output at time 
+\begin_inset Formula $t$
+\end_inset
+
+ is given by 
+\begin_inset Formula $q(t)=q_{-}+(q_{+}-q_{-})(1-e^{\nicefrac{t}{\tau}})$
+\end_inset
+
+ where 
+\begin_inset Formula $\tau=RC$
+\end_inset
+
+ is the time constant.
+ Then 
+\begin_inset Formula $q(\tau)=q_{-}+(q_{+}-q_{-})(1-e^{-1})$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+In this case, for the output, at 
+\begin_inset Formula $q(0)=q_{-}\approx-500\unit{mV}$
+\end_inset
+
+.
+ This is higher than the expected 
+\begin_inset Formula $-700\unit{mV}$
+\end_inset
+
+ due to insufficient time for discharging.
+ At 
+\begin_inset Formula $t=0$
+\end_inset
+
+, the square wave input to the DSK goes up to 
+\begin_inset Formula $1.4\unit{V}$
+\end_inset
+
+, or 
+\begin_inset Formula $0.7\unit{V}$
+\end_inset
+
+as seen by the DSK after the potential dividers at the input.
+ Thus, 
+\begin_inset Formula $q_{+}=700\unit{mV}$
+\end_inset
+
+.Then, 
+\begin_inset Formula $q(\tau)\approx259\unit{mV}$
+\end_inset
+
+.
+ From the trace, this works out to be 
+\begin_inset Formula $\tau\approx0.9\unit{ms}$
+\end_inset
+
+, which is slightly lower than expected.
+ The corner frequency is thus calculated to be 
+\begin_inset Formula $\omega_{c}=\nicefrac{1}{\tau}\approx1111\unit{rad}\unit{s^{-1}}$
 \end_inset
 
 .
 \end_layout
 
 \begin_layout Standard
-A square wave of 100 Hz was input to the DSP, and the maximum output at
- 
-\begin_inset Formula $q_{0}=$
-\end_inset
-
- was observed.
- Thus, the time perioid 
-\begin_inset Formula $\Delta t=\unit{\mu s}=\tau$
-\end_inset
-
- was measured.
- The corner frequency 
-\begin_inset Formula $\omega_{c}=\nicefrac{1}{\tau}=\unit{rad}\unit{s^{-1}}$
-\end_inset
-
- was measured.
+This slight difference arises due to the bilinear transform used to convert
+ the filter designed in the S-plane into the Z-plane.
  
 \end_layout
 
@@ -616,7 +714,7 @@ Coefficient Computation
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -1199,7 +1297,7 @@ Frequency Response
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
