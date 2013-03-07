@@ -868,7 +868,11 @@ vPtr
 \family typewriter
 vOffset
 \family default
- for calculation according to 
+ (i.e.
+\begin_inset Formula $v(n-1)$
+\end_inset
+
+ ) for calculation according to 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "eq:df2_1"
@@ -939,13 +943,198 @@ reference "eq:df2_1"
  is then calculated.
  The current 
 \family typewriter
-input
+input(
 \family default
- 
+
 \begin_inset Formula $x(n)$
 \end_inset
 
- is written to 
+) is first written to the dereferenced 
+\family typewriter
+vOffset
+\family default
+ (
+\begin_inset Formula $v(n)$
+\end_inset
+
+).
+ The two 
+\family typewriter
+for
+\family default
+ loops are then used to exploit the circular nature of the 
+\family typewriter
+v
+\family default
+ buffer.
+ This optimisation originates from Lab 4.
+ The first 
+\family typewriter
+for
+\family default
+ loop will calculate all the values in the 
+\family typewriter
+v
+\family default
+ buffer up to the end of the buffer, and then the second 
+\family typewriter
+for
+\family default
+ loop will handle the entries after the buffer loop pointer 
+\family typewriter
+vPtr
+\family default
+ has wrapped back to the start of the buffer.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+    *vOffset = input;	// read and store 
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+	// calculate v for the current input x
+\end_layout
+
+\begin_layout Plain Layout
+
+    // v(n) = x(n) - a1 * v(n-1) - a2 * v(n-2) - ...
+\end_layout
+
+\begin_layout Plain Layout
+
+    for (; vPtr < vEnd; ++vPtr, ++aPtr)
+\end_layout
+
+\begin_layout Plain Layout
+
+        *vOffset -= (*aPtr) * (*vPtr); 
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+    for (vPtr = v; aPtr < aEnd; ++vPtr, ++aPtr)
+\end_layout
+
+\begin_layout Plain Layout
+
+        *vOffset -= (*aPtr) * (*vPtr); 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\family typewriter
+output
+\family default
+ 
+\begin_inset Formula $y(n)$
+\end_inset
+
+ is then calculated according to 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:df2_2"
+
+\end_inset
+
+ using the same circular buffer technique discussed above.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+    // calculate output y
+\end_layout
+
+\begin_layout Plain Layout
+
+    // y(n) = b0*v(n) + b1*v(n-1) + b2*v(n-2) + ...
+\end_layout
+
+\begin_layout Plain Layout
+
+    for (; vOffset < vEnd; ++vOffset, ++bPtr)   // reuse vOffset pointer
+ now
+\end_layout
+
+\begin_layout Plain Layout
+
+        output += (*bPtr) * (*vOffset);
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+    for (vOffset = v; bPtr < bEnd; ++vOffset, ++bPtr)   // reuse vOffset
+ pointer now
+\end_layout
+
+\begin_layout Plain Layout
+
+        output += (*bPtr) * (*vOffset);
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Finally, the 
+\family typewriter
+index
+\family default
+ is decremented, and wrapped around to the end of the buffer if necessary.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+    // decrement index
+\end_layout
+
+\begin_layout Plain Layout
+
+    index = (index == 0) ? N-1 : index-1;
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -1219,8 +1408,319 @@ Therefore we observe that the overhead
 Direct Form II Transposed Implementation
 \end_layout
 
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename PartII/df2t.png
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Direct-Form-II-T"
+
+\end_inset
+
+Direct Form II Transposed Signal Flow Graph.
+ 
+\begin_inset CommandInset href
+LatexCommand href
+name "Source"
+target "https://ccrma.stanford.edu/~jos/fp/Transposed_Direct_Forms.html"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+According to the signal flow digram given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Direct-Form-II-T"
+
+\end_inset
+
+, the following equations can be derived:
+\begin_inset Formula 
+\begin{alignat}{1}
+y(n)= & s_{1}(n)+b_{0}x(n)\label{eq:df2t-1}\\
+s_{\lambda}(n)= & \begin{cases}
+s_{\lambda+1}(n-1)+b_{\lambda}x(n-1)-a_{\lambda}y(n-1) & \lambda\in[1,N)\\
+b_{\lambda}x(n-1)-a_{\lambda}y(n-1) & \lambda=N
+\end{cases}\label{eq:df2t-2}
+\end{alignat}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $N$
+\end_inset
+
+ is the order of the IIR filter, 
+\begin_inset Formula $a_{\lambda}$
+\end_inset
+
+and 
+\begin_inset Formula $b_{\lambda}$
+\end_inset
+
+are the coefficients, 
+\begin_inset Formula $s_{\lambda}(n)$
+\end_inset
+
+ is the
+\begin_inset Formula $\lambda$
+\end_inset
+
+th entry in the buffer for the nth input, 
+\begin_inset Formula $x(n)$
+\end_inset
+
+ is the nth input, and 
+\begin_inset Formula $y(n)$
+\end_inset
+
+ is the nth output.
+ 
+\end_layout
+
 \begin_layout Subsubsection
 Code Operation
+\end_layout
+
+\begin_layout Standard
+For the implementation, the 
+\begin_inset Formula $s$
+\end_inset
+
+ buffer given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:df2t-1"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:df2t-2"
+
+\end_inset
+
+ is renamed to 
+\family typewriter
+v
+\family default
+.
+ The code listing can be found in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:Bandpass-Filter-Direct-1"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+A pointer to the buffer was declared in global context, and initialised
+ in 
+\family typewriter
+main().
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+double *v;  // pointer to the buffer
+\end_layout
+
+\begin_layout Plain Layout
+
+//...
+\end_layout
+
+\begin_layout Plain Layout
+
+int main(void){
+\end_layout
+
+\begin_layout Plain Layout
+
+  // initialise the buffer
+\end_layout
+
+\begin_layout Plain Layout
+
+  v = (double *) calloc(N-1, sizeof(double));
+\end_layout
+
+\begin_layout Plain Layout
+
+  //...
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The function for the filter in this case is very simple.
+ The usual variables are first set up.
+ The buffer values for the 
+\begin_inset Formula $n+1$
+\end_inset
+
+th iteration is calculated during the 
+\begin_inset Formula $n$
+\end_inset
+
+th iteration.
+ The filter firsts calculates 
+\begin_inset Formula $y(n)$
+\end_inset
+
+ according to 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:df2t-1"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+    double y = 0;   // output
+\end_layout
+
+\begin_layout Plain Layout
+
+    int i = 0;  // loop index
+\end_layout
+
+\begin_layout Plain Layout
+
+	y = v[0] + b[0]*x;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The buffer 
+\family typewriter
+v
+\family default
+ for the next iteration is then calculated according to the first case of
+ 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:df2t-2"
+
+\end_inset
+
+.
+ 
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+    // update buffer for next iteration
+\end_layout
+
+\begin_layout Plain Layout
+
+    for (; i < N-2; i++)
+\end_layout
+
+\begin_layout Plain Layout
+
+        v[i] = v[i+1] + b[i+1]*x - a[i+1]*y;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Finally, the second case of
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:df2t-2"
+
+\end_inset
+
+ is calculated.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+    v[N-2] = b[N-1]*x - a[N-1]*y;  
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection
@@ -1332,6 +1832,26 @@ Bandpass Filter Direct Form II Implementation
 \begin_inset CommandInset include
 LatexCommand lstinputlisting
 filename "RTDSP/direct-form-ii.c"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Bandpass-Filter-Direct-1"
+
+\end_inset
+
+Bandpass Filter Direct Form II Transposed Implementation
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "RTDSP/direct-form-ii-transposed.c"
 
 \end_inset
 

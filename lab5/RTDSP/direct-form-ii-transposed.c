@@ -57,9 +57,7 @@ DSK6713_AIC23_CodecHandle H_Codec;
 // include coefficient
 #include "../PartII/coeff.h"
 
-double *v;  // pointer to the delay line buffer (circular)
-
-int index = 0; // index to the circular buffer
+double *v;  // pointer to the buffer
 
  /******************************* Function prototypes ********************************/
 void init_hardware(void);     
@@ -68,7 +66,7 @@ void ISR_AIC(void);
 double IIRFilter(double); 
 /********************************** Main routine ************************************/
 void main(){      
-  // initialise the delay buffer
+  // initialise the buffer
   v = (double *) calloc(N-1, sizeof(double));
  
   // initialize board and the audio port
@@ -130,10 +128,10 @@ void ISR_AIC(void){
 // based on Matlab code given at http://ocw.mit.edu/courses/mechanical-engineering/2-161-signal-processing-continuous-and-discrete-fall-2008/lecture-notes/lecture_20.pdf
 double IIRFilter(double x){
     double y = 0;   // output
-    int i = 0;
+    int i = 0;  // loop index
 	y = v[0] + b[0]*x;
     
-    // update delay buffer for next iteration
+    // update buffer for next iteration
     for (; i < N-2; i++)
         v[i] = v[i+1] + b[i+1]*x - a[i+1]*y;
     
