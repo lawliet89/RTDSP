@@ -411,7 +411,7 @@ status collapsed
 \align center
 \begin_inset Graphics
 	filename Part I/filter.png
-	scale 40
+	scale 75
 	rotateAngle 90
 
 \end_inset
@@ -1192,12 +1192,56 @@ status open
 \end_layout
 
 \begin_layout Subsubsection
-
 Frequency Response
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
 
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename PartII/df2-spectrum.png
+	scale 80
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Spectrum-output-of"
+
+\end_inset
+
+Spectrum output of the Direct Form II implementation.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The frequency resposne of the implemented filter is given in .
 \end_layout
 
 \begin_layout Subsubsection
@@ -1215,7 +1259,7 @@ Profiling the code for filters of order 4, 8, 16, 128, 256 with no optimisations
 \begin_inset Float table
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
