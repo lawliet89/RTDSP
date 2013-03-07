@@ -132,11 +132,11 @@ double IIRFilter(double input){
     double* vPtr = v + index + 1;         // loop index pointer
 	double* vOffset = v + index;  // current v to write to
     double* vEnd = v+N;   // one element after end of buffer
-    double* aPtr = a+1;
-    double* aEnd = a+N;
-    double* bPtr = b;
-    double* bEnd = b+N;
-    double output = 0;
+    double* aPtr = a+1;   // pointer to a1 (ao is not used for calculation)
+    double* aEnd = a+N;   // one element after end of a
+    double* bPtr = b;     // pointer to b0
+    double* bEnd = b+N;   // one element after end of b
+    double output = 0;    // output
     
     *vOffset = input;	// read and store 
     
