@@ -128,24 +128,64 @@ void init_HWI(void)
 
 /******************** WRITE YOUR INTERRUPT SERVICE ROUTINE HERE***********************/  
 
-void ISR_AIC(void){
-	double *i = b;
-	double *bEnd = b + N;	// one after last element
-	double *offset = buffer + index;
-	double *bufferEnd = buffer + N; // one after last element
+void ISR_AIC(void)
+{
+	// FIR filter
+	// operation principle: do a forward pass of the sample buffer until the end is hit,
+	// then wrap the sample pointer to the start of the buffer and do the remainder of 
+	// iterations that can be computed from the amount of coefficients left to process (with pointer arithmetic).
 	
+	double* coeffptr = b;
+	double* coeffEndptr = b + N; // points to the element AFTER the coefficient array
+	double* sampleptr = buffer + index; // point to oldest sample initially
+	double* bufferEndptr = buffer + N; // one after last element
+	
+	int loopcnt = bufferEndptr - sampleptr; // how many iterations are needed for a single-step loop
+	char modunroll = loopcnt % 4; // non-integral leftover of an unrolled loop
+	
+	// accumulators
 	double result = 0;
-	*offset = mono_read_16Bit();	// read and write to current "zero" sample
+	double result2 = 0;
+	double result3 = 0;
+	double result4 = 0;
 	
-	for (; offset < bufferEnd; ++i, ++offset)
-		result += (*i) * (*offset);
+	*sampleptr = mono_read_16Bit();	// read sample into buffer
 	
+	// process samples until the end of the sample buffer is hit
+	while(sampleptr < bufferEndptr-3)
+	{
+		result += (*coeffptr++) * (*sampleptr++);
+		result2 += (*coeffptr++) * (*sampleptr++);
+		result3 += (*coeffptr++) * (*sampleptr++);
+		result4 += (*coeffptr++) * (*sampleptr++);
+	}
+	
+	// take care of non-integral leftover iterations
+	if (modunroll>0) result += (*coeffptr++) * (*sampleptr++);
+	if (modunroll>1) result2 += (*coeffptr++) * (*sampleptr++);
+	if (modunroll>2) result3 += (*coeffptr++) * (*sampleptr++);
+	
+    sampleptr = buffer; // wrap pointer to beginning of the buffer
     
-    for (offset = buffer; i < bEnd; ++i, ++offset)
-        result += (*i) * (*offset);
+    // pass the remainder of the buffer (amount of iterations = how many coefficients there are left to process)
+    while (coeffptr < coeffEndptr-3)
+    {
+    	result += (*coeffptr++) * (*sampleptr++);
+		result2 += (*coeffptr++) * (*sampleptr++);
+		result3 += (*coeffptr++) * (*sampleptr++);
+		result4 += (*coeffptr++) * (*sampleptr++);
+    }
+    
+    // take care of non-integral leftover iterations
+	if (modunroll==1) result += (*coeffptr++) * (*sampleptr++);
+	if (modunroll==1 || modunroll==2) result2 += (*coeffptr++) * (*sampleptr++);
+	if (modunroll==1 || modunroll==2 || modunroll==3) result3 += (*coeffptr++) * (*sampleptr++);
+    
+    // sum the accumulators
+    result = result + result2 + result3 + result4;
         
-	// advance index
+	// advance index into circular buffer
 	index = (index == 0) ? N-1 : index-1;
 		
-	mono_write_16Bit(result);	// write
+	mono_write_16Bit(result);	// output sample
 }
