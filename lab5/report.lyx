@@ -1249,10 +1249,9 @@ Code Performance
 \end_layout
 
 \begin_layout Standard
-Profiling the code for filters of order 4, 8, 16, 128, 256 with no optimisations
- and o2 shows the following runtimes.
- Note that the higher order benchmarks are more representative as the static
- cycle nonlinear cost becomes increasingly amortised.
+Profiling the code for filters of order 4, 8, 16 with no optimisations and
+ o2 shows the following runtimes.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1265,7 +1264,7 @@ status collapsed
 \noindent
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="11" columns="3">
+<lyxtabular version="3" rows="7" columns="3">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
@@ -1391,64 +1390,6 @@ none
 \begin_inset Text
 
 \begin_layout Plain Layout
-none
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-128
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-12928
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-none
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-256
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-26263
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
 o2
 \end_layout
 
@@ -1531,64 +1472,6 @@ o2
 \end_inset
 </cell>
 </row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-o2
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-128
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-4193
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-o2
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-256
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-8766
-\end_layout
-
-\end_inset
-</cell>
-</row>
 </lyxtabular>
 
 \end_inset
@@ -1614,16 +1497,12 @@ Direct form II IIR filter runtimes
 \end_layout
 
 \begin_layout Standard
-Solving this with least squares for a constant and per-order cycle costs,
- we get:
+Solving this for a constant and per-order cycle costs, we get:
 \end_layout
 
 \begin_layout Standard
 no optimisations: 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $145.5+101.6\times(order)$
+\begin_inset Formula $208+99\times(order)$
 \end_inset
 
 
@@ -1631,13 +1510,15 @@ no optimisations:
 
 \begin_layout Standard
 o2: 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula $129.2+33.4\times(order)$
+\begin_inset Formula $188+31\times(order)$
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+No surprising results are observed, optimisations reducing both the static
+ and per-order cycle costs.
 \end_layout
 
 \begin_layout Subsection
@@ -1963,8 +1844,10 @@ status open
 Code Performance
 \end_layout
 
-\begin_layout Subsection
-Performance Comparison
+\begin_layout Standard
+Profiling the code for filters of order 4, 8, 16 with no optimisations and
+ o2 shows the following runtimes.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1975,7 +1858,7 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Tabular
-<lyxtabular version="3" rows="11" columns="3">
+<lyxtabular version="3" rows="7" columns="3">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
@@ -2032,7 +1915,7 @@ none
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+298
 \end_layout
 
 \end_inset
@@ -2061,7 +1944,7 @@ none
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+530
 \end_layout
 
 \end_inset
@@ -2090,65 +1973,7 @@ none
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-none
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-128
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-none
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-256
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
+994
 \end_layout
 
 \end_inset
@@ -2177,7 +2002,7 @@ o2
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+146
 \end_layout
 
 \end_inset
@@ -2206,7 +2031,7 @@ o2
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+172
 \end_layout
 
 \end_inset
@@ -2235,65 +2060,7 @@ o2
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-o2
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-128
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-o2
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-256
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
+212
 \end_layout
 
 \end_inset
@@ -2318,13 +2085,379 @@ Direct form II trasnposed IIR filter runtimes
 
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Solving this with least squares for a constant and per-order cycle costs,
+ we get:
+\end_layout
+
+\begin_layout Standard
+no optimisations: 
+\begin_inset Formula $66+58\times(order)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+o2: 
+\begin_inset Formula $120+6\times(order)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Therefore we see that the optimisations are making the loop more efficient
+ but are increasing the static software pipeline setup costs.
+\end_layout
+
+\begin_layout Subsection
+Performance Comparison
+\end_layout
+
+\begin_layout Standard
+Comparing performance of o2 optimised versions for both the direct form
+ II and form II transposed:
+\end_layout
+
+\begin_layout Standard
+form II: 
+\begin_inset Formula $188+31\times(order)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+form II transposed: 
+\begin_inset Formula $120+6\times(order)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we first note that the transposed version is significantly faster and will
+ scale to higher order filters significantly better.
+\end_layout
+
+\begin_layout Standard
+First reason is that the usual form II version has two serial mac loops
+ (breaken into four loops in this implementation), one to accumulate the
+ value to be delayed and the second to calculate the output:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
 \begin_layout Plain Layout
 
+    for (; vPtr < vEnd; ++vPtr, ++aPtr)
+\end_layout
+
+\begin_layout Plain Layout
+
+        *vOffset -= (*aPtr) * (*vPtr); 
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+    for (vPtr = v; aPtr < aEnd; ++vPtr, ++aPtr)
+\end_layout
+
+\begin_layout Plain Layout
+
+        *vOffset -= (*aPtr) * (*vPtr); 
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+    // calculate output y
+\end_layout
+
+\begin_layout Plain Layout
+
+    // y(n) = b0*v(n) + b1*v(n-1) + b2*v(n-2) + ...
+\end_layout
+
+\begin_layout Plain Layout
+
+    for (; vOffset < vEnd; ++vOffset, ++bPtr)   
+\end_layout
+
+\begin_layout Plain Layout
+
+        output += (*bPtr) * (*vOffset);
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+    for (vOffset = v; bPtr < bEnd; ++vOffset, ++bPtr)   
+\end_layout
+
+\begin_layout Plain Layout
+
+        output += (*bPtr) * (*vOffset);
 \end_layout
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Disassembly for one of the four loops' body is as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+0x0000D064:   020C3765            LDDW.D1T1     *A3++[1],A5:A4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D068:   021837E6 ||         LDDW.D2T2     *B6++[1],B5:B4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D06C:   03200364            LDDW.D1T1     *+A8[0],A7:A6
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D070:   00004000            NOP           3
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D074:   02109700            MPYDP.M1X     A5:A4,B5:B4,A5:A4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D078:   00010000            NOP           9
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D07C:   0210C338            SUBDP.L1      A7:A6,A5:A4,A5:A4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D080:   00000000            NOP
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D084:   2003E05A     [ B0]  SUB.L2        B0,1,B0
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D088:   2FFFFC92     [ B0]  B.S2          C$L10 (PC-28 = 0x0000d064)
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D08C:   00004000            NOP           3
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D090:   02200274            STW.D1T1      A4,*+A8[0]
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D094:   02A02274            STW.D1T1      A5,*+A8[1]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Therefore we see that only one C code iteration is performed per a machine
+ level loop iteration.
+ In addition, the setup and drain code for the loops increases the overheads.
+\end_layout
+
+\begin_layout Standard
+The transposed version on the other hand uses one mac loop for operation:
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+    for (; i < N-2; i++)
+\end_layout
+
+\begin_layout Plain Layout
+
+        v[i] = v[i+1] + b[i+1]*x - a[i+1]*y;
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+    v[N-2] = b[N-1]*x - a[N-1]*y;   
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Therefore, at o2, a tight mac loop for the transposed version will scale
+ well to higher order filters, as indeed can be seen from the disassembly
+ of the loop body:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+0x0000CF94:   022437E7            LDDW.D2T2     *B9++[1],B5:B4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CF98:   030C3764 ||         LDDW.D1T1     *A3++[1],A7:A6
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CF9C:   00006000            NOP           4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFA0:   02100703            MPYDP.M2      B1:B0,B5:B4,B5:B4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFA4:   03188700 ||         MPYDP.M1      A5:A4,A7:A6,A7:A6
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFA8:   00006000            NOP           4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFAC:   032033E6            LDDW.D2T2     *++B8[1],B7:B6
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFB0:   00006000            NOP           4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFB4:   0318D31A            ADDDP.L2X     B7:B6,A7:A6,B7:B6
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFB8:   0000A000            NOP           6
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFBC:   0210C33A            SUBDP.L2      B7:B6,B5:B4,B5:B4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFC0:   00000000            NOP
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFC4:   8087E058     [ A1]  SUB.L1        A1,1,A1
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFC8:   8FFFFA90     [ A1]  B.S1          C$L2 (PC-44 = 0x0000cf94)
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFCC:   00004000            NOP           3
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFD0:   022040F6            STW.D2T2      B4,*-B8[2]
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFD4:   02A020F6            STW.D2T2      B5,*-B8[1]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We note that the compiler fit the entire C code loop iteration into one
+ machine level loop iteration, therefore we have much better resource utilisatio
+n and can do all of the following per iteration: three loads, two multiplies,
+ addition, substraction.
+\end_layout
+
+\begin_layout Standard
+There is still a static cost to pay for loop setup for the transposed implementa
+tion, but there are less loops so the penalty is incurred only once.
 \end_layout
 
 \begin_layout Section
