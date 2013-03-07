@@ -455,6 +455,45 @@ reference "sub:Matlab-Single-Pole-Low"
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Part I/analyser.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Spectrum-analyser-output."
+
+\end_inset
+
+Spectrum analyser output.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 The theoretical frequency response estimated by Matlab is given in 
 \begin_inset CommandInset ref
 LatexCommand formatted
@@ -463,7 +502,14 @@ reference "fig:Theoretical-analogue-and"
 \end_inset
 
 , and the measured frequency response of the implementation is given in
- .
+ 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Spectrum-analyser-output."
+
+\end_inset
+
+.
  In general, the gain of the implemented filter behaved according to prediction.
  The phase of the implemented filter, however, has a higher slope, and appears
  to be linear.
