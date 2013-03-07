@@ -404,7 +404,7 @@ Filter Response
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -458,7 +458,7 @@ reference "sub:Matlab-Single-Pole-Low"
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
@@ -616,7 +616,7 @@ Coefficient Computation
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -1199,14 +1199,14 @@ Frequency Response
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
 \align center
 \begin_inset Graphics
 	filename PartII/df2-spectrum.png
-	scale 80
+	scale 50
 
 \end_inset
 
@@ -1241,7 +1241,29 @@ Spectrum output of the Direct Form II implementation.
 \end_layout
 
 \begin_layout Standard
-The frequency resposne of the implemented filter is given in .
+The frequency response of the implemented filter is given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Spectrum-output-of"
+
+\end_inset
+
+.
+ Compared with the expected output from Matlab given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Bandpass-Filter-Frequency"
+
+\end_inset
+
+, we can see that the gain output is generally similar, except for the increased
+ attenuation on the DSK output near the Nyquist frequency.
+ This is due to aliasing caused by the imperfect reconstruction filter on
+ the DSK.
+ The group delay on the output for the DSK also contributes to an increase
+ in the gradient of the phase output, when compared with that predicted
+ by Matlab.
+ 
 \end_layout
 
 \begin_layout Subsubsection
@@ -1249,16 +1271,16 @@ Code Performance
 \end_layout
 
 \begin_layout Standard
-Profiling the code for filters of order 4, 8, 16 with no optimisations and
- o2 shows the following runtimes.
- 
+Profiling the code for filters of order 4, 8, 16 with no optimisatios and
+ o2 shows the following runtimes:
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float table
+placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -1274,7 +1296,7 @@ status collapsed
 \begin_inset Text
 
 \begin_layout Plain Layout
-optimisation level
+Optimisation level
 \end_layout
 
 \end_inset
@@ -1283,7 +1305,7 @@ optimisation level
 \begin_inset Text
 
 \begin_layout Plain Layout
-order of filter
+Order of filter
 \end_layout
 
 \end_inset
@@ -1292,7 +1314,7 @@ order of filter
 \begin_inset Text
 
 \begin_layout Plain Layout
-runtime (cycles)
+Runtime (cycles)
 \end_layout
 
 \end_inset
@@ -1444,7 +1466,7 @@ o2
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1453,7 +1475,7 @@ o2
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1462,7 +1484,7 @@ o2
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -1500,15 +1522,15 @@ Direct form II IIR filter runtimes
 Solving this for a constant and per-order cycle costs, we get:
 \end_layout
 
-\begin_layout Standard
-no optimisations: 
+\begin_layout Itemize
+No optimisations: 
 \begin_inset Formula $208+99\times(order)$
 \end_inset
 
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Itemize
 o2: 
 \begin_inset Formula $188+31\times(order)$
 \end_inset
@@ -1517,8 +1539,8 @@ o2:
 \end_layout
 
 \begin_layout Standard
-No surprising results are observed, optimisations reducing both the static
- and per-order cycle costs.
+No surprising results were observed with optimisations reducing both the
+ static and per-order cycle count.
 \end_layout
 
 \begin_layout Subsection
@@ -1841,6 +1863,72 @@ status open
 \end_layout
 
 \begin_layout Subsubsection
+Frequency Response
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename PartII/df2t-spectrum.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Spectrum-output-transposed"
+
+\end_inset
+
+Spectrum output of the Direct Form II Transposed implementation.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The frequency response of the Direct Form II Transposed implementation on
+ the DSK is given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Spectrum-output-transposed"
+
+\end_inset
+
+.
+ It is generally similar to the frequency response of the Direct Form II
+ implementation given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Spectrum-output-of"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
 Code Performance
 \end_layout
 
@@ -1857,6 +1945,8 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Tabular
 <lyxtabular version="3" rows="7" columns="3">
 <features tabularvalignment="middle">
@@ -1868,7 +1958,7 @@ status open
 \begin_inset Text
 
 \begin_layout Plain Layout
-optimisation level
+Optimisation level
 \end_layout
 
 \end_inset
@@ -1877,7 +1967,7 @@ optimisation level
 \begin_inset Text
 
 \begin_layout Plain Layout
-filter order
+Filter order
 \end_layout
 
 \end_inset
@@ -1886,7 +1976,7 @@ filter order
 \begin_inset Text
 
 \begin_layout Plain Layout
-runtime (cycles)
+Runtime (cycles)
 \end_layout
 
 \end_inset
@@ -2038,7 +2128,7 @@ o2
 </cell>
 </row>
 <row>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2047,7 +2137,7 @@ o2
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2056,7 +2146,7 @@ o2
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2077,7 +2167,7 @@ o2
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Direct form II trasnposed IIR filter runtimes
+Direct form II transposed IIR filter runtimes
 \end_layout
 
 \end_inset
@@ -2095,15 +2185,15 @@ Solving this with least squares for a constant and per-order cycle costs,
  we get:
 \end_layout
 
-\begin_layout Standard
-no optimisations: 
+\begin_layout Itemize
+No optimisations: 
 \begin_inset Formula $66+58\times(order)$
 \end_inset
 
 
 \end_layout
 
-\begin_layout Standard
+\begin_layout Itemize
 o2: 
 \begin_inset Formula $120+6\times(order)$
 \end_inset
@@ -2113,7 +2203,8 @@ o2:
 
 \begin_layout Standard
 Therefore we see that the optimisations are making the loop more efficient
- but are increasing the static software pipeline setup costs.
+ but are increasing the static software pipeline setup cost (the pipeline
+ prologue).
 \end_layout
 
 \begin_layout Subsection
@@ -2125,16 +2216,16 @@ Comparing performance of o2 optimised versions for both the direct form
  II and form II transposed:
 \end_layout
 
-\begin_layout Standard
-form II: 
+\begin_layout Itemize
+Direct Form II: 
 \begin_inset Formula $188+31\times(order)$
 \end_inset
 
 
 \end_layout
 
-\begin_layout Standard
-form II transposed: 
+\begin_layout Itemize
+Direct Form II Transposed: 
 \begin_inset Formula $120+6\times(order)$
 \end_inset
 
@@ -2142,12 +2233,12 @@ form II transposed:
 \end_layout
 
 \begin_layout Standard
-we first note that the transposed version is significantly faster and will
+We first note that the transposed version is significantly faster and will
  scale to higher order filters significantly better.
 \end_layout
 
 \begin_layout Standard
-First reason is that the usual form II version has two serial mac loops
+The first reason is that the usual form II version has two serial mac loops
  (breaken into four loops in this implementation), one to accumulate the
  value to be delayed and the second to calculate the output:
 \end_layout
@@ -2449,7 +2540,7 @@ status open
 \end_layout
 
 \begin_layout Standard
-We note that the compiler fit the entire C code loop iteration into one
+We note that the compiler fits the entire C code loop iteration into one
  machine level loop iteration, therefore we have much better resource utilisatio
 n and can do all of the following per iteration: three loads, two multiplies,
  addition, substraction.
