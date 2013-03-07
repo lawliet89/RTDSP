@@ -1196,8 +1196,10 @@ Code Performance
 \end_layout
 
 \begin_layout Standard
-Profiling the code for filters of order 4, 8, 16 with no optimisations and
- o2 shows the following runtimes:
+Profiling the code for filters of order 4, 8, 16, 128, 256 with no optimisations
+ and o2 shows the following runtimes.
+ Note that the higher order benchmarks are more representative as the static
+ cycle nonlinear cost becomes increasingly amortised.
 \end_layout
 
 \begin_layout Standard
@@ -1210,7 +1212,7 @@ status open
 \noindent
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="7" columns="3">
+<lyxtabular version="3" rows="11" columns="3">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
 <column alignment="center" valignment="top" width="0">
@@ -1336,6 +1338,64 @@ none
 \begin_inset Text
 
 \begin_layout Plain Layout
+none
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+128
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+12928
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+none
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+256
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+26263
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
 o2
 \end_layout
 
@@ -1390,6 +1450,64 @@ o2
 </cell>
 </row>
 <row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+o2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+16
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+679
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+o2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+128
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4193
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
 <cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
@@ -1403,7 +1521,7 @@ o2
 \begin_inset Text
 
 \begin_layout Plain Layout
-16
+256
 \end_layout
 
 \end_inset
@@ -1412,7 +1530,7 @@ o2
 \begin_inset Text
 
 \begin_layout Plain Layout
-679
+8766
 \end_layout
 
 \end_inset
@@ -1443,15 +1561,30 @@ Direct form II IIR filter runtimes
 \end_layout
 
 \begin_layout Standard
-Solving this for a constant and per-order cycle costs, we get:
+Solving this with least squares for a constant and per-order cycle costs,
+ we get:
 \end_layout
 
 \begin_layout Standard
-no optimisations: 208 + 99*(order) cycles
+no optimisations: 
 \end_layout
 
 \begin_layout Standard
-o2: 188 + 31*(order) cycles
+\begin_inset Formula $145.526+101.6\times(order)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+o2: 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $129.248+33.35\times(order)$
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
