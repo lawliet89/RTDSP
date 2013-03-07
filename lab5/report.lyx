@@ -144,6 +144,14 @@ LatexCommand tableofcontents
 \end_layout
 
 \begin_layout Standard
+\begin_inset FloatList figure
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 \begin_inset Newpage pagebreak
 \end_inset
 
@@ -700,7 +708,7 @@ reference "fig:Direct-Form-II"
 
 \end_inset
 
-, the following difference equations are obtained, for a filter or order
+, the following difference equations are obtained, for a filter of order
  
 \begin_inset Formula $N$
 \end_inset
@@ -1230,15 +1238,15 @@ where
 \begin_inset Formula $a_{\lambda}$
 \end_inset
 
-and 
+ and 
 \begin_inset Formula $b_{\lambda}$
 \end_inset
 
-are the coefficients, 
+ are the coefficients, 
 \begin_inset Formula $s_{\lambda}(n)$
 \end_inset
 
- is the
+ is the 
 \begin_inset Formula $\lambda$
 \end_inset
 
