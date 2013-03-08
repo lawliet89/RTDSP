@@ -144,6 +144,14 @@ LatexCommand tableofcontents
 \end_layout
 
 \begin_layout Standard
+\begin_inset FloatList figure
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 \begin_inset Newpage pagebreak
 \end_inset
 
@@ -187,8 +195,8 @@ H(j\omega)=\frac{V_{out}}{V_{in}}=\frac{\frac{1}{j\omega C}}{\frac{1}{j\omega C}
 \end_layout
 
 \begin_layout Standard
-The corner frequency is expected to be 
-\begin_inset Formula $\omega_{c}=\frac{1}{RC}=\frac{1}{1000\times10^{-6}}=1000\unit{rad\unit{s^{-1}}}$
+The corner frequency is expected to be at 
+\begin_inset Formula $\omega_{c}=\frac{1}{RC}=\frac{1}{1000\times10^{-6}}=1000\unit{rad\unit{s^{-1}}\approx160\unit{Hz}}$
 \end_inset
 
 .
@@ -399,9 +407,11 @@ sideways false
 status collapsed
 
 \begin_layout Plain Layout
+\noindent
+\align center
 \begin_inset Graphics
 	filename Part I/filter.png
-	scale 40
+	scale 75
 	rotateAngle 90
 
 \end_inset
@@ -445,6 +455,45 @@ reference "sub:Matlab-Single-Pole-Low"
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename Part I/analyser.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Spectrum-analyser-output."
+
+\end_inset
+
+Spectrum analyser output.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 The theoretical frequency response estimated by Matlab is given in 
 \begin_inset CommandInset ref
 LatexCommand formatted
@@ -453,7 +502,14 @@ reference "fig:Theoretical-analogue-and"
 \end_inset
 
 , and the measured frequency response of the implementation is given in
- .
+ 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Spectrum-analyser-output."
+
+\end_inset
+
+.
  In general, the gain of the implemented filter behaved according to prediction.
  The phase of the implemented filter, however, has a higher slope, and appears
  to be linear.
@@ -467,97 +523,2131 @@ Time Constant Measurement
 \end_layout
 
 \begin_layout Standard
-The high-pass filter at the input port has a 
+The high-pass filter at the output port has a cut-off frequency of approximately
+ 7.2 Hz.
+ Thus, the square wave input should be higher than that, but lower than
+ the cut-off frequency of the low-pass filter at about 160 Hz.
+ A square wave of 100 Hz was thus chosen to measure the time constant.
+ 
 \end_layout
 
 \begin_layout Standard
-The capacitor in this second order filter causes the output to not fall
- immediately to the minimum when the square wave input changes from the
- maximum to the minimum.
- Instead, the output 
-\begin_inset Formula $q(t)$
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename Part I/TEK0005.JPG
+
 \end_inset
 
- decays exponentially according to 
-\begin_inset Formula $q(t)=q_{0}e^{-\nicefrac{t}{\tau}}$
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Square-wave-uses"
+
 \end_inset
 
- where 
-\begin_inset Formula $q_{0}$
+Time constant measurement.
+ Channel 1 (yellow) shows the square wave input, while Channel 2 (turquoise)
+ shows the output from the DSK.
+\end_layout
+
 \end_inset
 
- is the maximum value of the output and 
-\begin_inset Formula $\tau$
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
 \end_inset
 
- is the time constant.
- In this filter, 
-\begin_inset Formula $\tau=RC$
+
+\end_layout
+
+\begin_layout Standard
+A square wave of peak-to-peak voltage of 2.8 V was output to the DSK, as
+ shown in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Square-wave-uses"
+
 \end_inset
 
 .
- Thus the measurement of 
-\begin_inset Formula $\tau$
+ Because of the potential divider at the input port, the input to the DSK
+ code will be halved.
+ Thus, the output from the DSK is expected to be halved.
+ 
+\end_layout
+
+\begin_layout Standard
+The capacitor in this second order filter causes the output to not rise
+ immediately to the maximum when the square wave input changes from the
+ minimum to the maximum.
+ However, because insuffiient time is allowed for the capacitor in the filter
+ to charge and discharge fully, the output from the DSK is less than half
+ of what is expected, as seen in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Square-wave-uses"
+
 \end_inset
 
- would yield the value of the corner frequency 
-\begin_inset Formula $\omega{}_{c}=\nicefrac{1}{\tau}$
-\end_inset
+ where even though the scale of Channel 2 is halved of that of Channel 1,
+ the output never reaches the level of the square wave input.
+ Also, due to the buffers on the DSK, there is a group delay between the
+ input and the output.
+\end_layout
 
-.
- When 
-\begin_inset Formula $t=\tau$
-\end_inset
-
-, 
-\begin_inset Formula $q(t)=q_{0}e^{-1}$
-\end_inset
-
-, and so the time difference between 
-\begin_inset Formula $q(t_{1})=q_{0}$
+\begin_layout Standard
+If 
+\begin_inset Formula $q_{+}$
 \end_inset
 
  and 
-\begin_inset Formula $q(t_{2})=q_{0}e^{-1}$
+\begin_inset Formula $q_{-}$
 \end_inset
 
- will give 
-\begin_inset Formula $\Delta t=t_{2}-t_{1}=\tau$
+ are the maximum and minimum values of the output respectively, then if
+ the output at 
+\begin_inset Formula $t=0$
+\end_inset
+
+ is 
+\begin_inset Formula $q(0)=q_{-}$
+\end_inset
+
+, then while the capacitor is charging, the output at time 
+\begin_inset Formula $t$
+\end_inset
+
+ is given by 
+\begin_inset Formula $q(t)=q_{-}+(q_{+}-q_{-})(1-e^{\nicefrac{t}{\tau}})$
+\end_inset
+
+ where 
+\begin_inset Formula $\tau=RC$
+\end_inset
+
+ is the time constant.
+ Then 
+\begin_inset Formula $q(\tau)=q_{-}+(q_{+}-q_{-})(1-e^{-1})$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+In this case, for the output, at 
+\begin_inset Formula $q(0)=q_{-}\approx-500\unit{mV}$
+\end_inset
+
+.
+ This is higher than the expected 
+\begin_inset Formula $-700\unit{mV}$
+\end_inset
+
+ due to insufficient time for discharging.
+ At 
+\begin_inset Formula $t=0$
+\end_inset
+
+, the square wave input to the DSK goes up to 
+\begin_inset Formula $1.4\unit{V}$
+\end_inset
+
+, or 
+\begin_inset Formula $0.7\unit{V}$
+\end_inset
+
+as seen by the DSK after the potential dividers at the input.
+ Thus, 
+\begin_inset Formula $q_{+}=700\unit{mV}$
+\end_inset
+
+.Then, 
+\begin_inset Formula $q(\tau)\approx259\unit{mV}$
+\end_inset
+
+.
+ From the trace, this works out to be 
+\begin_inset Formula $\tau\approx0.9\unit{ms}$
+\end_inset
+
+, which is slightly lower than expected.
+ The corner frequency is thus calculated to be 
+\begin_inset Formula $\omega_{c}=\nicefrac{1}{\tau}\approx1111\unit{rad}\unit{s^{-1}}$
 \end_inset
 
 .
 \end_layout
 
 \begin_layout Standard
-A square wave of 100 Hz was input to the DSP, and the maximum output at
- 
-\begin_inset Formula $q_{0}=$
-\end_inset
-
- was observed.
- Thus, the time perioid 
-\begin_inset Formula $\Delta t=\unit{\mu s}=\tau$
-\end_inset
-
- was measured.
- The corner frequency 
-\begin_inset Formula $\omega_{c}=\nicefrac{1}{\tau}=\unit{rad}\unit{s^{-1}}$
-\end_inset
-
- was measured.
+This slight difference arises due to the bilinear transform used to convert
+ the filter designed in the S-plane into the Z-plane.
  
 \end_layout
 
 \begin_layout Section
-Bandpass Filter: Direct Form II
+Bandpass Filter
 \end_layout
 
 \begin_layout Subsection
-Coefficient Calculations
+Coefficient Computation
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
 
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename PartII/filter.png
+	scale 50
+	rotateAngle 90
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Bandpass-Filter-Frequency"
+
+\end_inset
+
+Bandpass Filter Frequency Response predicted by Matlab.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Based on the specifications given, the coefficients were generated in Matlab
+ using the code in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:Matlab-Bandpass-Filter"
+
+\end_inset
+
+.
+ Then, the coefficients were written to a header file for inclusion later
+ on.
+ The generated header file is given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:Bandpass-Filter-Coefficient"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The frequency response of this filter, as predicted by Matlab is given in
+ 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Bandpass-Filter-Frequency"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Subsection
+Direct Form II Implementation
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename PartII/df2.png
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Direct-Form-II"
+
+\end_inset
+
+Direct Form II Signal Flow Graph.
+ 
+\begin_inset CommandInset href
+LatexCommand href
+name "Source"
+target "https://ccrma.stanford.edu/~jos/fp/Direct_Form_II.html"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Based on the signal flow graph given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Direct-Form-II"
+
+\end_inset
+
+, the following difference equations are obtained, for a filter of order
+ 
+\begin_inset Formula $N$
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{alignat}{1}
+v(n)= & x(n)-a_{1}v(n-1)-a_{2}v(n-2)-...-a_{N}v(n-N)\label{eq:df2_1}\\
+y(n)= & b_{0}v(n)+b_{1}v(n-1)+b_{2}v(n-2)+...+b_{N}v(n-N)\label{eq:df2_2}
+\end{alignat}
+
+\end_inset
+
+where 
+\begin_inset Formula $a_{n}$
+\end_inset
+
+ and 
+\begin_inset Formula $b_{n}$
+\end_inset
+
+ are the nth coefficients, 
+\begin_inset Formula $x(n)$
+\end_inset
+
+ is the nth input, 
+\begin_inset Formula $y(n)$
+\end_inset
+
+ is the nth output, and 
+\begin_inset Formula $v(n)$
+\end_inset
+
+ is the nth entry in the delay buffer line.
+ This implies that the Direct Form II implemenation only requires one delay
+ buffer.
+ The implementation below reflects these set of equations.
+\end_layout
+
+\begin_layout Subsubsection
+Code Operation
+\end_layout
+
+\begin_layout Standard
+The complete code listing for the implementation can be found in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:Bandpass-Filter-Direct"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The required circular delay buffer 
+\family typewriter
+v
+\family default
+ has its pointer declared in the global scope, followed by a variable 
+\family typewriter
+index
+\family default
+ that is used to indicate the next entry to write to in the circular buffer.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+double *v;  // pointer to the delay line buffer (circular)
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+int index = 0; // index to the circular buffer
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The buffer is then allocated memory from the heap in 
+\family typewriter
+main()
+\family default
+ using the size N that is defined in the coefficient header (see 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:Bandpass-Filter-Coefficient"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+int main(void){
+\end_layout
+
+\begin_layout Plain Layout
+
+  // initialise the delay buffer
+\end_layout
+
+\begin_layout Plain Layout
+
+  v = (double *) calloc(N, sizeof(double)); 
+\end_layout
+
+\begin_layout Plain Layout
+
+  // ...
+ other code
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\family typewriter
+ISR
+\family default
+ calls a function to implement the filter (as recommended in the notes).
+ The function first initialises a series of pointers to the three arrays
+ for use in the MAC loops.
+ 
+\family typewriter
+vOffset
+\family default
+ points to the entry in the circular buffer that is calculated in this invocatio
+n of the filter (i.e.
+ 
+\begin_inset Formula $v(n)$
+\end_inset
+
+) , and 
+\family typewriter
+vPtr
+\family default
+ points to the one after 
+\family typewriter
+vOffset
+\family default
+ (i.e.
+\begin_inset Formula $v(n-1)$
+\end_inset
+
+ ) for calculation according to 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:df2_1"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+   double* vPtr = v + index + 1;         // loop index pointer
+\end_layout
+
+\begin_layout Plain Layout
+
+	double* vOffset = v + index;  // current v to write to
+\end_layout
+
+\begin_layout Plain Layout
+
+    double* vEnd = v+N;   // one element after end of buffer
+\end_layout
+
+\begin_layout Plain Layout
+
+    double* aPtr = a+1;   // pointer to a1 (ao is not used for calculation)
+\end_layout
+
+\begin_layout Plain Layout
+
+    double* aEnd = a+N;   // one element after end of a
+\end_layout
+
+\begin_layout Plain Layout
+
+    double* bPtr = b;     // pointer to b0
+\end_layout
+
+\begin_layout Plain Layout
+
+    double* bEnd = b+N;   // one element after end of b
+\end_layout
+
+\begin_layout Plain Layout
+
+    double output = 0;    // output
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The difference equation given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:df2_1"
+
+\end_inset
+
+ is then calculated.
+ The current 
+\family typewriter
+input(
+\family default
+
+\begin_inset Formula $x(n)$
+\end_inset
+
+) is first written to the dereferenced 
+\family typewriter
+vOffset
+\family default
+ (
+\begin_inset Formula $v(n)$
+\end_inset
+
+).
+ The two 
+\family typewriter
+for
+\family default
+ loops are then used to exploit the circular nature of the 
+\family typewriter
+v
+\family default
+ buffer.
+ This optimisation originates from Lab 4.
+ The first 
+\family typewriter
+for
+\family default
+ loop will calculate all the values in the 
+\family typewriter
+v
+\family default
+ buffer up to the end of the buffer, and then the second 
+\family typewriter
+for
+\family default
+ loop will handle the entries after the buffer loop pointer 
+\family typewriter
+vPtr
+\family default
+ has wrapped back to the start of the buffer.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+    *vOffset = input;	// read and store 
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+	// calculate v for the current input x
+\end_layout
+
+\begin_layout Plain Layout
+
+    // v(n) = x(n) - a1 * v(n-1) - a2 * v(n-2) - ...
+\end_layout
+
+\begin_layout Plain Layout
+
+    for (; vPtr < vEnd; ++vPtr, ++aPtr)
+\end_layout
+
+\begin_layout Plain Layout
+
+        *vOffset -= (*aPtr) * (*vPtr); 
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+    for (vPtr = v; aPtr < aEnd; ++vPtr, ++aPtr)
+\end_layout
+
+\begin_layout Plain Layout
+
+        *vOffset -= (*aPtr) * (*vPtr); 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The 
+\family typewriter
+output
+\family default
+ 
+\begin_inset Formula $y(n)$
+\end_inset
+
+ is then calculated according to 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:df2_2"
+
+\end_inset
+
+ using the same circular buffer technique discussed above.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+    // calculate output y
+\end_layout
+
+\begin_layout Plain Layout
+
+    // y(n) = b0*v(n) + b1*v(n-1) + b2*v(n-2) + ...
+\end_layout
+
+\begin_layout Plain Layout
+
+    for (; vOffset < vEnd; ++vOffset, ++bPtr)   // reuse vOffset pointer
+ now
+\end_layout
+
+\begin_layout Plain Layout
+
+        output += (*bPtr) * (*vOffset);
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+    for (vOffset = v; bPtr < bEnd; ++vOffset, ++bPtr)   // reuse vOffset
+ pointer now
+\end_layout
+
+\begin_layout Plain Layout
+
+        output += (*bPtr) * (*vOffset);
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Finally, the 
+\family typewriter
+index
+\family default
+ is decremented, and wrapped around to the end of the buffer if necessary.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+    // decrement index
+\end_layout
+
+\begin_layout Plain Layout
+
+    index = (index == 0) ? N-1 : index-1;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Frequency Response
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename PartII/df2-spectrum.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Spectrum-output-of"
+
+\end_inset
+
+Spectrum output of the Direct Form II implementation.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The frequency response of the implemented filter is given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Spectrum-output-of"
+
+\end_inset
+
+.
+ Compared with the expected output from Matlab given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Bandpass-Filter-Frequency"
+
+\end_inset
+
+, we can see that the gain output is generally similar, except for the increased
+ attenuation on the DSK output near the Nyquist frequency.
+ This is due to aliasing caused by the imperfect reconstruction filter on
+ the DSK.
+ The group delay on the output for the DSK also contributes to an increase
+ in the gradient of the phase output, when compared with that predicted
+ by Matlab.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Code Performance
+\end_layout
+
+\begin_layout Standard
+Profiling the code for filters of order 4, 8, 16 with no optimisatios and
+ o2 shows the following runtimes:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="7" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Optimisation level
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Order of filter
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Runtime (cycles)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+none
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+604
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+none
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1000
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+none
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+16
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1792
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+o2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+312
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+o2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+436
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+o2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+16
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+679
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Direct form II IIR filter runtimes
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Solving this for a constant and per-order cycle costs, we get:
+\end_layout
+
+\begin_layout Itemize
+No optimisations: 
+\begin_inset Formula $208+99\times(order)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+o2: 
+\begin_inset Formula $188+31\times(order)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+No surprising results were observed with optimisations reducing both the
+ static and per-order cycle count.
+\end_layout
+
+\begin_layout Subsection
+Direct Form II Transposed Implementation
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename PartII/df2t.png
+	width 10cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Direct-Form-II-T"
+
+\end_inset
+
+Direct Form II Transposed Signal Flow Graph.
+ 
+\begin_inset CommandInset href
+LatexCommand href
+name "Source"
+target "https://ccrma.stanford.edu/~jos/fp/Transposed_Direct_Forms.html"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+According to the signal flow digram given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Direct-Form-II-T"
+
+\end_inset
+
+, the following equations can be derived:
+\begin_inset Formula 
+\begin{alignat}{1}
+y(n)= & s_{1}(n)+b_{0}x(n)\label{eq:df2t-1}\\
+s_{\lambda}(n)= & \begin{cases}
+s_{\lambda+1}(n-1)+b_{\lambda}x(n-1)-a_{\lambda}y(n-1) & \lambda\in[1,N)\\
+b_{\lambda}x(n-1)-a_{\lambda}y(n-1) & \lambda=N
+\end{cases}\label{eq:df2t-2}
+\end{alignat}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $N$
+\end_inset
+
+ is the order of the IIR filter, 
+\begin_inset Formula $a_{\lambda}$
+\end_inset
+
+ and 
+\begin_inset Formula $b_{\lambda}$
+\end_inset
+
+ are the coefficients, 
+\begin_inset Formula $s_{\lambda}(n)$
+\end_inset
+
+ is the 
+\begin_inset Formula $\lambda$
+\end_inset
+
+th entry in the buffer for the nth input, 
+\begin_inset Formula $x(n)$
+\end_inset
+
+ is the nth input, and 
+\begin_inset Formula $y(n)$
+\end_inset
+
+ is the nth output.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Code Operation
+\end_layout
+
+\begin_layout Standard
+For the implementation, the 
+\begin_inset Formula $s$
+\end_inset
+
+ buffer given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:df2t-1"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:df2t-2"
+
+\end_inset
+
+ is renamed to 
+\family typewriter
+v
+\family default
+.
+ The code listing can be found in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:Bandpass-Filter-Direct-1"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+A pointer to the buffer was declared in global context, and initialised
+ in 
+\family typewriter
+main().
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+double *v;  // pointer to the buffer
+\end_layout
+
+\begin_layout Plain Layout
+
+//...
+\end_layout
+
+\begin_layout Plain Layout
+
+int main(void){
+\end_layout
+
+\begin_layout Plain Layout
+
+  // initialise the buffer
+\end_layout
+
+\begin_layout Plain Layout
+
+  v = (double *) calloc(N-1, sizeof(double));
+\end_layout
+
+\begin_layout Plain Layout
+
+  //...
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The function for the filter in this case is very simple.
+ The usual variables are first set up.
+ The buffer values for the 
+\begin_inset Formula $n+1$
+\end_inset
+
+th iteration is calculated during the 
+\begin_inset Formula $n$
+\end_inset
+
+th iteration.
+ The filter firsts calculates 
+\begin_inset Formula $y(n)$
+\end_inset
+
+ according to 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:df2t-1"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+    double y = 0;   // output
+\end_layout
+
+\begin_layout Plain Layout
+
+    int i = 0;  // loop index
+\end_layout
+
+\begin_layout Plain Layout
+
+	y = v[0] + b[0]*x;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The buffer 
+\family typewriter
+v
+\family default
+ for the next iteration is then calculated according to the first case of
+ 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:df2t-2"
+
+\end_inset
+
+.
+ 
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+    // update buffer for next iteration
+\end_layout
+
+\begin_layout Plain Layout
+
+    for (; i < N-2; i++)
+\end_layout
+
+\begin_layout Plain Layout
+
+        v[i] = v[i+1] + b[i+1]*x - a[i+1]*y;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Finally, the second case of
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:df2t-2"
+
+\end_inset
+
+ is calculated.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+    v[N-2] = b[N-1]*x - a[N-1]*y;  
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Frequency Response
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename PartII/df2t-spectrum.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Spectrum-output-transposed"
+
+\end_inset
+
+Spectrum output of the Direct Form II Transposed implementation.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The frequency response of the Direct Form II Transposed implementation on
+ the DSK is given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Spectrum-output-transposed"
+
+\end_inset
+
+.
+ It is generally similar to the frequency response of the Direct Form II
+ implementation given in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:Spectrum-output-of"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Code Performance
+\end_layout
+
+\begin_layout Standard
+Profiling the code for filters of order 4, 8, 16 with no optimisations and
+ o2 shows the following runtimes.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="7" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Optimisation level
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Filter order
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Runtime (cycles)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+none
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+298
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+none
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+530
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+none
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+16
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+994
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+o2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+146
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+o2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+172
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+o2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+16
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+212
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Direct form II transposed IIR filter runtimes
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Solving this with least squares for a constant and per-order cycle costs,
+ we get:
+\end_layout
+
+\begin_layout Itemize
+No optimisations: 
+\begin_inset Formula $66+58\times(order)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+o2: 
+\begin_inset Formula $120+6\times(order)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Therefore we see that the optimisations are making the loop more efficient
+ but are increasing the static software pipeline setup cost (the pipeline
+ prologue).
+\end_layout
+
+\begin_layout Subsection
+Performance Comparison
+\end_layout
+
+\begin_layout Standard
+Comparing performance of o2 optimised versions for both the direct form
+ II and form II transposed:
+\end_layout
+
+\begin_layout Itemize
+Direct Form II: 
+\begin_inset Formula $188+31\times(order)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Direct Form II Transposed: 
+\begin_inset Formula $120+6\times(order)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We first note that the transposed version is significantly faster and will
+ scale to higher order filters significantly better.
+\end_layout
+
+\begin_layout Standard
+The first reason is that the usual form II version has two serial mac loops
+ (breaken into four loops in this implementation), one to accumulate the
+ value to be delayed and the second to calculate the output:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+    for (; vPtr < vEnd; ++vPtr, ++aPtr)
+\end_layout
+
+\begin_layout Plain Layout
+
+        *vOffset -= (*aPtr) * (*vPtr); 
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+    for (vPtr = v; aPtr < aEnd; ++vPtr, ++aPtr)
+\end_layout
+
+\begin_layout Plain Layout
+
+        *vOffset -= (*aPtr) * (*vPtr); 
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+    // calculate output y
+\end_layout
+
+\begin_layout Plain Layout
+
+    // y(n) = b0*v(n) + b1*v(n-1) + b2*v(n-2) + ...
+\end_layout
+
+\begin_layout Plain Layout
+
+    for (; vOffset < vEnd; ++vOffset, ++bPtr)   
+\end_layout
+
+\begin_layout Plain Layout
+
+        output += (*bPtr) * (*vOffset);
+\end_layout
+
+\begin_layout Plain Layout
+
+        
+\end_layout
+
+\begin_layout Plain Layout
+
+    for (vOffset = v; bPtr < bEnd; ++vOffset, ++bPtr)   
+\end_layout
+
+\begin_layout Plain Layout
+
+        output += (*bPtr) * (*vOffset);
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Disassembly for one of the four loops' body is as follows:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+0x0000D064:   020C3765            LDDW.D1T1     *A3++[1],A5:A4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D068:   021837E6 ||         LDDW.D2T2     *B6++[1],B5:B4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D06C:   03200364            LDDW.D1T1     *+A8[0],A7:A6
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D070:   00004000            NOP           3
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D074:   02109700            MPYDP.M1X     A5:A4,B5:B4,A5:A4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D078:   00010000            NOP           9
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D07C:   0210C338            SUBDP.L1      A7:A6,A5:A4,A5:A4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D080:   00000000            NOP
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D084:   2003E05A     [ B0]  SUB.L2        B0,1,B0
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D088:   2FFFFC92     [ B0]  B.S2          C$L10 (PC-28 = 0x0000d064)
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D08C:   00004000            NOP           3
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D090:   02200274            STW.D1T1      A4,*+A8[0]
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000D094:   02A02274            STW.D1T1      A5,*+A8[1]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Therefore we see that only one C code iteration is performed per a machine
+ level loop iteration.
+ In addition, the setup and drain code for the loops increases the overheads.
+\end_layout
+
+\begin_layout Standard
+The transposed version on the other hand uses one mac loop for operation:
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+    for (; i < N-2; i++)
+\end_layout
+
+\begin_layout Plain Layout
+
+        v[i] = v[i+1] + b[i+1]*x - a[i+1]*y;
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\end_layout
+
+\begin_layout Plain Layout
+
+    v[N-2] = b[N-1]*x - a[N-1]*y;   
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Therefore, at o2, a tight mac loop for the transposed version will scale
+ well to higher order filters, as indeed can be seen from the disassembly
+ of the loop body:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+0x0000CF94:   022437E7            LDDW.D2T2     *B9++[1],B5:B4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CF98:   030C3764 ||         LDDW.D1T1     *A3++[1],A7:A6
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CF9C:   00006000            NOP           4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFA0:   02100703            MPYDP.M2      B1:B0,B5:B4,B5:B4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFA4:   03188700 ||         MPYDP.M1      A5:A4,A7:A6,A7:A6
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFA8:   00006000            NOP           4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFAC:   032033E6            LDDW.D2T2     *++B8[1],B7:B6
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFB0:   00006000            NOP           4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFB4:   0318D31A            ADDDP.L2X     B7:B6,A7:A6,B7:B6
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFB8:   0000A000            NOP           6
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFBC:   0210C33A            SUBDP.L2      B7:B6,B5:B4,B5:B4
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFC0:   00000000            NOP
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFC4:   8087E058     [ A1]  SUB.L1        A1,1,A1
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFC8:   8FFFFA90     [ A1]  B.S1          C$L2 (PC-44 = 0x0000cf94)
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFCC:   00004000            NOP           3
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFD0:   022040F6            STW.D2T2      B4,*-B8[2]
+\end_layout
+
+\begin_layout Plain Layout
+
+0x0000CFD4:   02A020F6            STW.D2T2      B5,*-B8[1]
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We note that the compiler fits the entire C code loop iteration into one
+ machine level loop iteration, therefore we have much better resource utilisatio
+n and can do all of the following per iteration: three loads, two multiplies,
+ addition, substraction.
+\end_layout
+
+\begin_layout Standard
+There is still a static cost to pay for loop setup for the transposed implementa
+tion, but there are less loops so the penalty is incurred only once.
 \end_layout
 
 \begin_layout Section
@@ -572,7 +2662,7 @@ name "sub:Matlab-Single-Pole-Low"
 
 \end_inset
 
-Matlab Single-Pole Low Pass Filter Code
+Matlab Single-Pole Low Pass Filter Coefficient Calculation
 \end_layout
 
 \begin_layout Standard
@@ -600,6 +2690,87 @@ Single-Pole Low Pass Filter Code
 \begin_inset CommandInset include
 LatexCommand lstinputlisting
 filename "RTDSP/single-pole.c"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Matlab-Bandpass-Filter"
+
+\end_inset
+
+Matlab Bandpass Filter Coefficient Calculation
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "PartII/design.m"
+lstparams "language=Matlab"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Bandpass-Filter-Coefficient"
+
+\end_inset
+
+Bandpass Filter Coefficient Header
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "PartII/coeff.h"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Bandpass-Filter-Direct"
+
+\end_inset
+
+Bandpass Filter Direct Form II Implementation
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "RTDSP/direct-form-ii.c"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Bandpass-Filter-Direct-1"
+
+\end_inset
+
+Bandpass Filter Direct Form II Transposed Implementation
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "RTDSP/direct-form-ii-transposed.c"
 
 \end_inset
 
