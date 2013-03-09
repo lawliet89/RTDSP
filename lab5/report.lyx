@@ -599,8 +599,8 @@ The capacitor in this second order filter causes the output to not rise
  immediately to the maximum when the square wave input changes from the
  minimum to the maximum.
  However, because insuffiient time is allowed for the capacitor in the filter
- to charge and discharge fully, the output from the DSK is less than half
- of what is expected, as seen in 
+ to charge and discharge fully, the output from the DSK is less than what
+ is expected, as seen in 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "fig:Square-wave-uses"
