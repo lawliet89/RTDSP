@@ -61,7 +61,6 @@
 #define NOISE_TIME 10	// the time, in seconds for the period of time that we are keeping the buffers for
 #define NOISE_SAMPLES_PER_SUBBUF (NOISE_TIME*FSAMP/NOISE_BUFFER_NUM)	// the number of samples before the noise buffers are rotated
 #define NOISE_LAMBDA 0.05f
-#define NOISE_OVERSUBTRACTION 20.f;
 
 /******************************* Global declarations ********************************/
 
@@ -96,8 +95,12 @@ volatile int io_ptr=0;              /* Input/ouput pointer for circular buffers 
 volatile int frame_ptr=0;           /* Frame pointer */
 
 float *noiseBuffer;					// the noise buffer
+float *noiseEstimateBuffer;		// noise LPF estimate Buffer
 volatile int noiseSubbufIndex = 0;		// noise buffer pointer
 volatile int sampleCount = 0;	// the number of samples
+float noiseK;
+float NOISE_OVERSUBTRACTION = 2.f;
+float NOISE_LPF_TIME_CONSTANT = 0.04;		//20-80 ms
  /******************************* Function prototypes *******************************/
 void init_hardware(void);    	/* Initialize codec */ 
 void init_HWI(void);            /* Initialize hardware interrupts */
@@ -120,6 +123,8 @@ void main()
     outwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Output window */
     
     noiseBuffer		= (float *) calloc(NOISE_BUFFER_NUM*FFTLEN, sizeof(float));
+    noiseEstimateBuffer = (float *) calloc(FFTLEN, sizeof(float));
+    noiseK = exp(-1.f*TFRAME/NOISE_LPF_TIME_CONSTANT);
 	
 	/* initialize board and the audio port */
   	init_hardware();
@@ -183,8 +188,10 @@ void process_frame(void)
 {
 	int i, j, k, m; 	// various loop counters
 	float g, n;	// noise subtraction
+	float x;
 	
 	int io_ptr0;   
+	noiseK = exp(-1.f*TFRAME/NOISE_LPF_TIME_CONSTANT);
 
 	/* work out fraction of available CPU time used by algorithm */    
 	cpufrac = ((float) (io_ptr & (FRAMEINC - 1)))/FRAMEINC;  
@@ -224,16 +231,21 @@ void process_frame(void)
 		noiseSubbufIndex = (noiseSubbufIndex == NOISE_BUFFER_NUM-1) ? 0 : noiseSubbufIndex+1;
 		sampleCount = 0;
 		
-		for (i = 0; i < FFTLEN; i++)
-			*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  cabs(*(inframe+i));
+		for (i = 0; i < FFTLEN; i++){
+			x = cabs(*(inframe + i));
+			*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
+			*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  *(noiseEstimateBuffer + i);
+		}
 		
 	}
 	else
 	{
 		for (i = 0; i < FFTLEN; i++)
 		{
-			if (cabs(*(inframe + i)) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
-				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = cabs(*(inframe + i));
+			x = cabs(*(inframe + i));
+			*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
+			if (*(noiseEstimateBuffer + i) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
+				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = *(noiseEstimateBuffer + i);
 		}
 	}
 	
