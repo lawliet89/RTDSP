@@ -246,6 +246,7 @@ void process_frame(void)
 			if (*(noise+j*FFTLEN+i) < n) 
 				n = *(noise+j*FFTLEN+i);
 		}
+		n*=20;
 		
 		// calculate g
 		g = 1.f -  n/cabs(*(inframe +i));
