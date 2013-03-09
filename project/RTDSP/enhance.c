@@ -60,7 +60,7 @@
 #define NOISE_BUFFER_NUM 4		// this is the number of noise buffers we are keeping
 #define NOISE_TIME 10	// the time, in seconds for the period of time that we are keeping the buffers for
 #define NOISE_SAMPLES_PER_SUBBUF (NOISE_TIME*FSAMP/NOISE_BUFFER_NUM)	// the number of samples before the noise buffers are rotated
-#define NOISE_LAMBDA 0.05f
+
 
 /******************************* Global declarations ********************************/
 
@@ -99,8 +99,17 @@ float *noiseEstimateBuffer;		// noise LPF estimate Buffer
 volatile int noiseSubbufIndex = 0;		// noise buffer pointer
 volatile int sampleCount = 0;	// the number of samples
 float noiseK;
+
+// Filter numbers to tweak
 float NOISE_OVERSUBTRACTION = 2.f;
 float NOISE_LPF_TIME_CONSTANT = 0.04;		//20-80 ms
+float NOISE_LAMBDA = 0.05f;
+
+// Enhancement switches
+short enhancement1 = 1;
+short g_calc_type = 0;
+
+
  /******************************* Function prototypes *******************************/
 void init_hardware(void);    	/* Initialize codec */ 
 void init_HWI(void);            /* Initialize hardware interrupts */
@@ -189,6 +198,7 @@ void process_frame(void)
 	int i, j, k, m; 	// various loop counters
 	float g, n;	// noise subtraction
 	float x;
+	float temp;
 	
 	int io_ptr0;   
 	noiseK = exp(-1.f*TFRAME/NOISE_LPF_TIME_CONSTANT);
@@ -231,10 +241,17 @@ void process_frame(void)
 		noiseSubbufIndex = (noiseSubbufIndex == NOISE_BUFFER_NUM-1) ? 0 : noiseSubbufIndex+1;
 		sampleCount = 0;
 		
-		for (i = 0; i < FFTLEN; i++){
-			x = cabs(*(inframe + i));
-			*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
-			*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  *(noiseEstimateBuffer + i);
+		for (i = 0; i < FFTLEN; i++)
+		{
+			if (enhancement1)
+			{
+				x = cabs(*(inframe + i));
+				*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
+				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  *(noiseEstimateBuffer + i);
+			}
+			else{
+				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  cabs(*(inframe+i));
+			}
 		}
 		
 	}
@@ -242,10 +259,16 @@ void process_frame(void)
 	{
 		for (i = 0; i < FFTLEN; i++)
 		{
-			x = cabs(*(inframe + i));
-			*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
-			if (*(noiseEstimateBuffer + i) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
-				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = *(noiseEstimateBuffer + i);
+			if (enhancement1){
+				x = cabs(*(inframe + i));
+				*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
+				if (*(noiseEstimateBuffer + i) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
+					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = *(noiseEstimateBuffer + i);
+			}
+			else{
+				if (cabs(*(inframe + i)) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
+					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = cabs(*(inframe + i));
+			}
 		}
 	}
 	
@@ -262,8 +285,16 @@ void process_frame(void)
 		n *= NOISE_OVERSUBTRACTION;
 		
 		// calculate g
-		g = 1.f -  n/cabs(*(inframe + i));
-		g = (g < NOISE_LAMBDA) ? NOISE_LAMBDA : g;
+		if (g_calc_type==0) 
+		{
+			g = 1.f -  n/cabs(*(inframe + i));
+			g = (g < NOISE_LAMBDA) ? NOISE_LAMBDA : g;
+		}
+		else
+		{
+			temp =  n/cabs(*(inframe + i));
+			g = (1-temp < NOISE_LAMBDA*temp) ? NOISE_LAMBDA*temp : 1-temp;				
+		}
 		
 		*(outframe + i) = rmul(g, *(inframe + i));
 	}
