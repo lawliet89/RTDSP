@@ -54,7 +54,7 @@ customHeadersFooters
 
 \graphics default
 \default_output_format pdf5
-\output_sync 1
+\output_sync 0
 \bibtex_command default
 \index_command default
 \paperfontsize default
@@ -1298,14 +1298,14 @@ Frequency Response
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
 \align center
 \begin_inset Graphics
 	filename PartII/df2-spectrum.png
-	scale 50
+	scale 56
 
 \end_inset
 
@@ -1969,14 +1969,14 @@ Frequency Response
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
 \align center
 \begin_inset Graphics
 	filename PartII/df2t-spectrum.png
-	scale 50
+	scale 56
 
 \end_inset
 
@@ -2039,6 +2039,7 @@ Profiling the code for filters of order 4, 8, 16 with no optimisations and
 
 \begin_layout Standard
 \begin_inset Float table
+placement H
 wide false
 sideways false
 status open
