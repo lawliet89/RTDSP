@@ -107,6 +107,7 @@ float NOISE_LAMBDA = 0.05f;
 
 // Enhancement switches
 short enhancement1 = 1;
+short enhancement2 = 1;		// you MUST have enhacement1 on too.
 short g_calc_type = 0;
 
 
@@ -246,8 +247,13 @@ void process_frame(void)
 			if (enhancement1)
 			{
 				x = cabs(*(inframe + i));
+				if (enhancement2)
+					x = x*x;
 				*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
-				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  *(noiseEstimateBuffer + i);
+				if (enhancement2)
+					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = sqrt( *(noiseEstimateBuffer + i) );
+				else
+					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = *(noiseEstimateBuffer + i) ;
 			}
 			else{
 				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  cabs(*(inframe+i));
@@ -261,9 +267,19 @@ void process_frame(void)
 		{
 			if (enhancement1){
 				x = cabs(*(inframe + i));
+				if (enhancement2)
+					x = x*x;
 				*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
-				if (*(noiseEstimateBuffer + i) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
-					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = *(noiseEstimateBuffer + i);
+				if (enhancement2)
+				{
+					if ( sqrt(*(noiseEstimateBuffer + i)) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
+						*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = sqrt(*(noiseEstimateBuffer + i));
+				}
+				else
+				{
+					if (*(noiseEstimateBuffer + i) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
+						*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = *(noiseEstimateBuffer + i);
+				}
 			}
 			else{
 				if (cabs(*(inframe + i)) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
