@@ -221,6 +221,7 @@ void process_frame(void)
 	if (sampleCount >= NOISE_SAMPLE_THRESHOLD) // time to rotate noise buffer
 	{ 
 		noisePtr = (noisePtr == NOISE_NUM-1) ? 0 : noisePtr+1;
+		sampleCount = 0;
 		
 		for (i = 0; i < FFTLEN; i++)
 			*(noise+noisePtr*FFTLEN+i) =  cabs(*(inframe+i));
