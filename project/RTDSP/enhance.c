@@ -56,6 +56,12 @@
 #define PI 3.141592653589793
 #define TFRAME FRAMEINC/FSAMP       /* time between calculation of each frame */
 
+// Noise Minimum Buffer Related
+#define NOISE_NUM 4		// this is the number of noise buffers we are keeping
+#define NOISE_TIME 10	// the time, in seconds for the period of time that we are keeping the buffers for
+#define NOISE_SAMPLE_THRESHOLD (NOISE_TIME*FSAMP/NOISE_NUM)	// the number of samples before the noise buffers are rotated
+#define NOISE_LAMBDA 0.05f
+
 /******************************* Global declarations ********************************/
 
 /* Audio port configuration settings: these values set registers in the AIC23 audio 
@@ -88,6 +94,9 @@ float cpufrac; 						/* Fraction of CPU time used */
 volatile int io_ptr=0;              /* Input/ouput pointer for circular buffers */
 volatile int frame_ptr=0;           /* Frame pointer */
 
+float *noise;					// the noise buffer
+volatile int noisePtr = 0;		// noise buffer pointer
+volatile int sampleCount = 0;	// the number of samples
  /******************************* Function prototypes *******************************/
 void init_hardware(void);    	/* Initialize codec */ 
 void init_HWI(void);            /* Initialize hardware interrupts */
@@ -108,6 +117,8 @@ void main()
     outframe	= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
     inwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Input window */
     outwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Output window */
+    
+    noise		= (float *) calloc(NOISE_NUM*FFTLEN, sizeof(float));
 	
 	/* initialize board and the audio port */
   	init_hardware();
@@ -169,7 +180,9 @@ void init_HWI(void)
 /******************************** process_frame() ***********************************/  
 void process_frame(void)
 {
-	int k, m; 
+	int i, j, k, m; 	// various loop counters
+	float g,n;	// noise subtraction
+	
 	int io_ptr0;   
 
 	/* work out fraction of available CPU time used by algorithm */    
@@ -191,20 +204,56 @@ void process_frame(void)
     for (k=0;k<FFTLEN;k++)
 	{                           
 		inframe[k].r = inbuffer[m] * inwin[k]; 
+		inframe[k].i = 0.f;
 		if (++m >= CIRCBUF) m=0; /* wrap if required */
 	} 
 	
 	/************************* DO PROCESSING OF FRAME  HERE **************************/
-	
-	
-	/* please add your code, at the moment the code simply copies the input to the 
-	ouptut with no processing */	 
-							      	
-						
-    for (k=0;k<FFTLEN;k++)
+				
+/*    for (k=0;k<FFTLEN;k++)
 	{                           
-		outframe[k].r = inframe[k].r;/* copy input straight into output */ 
-	} 
+		outframe[k].r = inframe[k].r;
+	} */
+	
+	fft(FFTLEN, inframe);	// perform FFT of this frame
+	
+	// Noise minimum buffer handling
+	if (sampleCount >= NOISE_SAMPLE_THRESHOLD) // time to rotate noise buffer
+	{ 
+		noisePtr = (noisePtr == NOISE_NUM-1) ? 0 : noisePtr+1;
+		
+		for (i = 0; i < FFTLEN; i++)
+			*(noise+noisePtr*FFTLEN+i) =  cabs(*(inframe+i));
+		
+	}
+	else
+	{
+		for (i = 0; i < FFTLEN; i++)
+		{
+			if (cabs(*(inframe+i)) < *(noise+noisePtr*FFTLEN+i))
+				*(noise+noisePtr*FFTLEN+i) = cabs(*(inframe+i));
+		}
+	}
+	
+	// Now we will subtract the noise
+	for (i = 0; i < FFTLEN; i++)
+	{
+		n = *(noise+i);
+		// determine the noise min for this frequency bin
+		for (j = 1; j < NOISE_NUM; j++)
+		{
+			if (*(noise+j*FFTLEN+i) < n) 
+				n = *(noise+j*FFTLEN+i);
+		}
+		
+		// calculate g
+		g = 1.f -  n/cabs(*(inframe +i));
+		g = (g < NOISE_LAMBDA) ? NOISE_LAMBDA : g;
+		
+		*(outframe +i) = rmul(g, *(inframe +i));
+	}
+	
+	ifft(FFTLEN, outframe);
 	
 	/********************************************************************************/
 	
@@ -240,6 +289,7 @@ void ISR_AIC(void)
 	/* update io_ptr and check for buffer wraparound */    
 	
 	if (++io_ptr >= CIRCBUF) io_ptr=0;
+	sampleCount++;
 }
 
 /************************************************************************************/
