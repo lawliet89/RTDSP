@@ -81,7 +81,7 @@ DSK6713_AIC23_Config Config = { \
 DSK6713_AIC23_CodecHandle H_Codec;
 
 float *inbuffer, *outbuffer;   		/* Input/output circular buffers */
-float *inframe, *outframe;          /* Input and output frames */
+complex *inframe, *outframe;          /* Input and output frames */
 float *inwin, *outwin;              /* Input and output windows */
 float ingain, outgain;				/* ADC and DAC gains */ 
 float cpufrac; 						/* Fraction of CPU time used */
@@ -104,8 +104,8 @@ void main()
 
 	inbuffer	= (float *) calloc(CIRCBUF, sizeof(float));	/* Input array */
     outbuffer	= (float *) calloc(CIRCBUF, sizeof(float));	/* Output array */
-	inframe		= (float *) calloc(FFTLEN, sizeof(float));	/* Array for processing*/
-    outframe	= (float *) calloc(FFTLEN, sizeof(float));	/* Array for processing*/
+	inframe		= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
+    outframe	= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
     inwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Input window */
     outwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Output window */
 	
@@ -190,7 +190,7 @@ void process_frame(void)
 	m=io_ptr0;
     for (k=0;k<FFTLEN;k++)
 	{                           
-		inframe[k] = inbuffer[m] * inwin[k]; 
+		inframe[k].r = inbuffer[m] * inwin[k]; 
 		if (++m >= CIRCBUF) m=0; /* wrap if required */
 	} 
 	
@@ -200,10 +200,10 @@ void process_frame(void)
 	/* please add your code, at the moment the code simply copies the input to the 
 	ouptut with no processing */	 
 							      	
-										
+						
     for (k=0;k<FFTLEN;k++)
 	{                           
-		outframe[k] = inframe[k];/* copy input straight into output */ 
+		outframe[k].r = inframe[k].r;/* copy input straight into output */ 
 	} 
 	
 	/********************************************************************************/
@@ -214,12 +214,12 @@ void process_frame(void)
     
     for (k=0;k<(FFTLEN-FRAMEINC);k++) 
 	{    										/* this loop adds into outbuffer */                       
-	  	outbuffer[m] = outbuffer[m]+outframe[k]*outwin[k];   
+	  	outbuffer[m] = outbuffer[m]+outframe[k].r*outwin[k];   
 		if (++m >= CIRCBUF) m=0; /* wrap if required */
 	}         
     for (;k<FFTLEN;k++) 
 	{                           
-		outbuffer[m] = outframe[k]*outwin[k];   /* this loop over-writes outbuffer */        
+		outbuffer[m] = outframe[k].r*outwin[k];   /* this loop over-writes outbuffer */        
 	    m++;
 	}	                                   
 }        
