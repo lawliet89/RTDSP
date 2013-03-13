@@ -229,11 +229,6 @@ void process_frame(void)
 	
 	/************************* DO PROCESSING OF FRAME  HERE **************************/
 				
-/*    for (k=0;k<FFTLEN;k++)
-	{                           
-		outframe[k].r = inframe[k].r;
-	} */
-	
 	fft(FFTLEN, inframe);	// perform FFT of this frame
 	
 	// Noise minimum buffer handling
@@ -246,17 +241,17 @@ void process_frame(void)
 		{
 			if (enhancement1)
 			{
-				x = cabs(*(inframe + i));
+				x = cabs(inframe[i]);
 				if (enhancement2)
 					x = x*x;
-				*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
+				noiseEstimateBuffer[i] = (1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]);
 				if (enhancement2)
-					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = sqrt( *(noiseEstimateBuffer + i) );
+					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = sqrt( noiseEstimateBuffer[i] );
 				else
-					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = *(noiseEstimateBuffer + i) ;
+					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = noiseEstimateBuffer[i] ;
 			}
 			else{
-				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  cabs(*(inframe+i));
+				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  cabs(inframe[i]);
 			}
 		}
 		
@@ -269,16 +264,16 @@ void process_frame(void)
 				x = cabs(*(inframe + i));
 				if (enhancement2)
 					x = x*x;
-				*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
+				noiseEstimateBuffer[i] = (1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]);
 				if (enhancement2)
 				{
-					if ( sqrt(*(noiseEstimateBuffer + i)) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
-						*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = sqrt(*(noiseEstimateBuffer + i));
+					if ( sqrt(noiseEstimateBuffer[i]) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
+						*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = sqrt(noiseEstimateBuffer[i]);
 				}
 				else
 				{
-					if (*(noiseEstimateBuffer + i) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
-						*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = *(noiseEstimateBuffer + i);
+					if (noiseEstimateBuffer[i] < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
+						*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = noiseEstimateBuffer[i];
 				}
 			}
 			else{
@@ -303,16 +298,16 @@ void process_frame(void)
 		// calculate g
 		if (g_calc_type==0) 
 		{
-			g = 1.f -  n/cabs(*(inframe + i));
+			g = 1.f -  n/cabs(inframe[i]);
 			g = (g < NOISE_LAMBDA) ? NOISE_LAMBDA : g;
 		}
 		else
 		{
-			temp =  n/cabs(*(inframe + i));
+			temp =  n/cabs(inframe[i]);
 			g = (1-temp < NOISE_LAMBDA*temp) ? NOISE_LAMBDA*temp : 1-temp;				
 		}
 		
-		*(outframe + i) = rmul(g, *(inframe + i));
+		outframe[i] = rmul(g, inframe[i]);
 	}
 	
 	ifft(FFTLEN, outframe);
