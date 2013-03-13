@@ -304,16 +304,22 @@ void process_frame(void)
 	{	
 		x = cabs(inframe[i]);
 		
+		noise_vote = x; //default
+		
+		////////////////////////////////////////////////////////////////////////////
 		// Optional enhancements
-		if (enhancement1) // LPF the FFT bins
+		if (enhancement1 && !enhancement2) // LPF the FFT bins
 		{
 			noise_vote = (1-freqLPF_K)*x + freqLPF_K*(previousFFTvalue[i]);	
 			previousFFTvalue[i] = noise_vote;
 		}
-		else
+		if (enhancement2) // power domain LPF of FFT bins
 		{
-			noise_vote = x; //default
+			noise_vote = sqrt((1-freqLPF_K)*x*x + freqLPF_K*(previousFFTvalue[i]*previousFFTvalue[i]));	
+			previousFFTvalue[i] = noise_vote;
 		}
+		////////////////////////////////////////////////////////////////////////////
+
 		
 		// if M buffers rotated -> overwrite bin with new vote
 		// store the minimum of the current noise value in M0 and the new bin value
