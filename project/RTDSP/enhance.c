@@ -232,7 +232,7 @@ void process_frame(void)
 		if (enhancement1)			// Enhancement 1
 		{
 			for (i = 0; i < FFTLEN; i++){
-				x = cabs(*(inframe + i));		// LPF filtering
+				x = cabs(inframe[i]);		// LPF filtering
 				*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
 				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  *(noiseEstimateBuffer + i);
 			}
@@ -240,7 +240,7 @@ void process_frame(void)
 		else		// no enhancements
 		{
 			for (i = 0; i < FFTLEN; i++)
-				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  cabs(*(inframe+i));
+				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  cabs(inframe[i]);
 		}
 		
 	}
@@ -250,7 +250,7 @@ void process_frame(void)
 		{
 			for (i = 0; i < FFTLEN; i++)
 			{
-				x = cabs(*(inframe + i));
+				x = cabs(inframe[i]);
 				*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
 				if (*(noiseEstimateBuffer + i) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
 					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = *(noiseEstimateBuffer + i);
@@ -260,8 +260,8 @@ void process_frame(void)
 		{
 			for (i = 0; i < FFTLEN; i++)
 			{
-				if (cabs(*(inframe + i)) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
-					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = cabs(*(inframe + i));
+				if (cabs(inframe[i]) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
+					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = cabs(inframe[i]);
 			}
 		}
 	}
@@ -279,10 +279,10 @@ void process_frame(void)
 		n *= NOISE_OVERSUBTRACTION;
 		
 		// calculate g
-		g = 1.f -  n/cabs(*(inframe + i));
+		g = 1.f -  n/cabs(inframe[i]);
 		g = (g < NOISE_LAMBDA) ? NOISE_LAMBDA : g;
 		
-		*(outframe + i) = rmul(g, *(inframe + i));
+		outframe[i] = rmul(g, inframe[i]);
 	}
 	
 	ifft(FFTLEN, outframe);
