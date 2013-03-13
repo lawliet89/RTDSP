@@ -104,6 +104,9 @@ float NOISE_LPF_TIME_CONSTANT = 0.04f;		//20-80 ms	- enhancement 1
 float NOISE_LAMBDA = 0.05f;
 float NOISE_SUB_LPF_TIME_CONSTANT = 0.04f;	// enhancement 3
 
+// previous values for recalculation
+float prev_NOISE_LPF_TIME_CONSTANT=0, prev_NOISE_SUB_LPF_TIME_CONSTANT=0;
+
 // enhancement 6 parameters
 float enhance6HighFreqLowerBound = 0.25f;
 float enhance6HighFreqUpperBound = 0.75;	// the former two should add to one
@@ -111,6 +114,10 @@ float enhance6LowFreqGain = 0.9f;
 float enhance6HighFreqGain = 3.f;
 float enhance6LowFreqThreshold = 2.f;
 float enhance6HighFreqThreshold = 5.f;
+
+// calculated enhancement 6 parameters
+float prev_enhance6HighFreqLowerBound = 0, prev_enhance6HighFreqUpperBound=0;
+float enhance6HighFreqBinLowerBound, enhance6HighFreqBinUpperBound;
 
 // Enhancement switches
 short enhancement1 = 1;
@@ -141,9 +148,7 @@ void main()
     noiseBuffer		= (float *) calloc(NOISE_BUFFER_NUM*FFTLEN, sizeof(float));
     noiseEstimateBuffer = (float *) calloc(FFTLEN, sizeof(float));
     noiseSubLpf = (float *) calloc(FFTLEN, sizeof(float));
-    noiseK = exp(-1.f*TFRAME/NOISE_LPF_TIME_CONSTANT);
-    noiseSubK = exp(-1.f*TFRAME/NOISE_SUB_LPF_TIME_CONSTANT);
-	
+    	
 	/* initialize board and the audio port */
   	init_hardware();
   
@@ -162,7 +167,36 @@ void main()
 
  							
   	/* main loop, wait for interrupt */  
-  	while(1) 	process_frame();
+  	while(1)
+  	{ 	
+  		// recalculate values if necessary
+  		if (prev_NOISE_LPF_TIME_CONSTANT != NOISE_LPF_TIME_CONSTANT)
+  		{
+  			prev_NOISE_LPF_TIME_CONSTANT = NOISE_LPF_TIME_CONSTANT;
+  			noiseK = exp(-1.f*TFRAME/NOISE_LPF_TIME_CONSTANT);
+  		}
+  		
+  		if (prev_NOISE_SUB_LPF_TIME_CONSTANT != NOISE_SUB_LPF_TIME_CONSTANT)
+  		{
+  			prev_NOISE_SUB_LPF_TIME_CONSTANT = NOISE_SUB_LPF_TIME_CONSTANT;
+  			noiseSubK = exp(-1.f*TFRAME/NOISE_SUB_LPF_TIME_CONSTANT);
+  		}
+  		
+  		if (prev_enhance6HighFreqLowerBound != enhance6HighFreqLowerBound)
+  		{
+  			prev_enhance6HighFreqLowerBound = enhance6HighFreqLowerBound;
+  			enhance6HighFreqBinLowerBound = FFTLEN*enhance6HighFreqLowerBound;
+  		}
+  		
+  		if (prev_enhance6HighFreqUpperBound != enhance6HighFreqUpperBound)
+  		{
+  			prev_enhance6HighFreqUpperBound = enhance6HighFreqUpperBound;
+  			enhance6HighFreqBinUpperBound = FFTLEN*enhance6HighFreqUpperBound;
+  		}
+  		
+  		process_frame();
+  	
+  	}
 }
     
 /********************************** init_hardware() *********************************/  
@@ -316,7 +350,7 @@ void process_frame(void)
 		if (enhancement6)	// Enhancement 6 - further noise overestimation
 		{
 			SNR = cabs(outframe[i])/noiseMin;
-			if (i > enhance6HighFreqLowerBound*FFTLEN && i < enhance6HighFreqUpperBound*FFTLEN)
+			if (i > enhance6HighFreqBinLowerBound && i < enhance6HighFreqBinUpperBound)
 			{	// high frequency handling
 				if (SNR < enhance6HighFreqThreshold )
 					noiseMin *= enhance6HighFreqGain;
