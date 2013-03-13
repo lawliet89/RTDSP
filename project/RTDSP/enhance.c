@@ -245,6 +245,7 @@ void process_frame(void)
 	float noiseFactor, noiseMin;	// noise subtraction
 	float noiseFactorA, noiseFactorB;	// enhancement 4
 	float x, SNR;
+	float sampleAbs;		// absolute of the sample
 	float temp;		// general purpose temp variable
 	
 	int io_ptr0;   
@@ -278,7 +279,7 @@ void process_frame(void)
 	// Noise minimum buffer handling
 	if (sampleCount >= NOISE_SAMPLES_PER_SUBBUF) // time to rotate noise buffer
 	{ 
-		noiseSubbufIndex = (noiseSubbufIndex == NOISE_BUFFER_NUM-1) ? 0 : noiseSubbufIndex+1;
+		if (++noiseSubbufIndex >= NOISE_BUFFER_NUM) noiseSubbufIndex = 0;
 		sampleCount = 0;
 		
 		if (enhancement1)			// Enhancement 1 PART I
@@ -341,6 +342,7 @@ void process_frame(void)
 	// Now we will subtract the noise
 	for (i = 0; i < FFTLEN; i++)
 	{
+		sampleAbs = cabs(inframe[i]);
 		noiseMin = *(noiseBuffer+i);
 		// determine the noise min for this frequency bin
 		for (j = 1; j < NOISE_BUFFER_NUM; j++)
@@ -352,7 +354,7 @@ void process_frame(void)
 		
 		if (enhancement6)	// Enhancement 6 - further noise overestimation
 		{
-			SNR = cabs(inframe[i])/noiseMin;
+			SNR = sampleAbs/noiseMin;
 			if (i > enhance6HighFreqBinLowerBound && i < enhance6HighFreqBinUpperBound)
 			{	// high frequency handling
 				if (SNR < enhance6HighFreqThreshold )
@@ -375,14 +377,13 @@ void process_frame(void)
 		switch (enhancement4Choice)
 		{
 			case 1:
-				temp = noiseMin/cabs(inframe[i]);
+				temp = noiseMin/sampleAbs;
 				noiseFactorA = NOISE_LAMBDA * temp;
 				noiseFactorB = 1.f - temp;
 				break;
 			case 2: 
-				temp = cabs(inframe[i]);
-				noiseFactorA = NOISE_LAMBDA * noiseEstimateBuffer[i]/temp;
-				noiseFactorB = 1.f - noiseMin/temp;
+				noiseFactorA = NOISE_LAMBDA * noiseEstimateBuffer[i]/sampleAbs;
+				noiseFactorB = 1.f - noiseMin/sampleAbs;
 				break;
 			case 3: 
 				temp = noiseMin/noiseEstimateBuffer[i];
@@ -395,7 +396,7 @@ void process_frame(void)
 				break;
 			default: 	// as though enhancement 4 is off
 				noiseFactorA =  NOISE_LAMBDA;
-				noiseFactorB = 1.f -  noiseMin/cabs(inframe[i]);
+				noiseFactorB = 1.f -  noiseMin/sampleAbs;
 				break;
 		}
 		
