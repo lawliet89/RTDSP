@@ -145,7 +145,6 @@ void main()
 	inbuffer	= (float *) calloc(CIRCBUF, sizeof(float));	/* Input array */
     outbuffer	= (float *) calloc(CIRCBUF, sizeof(float));	/* Output array */
 	inframe		= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
-    outframe	= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
     inwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Input window */
     outwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Output window */
     
