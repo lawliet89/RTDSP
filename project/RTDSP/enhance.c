@@ -77,7 +77,7 @@ DSK6713_AIC23_Config Config = { \
 DSK6713_AIC23_CodecHandle H_Codec;
 
 float *inbuffer, *outbuffer;   		/* Input/output circular buffers */
-complex *inframe, *outframe;          /* Input and output frames */
+complex *frame, *outframe;          /* Input and output frames */
 float *inwin, *outwin;              /* Input and output windows */
 float ingain, outgain;				/* ADC and DAC gains */ 
 float cpufrac; 						/* Fraction of CPU time used */
@@ -144,7 +144,7 @@ void main()
 
 	inbuffer	= (float *) calloc(CIRCBUF, sizeof(float));	/* Input array */
     outbuffer	= (float *) calloc(CIRCBUF, sizeof(float));	/* Output array */
-	inframe		= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
+	frame		= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
     inwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Input window */
     outwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Output window */
     
@@ -274,13 +274,13 @@ void process_frame(void)
 	m=io_ptr0;
     for (k=0;k<FFTLEN;k++)
 	{                           
-		inframe[k].r = inbuffer[m] * inwin[k]; 
-		inframe[k].i = 0.f;
+		frame[k].r = inbuffer[m] * inwin[k]; 
+		frame[k].i = 0.f;
 		if (++m >= CIRCBUF) m=0; /* wrap if required */
 	} 
 	
 	/************************* DO PROCESSING OF FRAME  HERE **************************/
-	fft(FFTLEN, inframe);	// perform FFT of this frame
+	fft(FFTLEN, frame);	// perform FFT of this frame
 	
 	// Noise minimum buffer handling
 	if (++frame_cnt >= FRAMES_PER_NOISE_BUF) // rotate noise buffer if time period passed
@@ -301,7 +301,7 @@ void process_frame(void)
 	// iterate over fft bins
 	for (i = 0; i < FFTLEN; i++)
 	{	
-		x = cabs(inframe[i]);
+		x = cabs(frame[i]);
 		
 		noise_vote = x; //default
 		
@@ -346,10 +346,10 @@ void process_frame(void)
 		noiseFactorB = 1.0 - noiseMin/x;
 		
 		noiseFactor = max(noiseFactorA, noiseFactorB);
-		inframe[i] = rmul(noiseFactor, inframe[i]);
+		frame[i] = rmul(noiseFactor, frame[i]);
 	}
 
-	ifft(FFTLEN, inframe);
+	ifft(FFTLEN, frame);
 	
 	/********************************************************************************/
 	
@@ -359,12 +359,12 @@ void process_frame(void)
     
     for (k=0;k<(FFTLEN-FRAMEINC);k++) 
 	{    										/* this loop adds into outbuffer */                       
-	  	outbuffer[m] = outbuffer[m]+inframe[k].r*outwin[k];   
+	  	outbuffer[m] = outbuffer[m]+frame[k].r*outwin[k];   
 		if (++m >= CIRCBUF) m=0; /* wrap if required */
 	}         
     for (;k<FFTLEN;k++) 
 	{                           
-		outbuffer[m] = inframe[k].r*outwin[k];   /* this loop over-writes outbuffer */        
+		outbuffer[m] = frame[k].r*outwin[k];   /* this loop over-writes outbuffer */        
 	    m++;
 	}	                                   
 }        
