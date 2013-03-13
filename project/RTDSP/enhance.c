@@ -95,16 +95,19 @@ volatile int frame_ptr=0;           /* Frame pointer */
 
 float *noiseBuffer;					// the noise buffer
 float *noiseEstimateBuffer;		// noise LPF estimate Buffer
+float *noiseSubLpf;				// buffer to LPF the noise estimate to subtract (enhancement 3)
 volatile int noiseSubbufIndex = 0;		// noise buffer pointer
 volatile int sampleCount = 0;	// the number of samples
-float noiseK;
-float NOISE_OVERSUBTRACTION = 3.f;
-float NOISE_LPF_TIME_CONSTANT = 0.04;		//20-80 ms
+float noiseK, noiseSubK;
+float NOISE_OVERSUBTRACTION = 3.2f;
+float NOISE_LPF_TIME_CONSTANT = 0.04f;		//20-80 ms
 float NOISE_LAMBDA = 0.05f;
+float NOISE_SUB_LPF_TIME_CONSTANT = 0.04f;	
 
 // Enhancement switches
 short enhancement1 = 1;
 short enhancement2 = 1;
+short enhancement3 = 1;
 
  /******************************* Function prototypes *******************************/
 void init_hardware(void);    	/* Initialize codec */ 
@@ -129,7 +132,9 @@ void main()
     
     noiseBuffer		= (float *) calloc(NOISE_BUFFER_NUM*FFTLEN, sizeof(float));
     noiseEstimateBuffer = (float *) calloc(FFTLEN, sizeof(float));
+    noiseSubLpf = (float *) calloc(FFTLEN, sizeof(float));
     noiseK = exp(-1.f*TFRAME/NOISE_LPF_TIME_CONSTANT);
+    noiseSubK = exp(-1.f*TFRAME/NOISE_SUB_LPF_TIME_CONSTANT);
 	
 	/* initialize board and the audio port */
   	init_hardware();
@@ -197,6 +202,7 @@ void process_frame(void)
 	
 	int io_ptr0;   
 	noiseK = exp(-1.f*TFRAME/NOISE_LPF_TIME_CONSTANT);
+	noiseSubK = exp(-1.f*TFRAME/NOISE_SUB_LPF_TIME_CONSTANT);
 
 	/* work out fraction of available CPU time used by algorithm */    
 	cpufrac = ((float) (io_ptr & (FRAMEINC - 1)))/FRAMEINC;  
@@ -298,6 +304,12 @@ void process_frame(void)
 				noiseMin = *(noiseBuffer + j*FFTLEN + i);
 		}
 		noiseMin *= NOISE_OVERSUBTRACTION;
+		
+		if (enhancement3)	// enhancement 3 - LPF noise estimate
+		{
+			noiseSubLpf[i] = (1-noiseSubK)*noiseMin + noiseSubK*noiseSubLpf[i];
+			noiseMin = noiseSubLpf[i];
+		}
 		
 		// calculate g
 		noiseFactor = 1.f -  noiseMin/cabs(inframe[i]);
