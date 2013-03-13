@@ -79,7 +79,7 @@ volatile int sampleCount = 0;	// the number of samples
 float noiseK, noiseSubK;
 float NOISE_OVERSUBTRACTION = 3.2f;
 float NOISE_LPF_TIME_CONSTANT = 0.04f;		//20-80 ms	- enhancement 1
-float NOISE_LAMBDA = 0.05f;
+float NOISE_LAMBDA = 0.03f;
 float NOISE_SUB_LPF_TIME_CONSTANT = 0.1f;//0.04f;	// enhancement 3
 
 // previous values for recalculation
