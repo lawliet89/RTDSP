@@ -102,6 +102,9 @@ float NOISE_OVERSUBTRACTION = 2.f;
 float NOISE_LPF_TIME_CONSTANT = 0.04;		//20-80 ms
 float NOISE_LAMBDA = 0.05f;
 
+// Enhancement switches
+short enhancement1 = 1;
+
  /******************************* Function prototypes *******************************/
 void init_hardware(void);    	/* Initialize codec */ 
 void init_HWI(void);            /* Initialize hardware interrupts */
@@ -218,12 +221,6 @@ void process_frame(void)
 	} 
 	
 	/************************* DO PROCESSING OF FRAME  HERE **************************/
-				
-/*    for (k=0;k<FFTLEN;k++)
-	{                           
-		outframe[k].r = inframe[k].r;
-	} */
-	
 	fft(FFTLEN, inframe);	// perform FFT of this frame
 	
 	// Noise minimum buffer handling
@@ -232,21 +229,40 @@ void process_frame(void)
 		noiseSubbufIndex = (noiseSubbufIndex == NOISE_BUFFER_NUM-1) ? 0 : noiseSubbufIndex+1;
 		sampleCount = 0;
 		
-		for (i = 0; i < FFTLEN; i++){
-			x = cabs(*(inframe + i));
-			*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
-			*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  *(noiseEstimateBuffer + i);
+		if (enhancement1)			// Enhancement 1
+		{
+			for (i = 0; i < FFTLEN; i++){
+				x = cabs(*(inframe + i));		// LPF filtering
+				*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
+				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  *(noiseEstimateBuffer + i);
+			}
+		} 
+		else		// no enhancements
+		{
+			for (i = 0; i < FFTLEN; i++)
+				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  cabs(*(inframe+i));
 		}
 		
 	}
 	else
 	{
-		for (i = 0; i < FFTLEN; i++)
+		if (enhancement1)			// Enhancement 1
 		{
-			x = cabs(*(inframe + i));
-			*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
-			if (*(noiseEstimateBuffer + i) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
-				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = *(noiseEstimateBuffer + i);
+			for (i = 0; i < FFTLEN; i++)
+			{
+				x = cabs(*(inframe + i));
+				*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
+				if (*(noiseEstimateBuffer + i) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
+					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = *(noiseEstimateBuffer + i);
+			}
+		}
+		else
+		{
+			for (i = 0; i < FFTLEN; i++)
+			{
+				if (cabs(*(inframe + i)) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
+					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = cabs(*(inframe + i));
+			}
 		}
 	}
 	
