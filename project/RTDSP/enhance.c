@@ -117,7 +117,7 @@ float enhance6HighFreqThreshold = 5.f;
 
 // calculated enhancement 6 parameters
 float prev_enhance6HighFreqLowerBound = 0, prev_enhance6HighFreqUpperBound=0;
-float enhance6HighFreqBinLowerBound, enhance6HighFreqBinUpperBound;
+int enhance6HighFreqBinLowerBound, enhance6HighFreqBinUpperBound;
 
 // Enhancement switches
 short enhancement1 = 1;
@@ -185,13 +185,13 @@ void main()
   		if (prev_enhance6HighFreqLowerBound != enhance6HighFreqLowerBound)
   		{
   			prev_enhance6HighFreqLowerBound = enhance6HighFreqLowerBound;
-  			enhance6HighFreqBinLowerBound = FFTLEN*enhance6HighFreqLowerBound;
+  			enhance6HighFreqBinLowerBound = (int) (FFTLEN*enhance6HighFreqLowerBound);
   		}
   		
   		if (prev_enhance6HighFreqUpperBound != enhance6HighFreqUpperBound)
   		{
   			prev_enhance6HighFreqUpperBound = enhance6HighFreqUpperBound;
-  			enhance6HighFreqBinUpperBound = FFTLEN*enhance6HighFreqUpperBound;
+  			enhance6HighFreqBinUpperBound = (int) (FFTLEN*enhance6HighFreqUpperBound);
   		}
   		
   		process_frame();
@@ -243,8 +243,6 @@ void process_frame(void)
 	float x, SNR;
 	
 	int io_ptr0;   
-	noiseK = exp(-1.f*TFRAME/NOISE_LPF_TIME_CONSTANT);
-	noiseSubK = exp(-1.f*TFRAME/NOISE_SUB_LPF_TIME_CONSTANT);
 
 	/* work out fraction of available CPU time used by algorithm */    
 	cpufrac = ((float) (io_ptr & (FRAMEINC - 1)))/FRAMEINC;  
@@ -349,7 +347,7 @@ void process_frame(void)
 		
 		if (enhancement6)	// Enhancement 6 - further noise overestimation
 		{
-			SNR = cabs(outframe[i])/noiseMin;
+			SNR = cabs(inframe[i])/noiseMin;
 			if (i > enhance6HighFreqBinLowerBound && i < enhance6HighFreqBinUpperBound)
 			{	// high frequency handling
 				if (SNR < enhance6HighFreqThreshold )
