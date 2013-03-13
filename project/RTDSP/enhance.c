@@ -123,6 +123,9 @@ int enhance6HighFreqBinLowerBound, enhance6HighFreqBinUpperBound;
 short enhancement1 = 1;
 short enhancement2 = 1;
 short enhancement3 = 1;
+
+short enhancement4Choice = 3;
+
 short enhancement6 = 1;
  /******************************* Function prototypes *******************************/
 void init_hardware(void);    	/* Initialize codec */ 
@@ -240,7 +243,9 @@ void process_frame(void)
 {
 	int i, j, k, m; 	// various loop counters
 	float noiseFactor, noiseMin;	// noise subtraction
+	float noiseFactorA, noiseFactorB;	// enhancement 4
 	float x, SNR;
+	float temp;		// general purpose temp variable
 	
 	int io_ptr0;   
 
@@ -289,8 +294,8 @@ void process_frame(void)
 			for (i = 0; i < FFTLEN; i++){
 				x = cabs(inframe[i]);	
 				x *= x;	
-				noiseEstimateBuffer[i] = (1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]);
-				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  sqrt(noiseEstimateBuffer[i]);
+				noiseEstimateBuffer[i] = sqrt((1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]*noiseEstimateBuffer[i]));
+				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  noiseEstimateBuffer[i];
 			}
 		}
 		else		// no enhancements
@@ -318,9 +323,9 @@ void process_frame(void)
 			{
 				x = cabs(inframe[i]);
 				x *= x;	
-				noiseEstimateBuffer[i] = (1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]);
-				if (sqrt(noiseEstimateBuffer[i]) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
-					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = sqrt(noiseEstimateBuffer[i]);
+				noiseEstimateBuffer[i] = sqrt((1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]*noiseEstimateBuffer[i]));
+				if (noiseEstimateBuffer[i] < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
+					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = noiseEstimateBuffer[i];
 			}
 		}
 		else		// no enhancements
@@ -367,9 +372,34 @@ void process_frame(void)
 		}		
 		
 		// calculate noiseFactor (g)
-		noiseFactor = 1.f -  noiseMin/cabs(inframe[i]);
-		noiseFactor = (noiseFactor < NOISE_LAMBDA) ? NOISE_LAMBDA : noiseFactor;
+		switch (enhancement4Choice)
+		{
+			case 1:
+				temp = noiseMin/cabs(inframe[i]);
+				noiseFactorA = NOISE_LAMBDA * temp;
+				noiseFactorB = 1.f - temp;
+				break;
+			case 2: 
+				temp = cabs(inframe[i]);
+				noiseFactorA = NOISE_LAMBDA * noiseEstimateBuffer[i]/temp;
+				noiseFactorB = 1.f - noiseMin/temp;
+				break;
+			case 3: 
+				temp = noiseMin/noiseEstimateBuffer[i];
+				noiseFactorA = NOISE_LAMBDA * temp;
+				noiseFactorB = 1.f - temp;
+				break;
+			case 4: 
+				noiseFactorA =  NOISE_LAMBDA;
+				noiseFactorB = 1.f -  noiseMin/noiseEstimateBuffer[i];
+				break;
+			default: 	// as though enhancement 4 is off
+				noiseFactorA =  NOISE_LAMBDA;
+				noiseFactorB = 1.f -  noiseMin/cabs(inframe[i]);
+				break;
+		}
 		
+		noiseFactor = (noiseFactorA > noiseFactorB) ? noiseFactorA : noiseFactorB;
 		outframe[i] = rmul(noiseFactor, inframe[i]);
 	}
 	
