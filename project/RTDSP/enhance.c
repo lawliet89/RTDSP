@@ -100,15 +100,23 @@ volatile int noiseSubbufIndex = 0;		// noise buffer pointer
 volatile int sampleCount = 0;	// the number of samples
 float noiseK, noiseSubK;
 float NOISE_OVERSUBTRACTION = 3.2f;
-float NOISE_LPF_TIME_CONSTANT = 0.04f;		//20-80 ms
+float NOISE_LPF_TIME_CONSTANT = 0.04f;		//20-80 ms	- enhancement 1
 float NOISE_LAMBDA = 0.05f;
-float NOISE_SUB_LPF_TIME_CONSTANT = 0.04f;	
+float NOISE_SUB_LPF_TIME_CONSTANT = 0.04f;	// enhancement 3
+
+// enhancement 6 parameters
+float enhance6HighFreqLowerBound = 0.25f;
+float enhance6HighFreqUpperBound = 0.75;	// the former two should add to one
+float enhance6LowFreqGain = 0.9f;
+float enhance6HighFreqGain = 3.f;
+float enhance6LowFreqThreshold = 2.f;
+float enhance6HighFreqThreshold = 5.f;
 
 // Enhancement switches
 short enhancement1 = 1;
 short enhancement2 = 1;
 short enhancement3 = 1;
-
+short enhancement6 = 1;
  /******************************* Function prototypes *******************************/
 void init_hardware(void);    	/* Initialize codec */ 
 void init_HWI(void);            /* Initialize hardware interrupts */
@@ -198,7 +206,7 @@ void process_frame(void)
 {
 	int i, j, k, m; 	// various loop counters
 	float noiseFactor, noiseMin;	// noise subtraction
-	float x;
+	float x, SNR;
 	
 	int io_ptr0;   
 	noiseK = exp(-1.f*TFRAME/NOISE_LPF_TIME_CONSTANT);
@@ -240,8 +248,8 @@ void process_frame(void)
 		{
 			for (i = 0; i < FFTLEN; i++){
 				x = cabs(inframe[i]);		// LPF filtering
-				*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
-				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  *(noiseEstimateBuffer + i);
+				noiseEstimateBuffer[i] = (1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]);
+				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  noiseEstimateBuffer[i];
 			}
 		} 
 		else if (enhancement2) // Enhancement 2 PART I
@@ -249,8 +257,8 @@ void process_frame(void)
 			for (i = 0; i < FFTLEN; i++){
 				x = cabs(inframe[i]);	
 				x *= x;	
-				*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
-				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  sqrt(*(noiseEstimateBuffer + i));
+				noiseEstimateBuffer[i] = (1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]);
+				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  sqrt(noiseEstimateBuffer[i]);
 			}
 		}
 		else		// no enhancements
@@ -267,9 +275,9 @@ void process_frame(void)
 			for (i = 0; i < FFTLEN; i++)
 			{
 				x = cabs(inframe[i]);
-				*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
-				if (*(noiseEstimateBuffer + i) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
-					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = *(noiseEstimateBuffer + i);
+				noiseEstimateBuffer[i] = (1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]);
+				if (noiseEstimateBuffer[i] < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
+					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = noiseEstimateBuffer[i];
 			}
 		}
 		else if (enhancement2)			// Enhancement 2 PART II
@@ -278,9 +286,9 @@ void process_frame(void)
 			{
 				x = cabs(inframe[i]);
 				x *= x;	
-				*(noiseEstimateBuffer + i) = (1-noiseK)*x + noiseK*(*(noiseEstimateBuffer + i));
-				if (sqrt(*(noiseEstimateBuffer + i)) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
-					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = sqrt(*(noiseEstimateBuffer + i));
+				noiseEstimateBuffer[i] = (1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]);
+				if (sqrt(noiseEstimateBuffer[i]) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
+					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = sqrt(noiseEstimateBuffer[i]);
 			}
 		}
 		else		// no enhancements
@@ -305,13 +313,28 @@ void process_frame(void)
 		}
 		noiseMin *= NOISE_OVERSUBTRACTION;
 		
+		if (enhancement6)	// Enhancement 6 - further noise overestimation
+		{
+			SNR = cabs(outframe[i])/noiseMin;
+			if (i > enhance6HighFreqLowerBound*FFTLEN && i < enhance6HighFreqUpperBound*FFTLEN)
+			{	// high frequency handling
+				if (SNR < enhance6HighFreqThreshold )
+					noiseMin *= enhance6HighFreqGain;
+			}
+			else
+			{	// low frequency handling
+				if (SNR < enhance6LowFreqThreshold  )
+					noiseMin *= enhance6LowFreqGain ;
+			}
+		}
+
 		if (enhancement3)	// enhancement 3 - LPF noise estimate
 		{
 			noiseSubLpf[i] = (1-noiseSubK)*noiseMin + noiseSubK*noiseSubLpf[i];
 			noiseMin = noiseSubLpf[i];
-		}
+		}		
 		
-		// calculate g
+		// calculate noiseFactor (g)
 		noiseFactor = 1.f -  noiseMin/cabs(inframe[i]);
 		noiseFactor = (noiseFactor < NOISE_LAMBDA) ? NOISE_LAMBDA : noiseFactor;
 		
