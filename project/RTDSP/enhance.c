@@ -60,7 +60,6 @@
 #define NOISE_BUFFER_NUM 4		// this is the number of noise buffers we are keeping
 #define NOISE_TIME 10	// the time, in seconds for the period of time that we are keeping the buffers for
 #define NOISE_SAMPLES_PER_SUBBUF (NOISE_TIME*FSAMP/NOISE_BUFFER_NUM)	// the number of samples before the noise buffers are rotated
-#define NOISE_LAMBDA 0.05f
 
 /******************************* Global declarations ********************************/
 
@@ -101,6 +100,8 @@ volatile int sampleCount = 0;	// the number of samples
 float noiseK;
 float NOISE_OVERSUBTRACTION = 2.f;
 float NOISE_LPF_TIME_CONSTANT = 0.04;		//20-80 ms
+float NOISE_LAMBDA = 0.05f;
+
  /******************************* Function prototypes *******************************/
 void init_hardware(void);    	/* Initialize codec */ 
 void init_HWI(void);            /* Initialize hardware interrupts */
