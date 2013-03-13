@@ -1,25 +1,3 @@
-/*************************************************************************************
-			       DEPARTMENT OF ELECTRICAL AND ELECTRONIC ENGINEERING
-					   		     IMPERIAL COLLEGE LONDON 
-
- 				      EE 3.19: Real Time Digital Signal Processing
-					       Dr Paul Mitcheson and Daniel Harvey
-
-				        		 PROJECT: Frame Processing
-
- 				            ********* ENHANCE. C **********
-							 Shell for speech enhancement 
-
-  		Demonstrates overlap-add frame processing (interrupt driven) on the DSK. 
-
- *************************************************************************************
- 				             By Danny Harvey: 21 July 2006
-							 Updated for use on CCS v4 Sept 2010
- ************************************************************************************/
-/*
- *	You should modify the code so that a speech enhancement project is built 
- *  on top of this template.
- */
 /**************************** Pre-processor statements ******************************/
 //  library required when using calloc
 #include <stdlib.h>
@@ -43,7 +21,7 @@
 #include <helper_functions_ISR.h>
 
 #define WINCONST 0.85185			/* 0.46/0.54 for Hamming window */
-#define FSAMP 8000.0		/* sample frequency, ensure this matches Config for AIC */
+#define FSAMP 8000.0				/* sample frequency, ensure this matches Config for AIC */
 #define FFTLEN 256					/* fft length = frame length 256/8000 = 32 ms*/
 #define NFREQ (1+FFTLEN/2)			/* number of frequency bins from a real FFT */
 #define OVERSAMP 4					/* oversampling ratio (2 or 4) */  
@@ -52,14 +30,14 @@
 
 #define OUTGAIN 16000.0				/* Output gain for DAC */
 #define INGAIN  (1.0/OUTGAIN)		/* Input gain for ADC  */
-// PI defined here for use in your code 
-#define PI 3.141592653589793
-#define TFRAME FRAMEINC/FSAMP       /* time between calculation of each frame */
+
+#define PI 3.141592653589793 		// PI defined here for use in your code 
+#define TFRAME (FRAMEINC/FSAMP)       /* time between calculation of each frame */
 
 // Noise Minimum Buffer Related
-#define NOISE_BUFFER_NUM 4		// this is the number of noise buffers we are keeping
-#define NOISE_TIME 10	// the time, in seconds for the period of time that we are keeping the buffers for
-#define NOISE_SAMPLES_PER_SUBBUF (NOISE_TIME*FSAMP/NOISE_BUFFER_NUM)	// the number of samples before the noise buffers are rotated
+#define NOISE_BUFFER_NUM 4.0		// this is the number of noise buffers we are keeping
+#define NOISE_TIME 10.0				// the time, in seconds for the period of time that we are keeping the buffers for
+#define FRAMES_PER_NOISE_BUF ((int)(NOISE_TIME/NOISE_BUFFER_NUM/TFRAME))
 
 /******************************* Global declarations ********************************/
 
@@ -102,7 +80,7 @@ float noiseK, noiseSubK;
 float NOISE_OVERSUBTRACTION = 3.2f;
 float NOISE_LPF_TIME_CONSTANT = 0.04f;		//20-80 ms	- enhancement 1
 float NOISE_LAMBDA = 0.05f;
-float NOISE_SUB_LPF_TIME_CONSTANT = 0.04f;	// enhancement 3
+float NOISE_SUB_LPF_TIME_CONSTANT = 0.1f;//0.04f;	// enhancement 3
 
 // previous values for recalculation
 float prev_NOISE_LPF_TIME_CONSTANT=0, prev_NOISE_SUB_LPF_TIME_CONSTANT=0;
@@ -110,8 +88,8 @@ float prev_NOISE_LPF_TIME_CONSTANT=0, prev_NOISE_SUB_LPF_TIME_CONSTANT=0;
 // enhancement 6 parameters
 float enhance6HighFreqLowerBound = 0.25f;
 float enhance6HighFreqUpperBound = 0.75;	// the former two should add to one
-float enhance6LowFreqGain = 0.9f;
-float enhance6HighFreqGain = 3.f;
+float enhance6LowFreqGain = 1.2;//0.9f;
+float enhance6HighFreqGain = 1;//3.f;
 float enhance6LowFreqThreshold = 2.f;
 float enhance6HighFreqThreshold = 5.f;
 
@@ -121,12 +99,11 @@ int enhance6HighFreqBinLowerBound, enhance6HighFreqBinUpperBound;
 
 // Enhancement switches
 short enhancement1 = 1;
-short enhancement2 = 1;
+short enhancement2 = 0;
 short enhancement3 = 1;
-
-short enhancement4Choice = 3;
-
+short enhancement4Choice = 4;
 short enhancement6 = 1;
+
  /******************************* Function prototypes *******************************/
 void init_hardware(void);    	/* Initialize codec */ 
 void init_HWI(void);            /* Initialize hardware interrupts */
@@ -248,6 +225,8 @@ void process_frame(void)
 	float sampleAbs;		// absolute of the sample
 	float temp;		// general purpose temp variable
 	
+	static int frame_cnt = 0;
+	
 	int io_ptr0;   
 
 	/* work out fraction of available CPU time used by algorithm */    
@@ -277,10 +256,11 @@ void process_frame(void)
 	fft(FFTLEN, inframe);	// perform FFT of this frame
 	
 	// Noise minimum buffer handling
-	if (sampleCount >= NOISE_SAMPLES_PER_SUBBUF) // time to rotate noise buffer
+	if (++frame_cnt >= FRAMES_PER_NOISE_BUF) // rotate noise buffer if time period passed
 	{ 
-		if (++noiseSubbufIndex >= NOISE_BUFFER_NUM) noiseSubbufIndex = 0;
-		sampleCount = 0;
+		if (++noiseSubbufIndex >= NOISE_BUFFER_NUM) // circular buffer wrap for noise bufs
+			noiseSubbufIndex = 0;
+		frame_cnt = 0;
 		
 		if (enhancement1)			// Enhancement 1 PART I
 		{
@@ -440,7 +420,6 @@ void ISR_AIC(void)
 	/* update io_ptr and check for buffer wraparound */    
 	
 	if (++io_ptr >= CIRCBUF) io_ptr=0;
-	sampleCount++;
 }
 
 /************************************************************************************/
