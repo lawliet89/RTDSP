@@ -237,50 +237,68 @@ void process_frame(void)
 		noiseSubbufIndex = (noiseSubbufIndex == NOISE_BUFFER_NUM-1) ? 0 : noiseSubbufIndex+1;
 		sampleCount = 0;
 		
-		for (i = 0; i < FFTLEN; i++)
+		if (enhancement1)			// enhancement 1
 		{
-			if (enhancement1)
-			{
+			for (i = 0; i < FFTLEN; i++)
+			{		
 				x = cabs(inframe[i]);
-				if (enhancement2)
-					x = x*x;
 				noiseEstimateBuffer[i] = (1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]);
-				if (enhancement2)
-					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = sqrt( noiseEstimateBuffer[i] );
-				else
-					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = noiseEstimateBuffer[i] ;
+				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = noiseEstimateBuffer[i] ;
 			}
-			else{
+			
+		}
+		else if (enhancement2)		// enhancement 2
+		{
+			for (i = 0; i < FFTLEN; i++)
+			{		
+				x = cabs(inframe[i]);
+				x = x*x;
+				noiseEstimateBuffer[i] = (1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]);
+				
+				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = sqrt( noiseEstimateBuffer[i] );
+			}
+		}
+		else			// original
+		{
+			for (i = 0; i < FFTLEN; i++)		
+			{		
 				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  cabs(inframe[i]);
 			}
-		}
-		
+		}	
 	}
-	else
+	else		// minimisation
 	{
-		for (i = 0; i < FFTLEN; i++)
+		if (enhancement1)			// enhancement 1
 		{
-			if (enhancement1){
-				x = cabs(*(inframe + i));
-				if (enhancement2)
-					x = x*x;
+			for (i = 0; i < FFTLEN; i++)
+			{		
+				x = cabs(inframe[i]);
 				noiseEstimateBuffer[i] = (1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]);
-				if (enhancement2)
-				{
-					if ( sqrt(noiseEstimateBuffer[i]) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
-						*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = sqrt(noiseEstimateBuffer[i]);
-				}
-				else
-				{
-					if (noiseEstimateBuffer[i] < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
-						*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = noiseEstimateBuffer[i];
-				}
+				if (noiseEstimateBuffer[i] < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
+					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = noiseEstimateBuffer[i];
 			}
-			else{
-				if (cabs(*(inframe + i)) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
-					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = cabs(*(inframe + i));
+			
+		}
+		else if (enhancement2)		// enhancement 2
+		{
+			for (i = 0; i < FFTLEN; i++)
+			{		
+				x = cabs(inframe[i]);
+				x = x*x;
+				noiseEstimateBuffer[i] = (1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]);
+				
+				if ( sqrt(noiseEstimateBuffer[i]) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
+					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = sqrt(noiseEstimateBuffer[i]);
 			}
 		}
+		else			// original
+		{
+			for (i = 0; i < FFTLEN; i++)		
+			{		
+				if (cabs(inframe[i]) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
+					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = cabs(inframe[i]);
+			}
+		}	
 	}
 	
 	// Now we will subtract the noise
