@@ -98,7 +98,7 @@ float *noiseEstimateBuffer;		// noise LPF estimate Buffer
 volatile int noiseSubbufIndex = 0;		// noise buffer pointer
 volatile int sampleCount = 0;	// the number of samples
 float noiseK;
-float NOISE_OVERSUBTRACTION = 2.f;
+float NOISE_OVERSUBTRACTION = 3.f;
 float NOISE_LPF_TIME_CONSTANT = 0.04;		//20-80 ms
 float NOISE_LAMBDA = 0.05f;
 
