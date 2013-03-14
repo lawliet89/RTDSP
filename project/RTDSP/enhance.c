@@ -80,6 +80,7 @@ float *inbuffer, *outbuffer;   		/* Input/output circular buffers */
 complex *frameN;         			/* frame N */
 complex *frameN1;					/* frame N-1 */
 complex *frameN2;					/* frame N-2 */
+complex *outFrame;					/* output frame */
 float *inwin, *outwin;              /* Input and output windows */
 float ingain, outgain;				/* ADC and DAC gains */ 
 float cpufrac; 						/* Fraction of CPU time used */
@@ -89,6 +90,7 @@ volatile int frame_ptr=0;           /* Frame pointer */
 float *noiseBuffer;				// the noise circular buffer of all the M subbufs
 int curM_offset = 0;			// noise sub-buffer pointer (which M buffer we're chosing)
 float *previousFFTvalue;		// for LPFing the FFT bins
+float *enhancement8Buffer;		// for storing previous |N(w)|/|X(w)|
 
 float *noiseSubLpf;				// buffer to LPF the noise estimate to subtract (enhancement 3)
 
@@ -153,13 +155,16 @@ void main()
 	frameN		= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
 	frameN1		= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
 	frameN2		= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
+	outFrame 	= (complex *) calloc(FFTLEN, sizeof(complex));
 	
     inwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Input window */
     outwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Output window */
     
     noiseBuffer			= (float *) calloc(NOISE_BUFFER_NUM*FFTLEN, sizeof(float));
-    previousFFTvalue = (float *) calloc(FFTLEN, sizeof(float));
+    previousFFTvalue 	= (float *) calloc(FFTLEN, sizeof(float));
     noiseSubLpf 		= (float *) calloc(FFTLEN, sizeof(float));
+    
+    enhancement8Buffer 	= (float *) calloc(FFTLEN, sizeof(float));
     	
 	/* initialize board and the audio port */
   	init_hardware();
@@ -380,17 +385,17 @@ void process_frame(void)
 				noiseFactorB = 1.f - temp;
 				break;
 			case 2: 
-				noiseFactorA = NOISE_LAMBDA * previousFFTvalue[i]/x;
+				noiseFactorA = NOISE_LAMBDA * noise_vote/x;
 				noiseFactorB = 1.f - noiseMin/x;
 				break;
 			case 3: 
-				temp = noiseMin/previousFFTvalue[i];
+				temp = noiseMin/noise_vote;
 				noiseFactorA = NOISE_LAMBDA * temp;
 				noiseFactorB = 1.f - temp;
 				break;
 			case 4: 
 				noiseFactorA =  NOISE_LAMBDA;
-				noiseFactorB = 1.f -  noiseMin/previousFFTvalue[i];
+				noiseFactorB = 1.f -  noiseMin/noise_vote;
 				break;
 				
 			/* enhancement 5 power handling */	
@@ -404,17 +409,17 @@ void process_frame(void)
 				noiseFactorB = sqrt(1.f - temp);
 				break;
 			case 7:	// power version of enhancement 4 - 2
-				noiseFactorA = NOISE_LAMBDA * sqrt(previousFFTvalue[i]*previousFFTvalue[i]/(x*x));
+				noiseFactorA = NOISE_LAMBDA * sqrt(noise_vote*noise_vote/(x*x));
 				noiseFactorB = sqrt(1.f - noiseMin*noiseMin/(x*x));
 				break;
 			case 8:	// power version of enhancement 4 - 3
-				temp = noiseMin*noiseMin/(previousFFTvalue[i]*previousFFTvalue[i]);
+				temp = noiseMin*noiseMin/(noise_vote*noise_vote);
 				noiseFactorA = NOISE_LAMBDA * sqrt(temp);
 				noiseFactorB = sqrt(1.f - temp);
 				break;
 			case 9: // power version of enhancement 4 - 4
 				noiseFactorA =  NOISE_LAMBDA;
-				noiseFactorB = sqrt(1.f -  noiseMin*noiseMin/(previousFFTvalue[i]*previousFFTvalue[i]));
+				noiseFactorB = sqrt(1.f -  noiseMin*noiseMin/(noise_vote*noise_vote));
 				break;
 			/* enhancement 4 & 5 off */
 			case 0: 	
@@ -426,35 +431,38 @@ void process_frame(void)
 		
 		noiseFactor = max(noiseFactorA, noiseFactorB);
 		frameN[i] = rmul(noiseFactor, frameN[i]);
-	}
-	
-	if (!enhancement8)	// no enhancement 8. just swap frameN and frameN1
-	{
-		complex *tempFrame;
 		
-		tempFrame = frameN;
-		frameN = frameN1;
-		frameN1 = tempFrame;
+		// enhancement 8
+		if (enhancement8)
+		{
+			if (enhancement8Buffer[i] > enhancement8Threshold)
+			{
+				float x1 = cabs(frameN1[i]);
+				float x2 = cabs(frameN2[i]);
+				
+				if (x2 < x1 && x2 < x)
+				{
+					outFrame[i] = frameN2[i];	
+				}
+				else if (x < x1 && x < x2)
+				{
+					outFrame[i] = frameN[i];	
+				}
+				else
+				{
+					outFrame[i] = frameN1[i];	
+				}
+			}
+			else
+			{
+				outFrame[i] = frameN1[i];	
+			}
+			enhancement8Buffer[i] = noiseMin/x;		// update buffer
+		}
+		else{	// plain old no enhancement8
+			outFrame[i] = frameN[i];		
+		}
 	}
-	
-	ifft(FFTLEN, frameN1);	// perform inverse FFT to return us back to time domain
-	
-	/********************************************************************************/
-	
-    /* multiply outframe by output window and overlap-add into output buffer */  
-                           
-	m=io_ptr0;
-    
-    for (k=0;k<(FFTLEN-FRAMEINC);k++) 
-	{    										/* this loop adds into outbuffer */                       
-	  	outbuffer[m] = outbuffer[m]+frameN1[k].r*outwin[k];   
-		if (++m >= CIRCBUF) m=0; /* wrap if required */
-	}         
-    for (;k<FFTLEN;k++) 
-	{                           
-		outbuffer[m] = frameN1[k].r*outwin[k];   /* this loop over-writes outbuffer */        
-	    m++;
-	}	           
 	
 	if (enhancement8)	// if enhancement 8, swap some buffers
 	{
@@ -466,7 +474,26 @@ void process_frame(void)
 		frameN1 = frameN;
 		frameN = tempFrame;
 		
-	}                        
+	}    
+	
+	ifft(FFTLEN, outFrame);	// perform inverse FFT to return us back to time domain
+	
+	/********************************************************************************/
+	
+    /* multiply outframe by output window and overlap-add into output buffer */  
+                           
+	m=io_ptr0;
+    
+    for (k=0;k<(FFTLEN-FRAMEINC);k++) 
+	{    										/* this loop adds into outbuffer */                       
+	  	outbuffer[m] = outbuffer[m]+outFrame[k].r*outwin[k];   
+		if (++m >= CIRCBUF) m=0; /* wrap if required */
+	}         
+    for (;k<FFTLEN;k++) 
+	{                           
+		outbuffer[m] = outFrame[k].r*outwin[k];   /* this loop over-writes outbuffer */        
+	    m++;
+	}	                               
 }        
 /*************************** INTERRUPT SERVICE ROUTINE  *****************************/
 
