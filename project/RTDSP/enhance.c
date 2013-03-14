@@ -247,7 +247,8 @@ void process_frame(void)
 	int i, j, k, m; 	// various loop counters
 	float noiseFactor, noiseMin;	// noise subtraction
 	float noiseFactorA, noiseFactorB;	// enhancement 4
-
+	float x;
+	
 	static int frame_cnt = 0;
 	
 	short rotatedM;
