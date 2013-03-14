@@ -385,7 +385,33 @@ void process_frame(void)
 				noiseFactorA =  NOISE_LAMBDA;
 				noiseFactorB = 1.f -  noiseMin/previousFFTvalue[i];
 				break;
-			default: 	// enhancement 4 off
+				
+			/* enhancement 5 power handling */	
+			case 5:	// power version of no enhancement 4
+				noiseFactorA =  NOISE_LAMBDA;
+				noiseFactorB =  sqrt(1.0 - noiseMin*noiseMin/(x*x));
+				break;
+			case 6:	// power version of enhancement 4 - 1
+				temp = noiseMin*noiseMin/(x*x);
+				noiseFactorA = NOISE_LAMBDA * sqrt(temp);
+				noiseFactorB = sqrt(1.f - temp);
+				break;
+			case 7:	// power version of enhancement 4 - 2
+				noiseFactorA = NOISE_LAMBDA * sqrt(previousFFTvalue[i]*previousFFTvalue[i]/(x*x));
+				noiseFactorB = sqrt(1.f - noiseMin*noiseMin/(x*x));
+				break;
+			case 8:	// power version of enhancement 4 - 3
+				temp = noiseMin*noiseMin/(previousFFTvalue[i]*previousFFTvalue[i]);
+				noiseFactorA = NOISE_LAMBDA * sqrt(temp);
+				noiseFactorB = sqrt(1.f - temp);
+				break;
+			case 9: // power version of enhancement 4 - 4
+				noiseFactorA =  NOISE_LAMBDA;
+				noiseFactorB = sqrt(1.f -  noiseMin*noiseMin/(previousFFTvalue[i]*previousFFTvalue[i]));
+				break;
+			/* enhancement 4 & 5 off */
+			case 0: 	
+			default: 	
 				noiseFactorA = NOISE_LAMBDA;
 				noiseFactorB = 1.0 - noiseMin/x;
 				break;
