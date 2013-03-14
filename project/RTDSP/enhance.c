@@ -375,14 +375,11 @@ void process_frame(void)
 				break;
 		}
 		
-		// default for no enh and enh1
-		
-		
 		noiseFactor = max(noiseFactorA, noiseFactorB);
 		frame[i] = rmul(noiseFactor, frame[i]);
 	}
 
-	ifft(FFTLEN, frame);
+	ifft(FFTLEN, frame);	// perform inverse FFT to return us back to time domain
 	
 	/********************************************************************************/
 	
