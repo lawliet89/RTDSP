@@ -50,7 +50,7 @@
 // Noise Minimum Buffer Related
 #define NOISE_BUFFER_NUM 4.0		// this is the number of noise buffers we are keeping
 #define NOISE_TIME 10.0				// the time, in seconds for the period of time that we are keeping the buffers for
-#define FRAMES_PER_NOISE_BUF ((int)(NOISE_TIME/NOISE_BUFFER_NUM/TFRAME))
+#define FRAMES_PER_NOISE_BUF ((int)(NOISE_TIME/NOISE_BUFFER_NUM/TFRAME))  // this is the number of frames processed before a noise buffer rotation happens
 
 /******************************* Global declarations ********************************/
 
@@ -76,16 +76,17 @@ DSK6713_AIC23_Config Config = { \
 // Codec handle:- a variable used to identify audio interface  
 DSK6713_AIC23_CodecHandle H_Codec;
 
-float *inbuffer, *outbuffer;   		/* Input/output circular buffers */
-complex *frameN;         			/* frame N */
-complex *frameN1;					/* frame N-1 */
-complex *frameN2;					/* frame N-2 */
-complex *outFrame;					/* output frame */
-float *inwin, *outwin;              /* Input and output windows */
-float ingain, outgain;				/* ADC and DAC gains */ 
-float cpufrac; 						/* Fraction of CPU time used */
-volatile int io_ptr=0;              /* Input/ouput pointer for circular buffers */
-volatile int frame_ptr=0;           /* Frame pointer */
+/*************** buffers **********************/
+float *inbuffer, *outbuffer;   		// Input/output circular buffers 
+complex *frameN;         			// buffer for frame N 
+complex *frameN1;					// buffer frame N-1 (enhancement 8)
+complex *frameN2;					// buffer frame N-2 (enhancement 8)
+complex *outFrame;					// output frame content (enhancement 8)
+float *inwin, *outwin;              // Input and output windows coefficients
+float ingain, outgain;				// ADC and DAC gains  
+float cpufrac; 						// Fraction of CPU time used 
+volatile int io_ptr=0;              // Input/ouput pointer for circular buffers 
+volatile int frame_ptr=0;           // Frame pointer 
 
 float *noiseBuffer;				// the noise circular buffer of all the M subbufs
 int curM_offset = 0;			// noise sub-buffer pointer (which M buffer we're chosing)
@@ -96,46 +97,41 @@ float *previousFrameNXRatio;		// for storing previous |N(w)|/|X(w)|
 float *frameN1ModY;					// for storing frame N-1 |Y(w)|
 float *frameN2ModY;					// for storing frame N-2 |Y(w)|
 
+float *noiseSubLpf;					// buffer to LPF the noise estimate to subtract (enhancement 3)
 
-float *noiseSubLpf;				// buffer to LPF the noise estimate to subtract (enhancement 3)
+/************** parameters *****************/
+float noiseLambda = 0.05f;				// lower bound coefficient for spectral substractions
+float noiseOversubtract = 3.2f;			// noise oversubtraction parameter (alpha)
 
-float freqLPF_K, noiseSubK;
-float NOISE_OVERSUBTRACTION = 3.2f;
-float FREQ_LPF_TIME_CONSTANT = 0.04f;
-float NOISE_LAMBDA = 0.05f;		// lower bound coefficient for spectral substractions
-float NOISE_SUB_LPF_TIME_CONSTANT = 0.1f;
+/* enhancements 1 & 2 & 3 */
+float freqLpfTimeConstant = 0.04f;		// enhancement 1/2 time constant parameter for LPF
+float noiseSubLpfTimeConstant = 0.1f;	// enhancement 3 time constant parameter for LPF
+float freqLPF_K, noiseSubK;				// calculated factor for enhancement 1/2 & 3 respectively
+float prev_freqLpfTimeConstant = 0;		// previous values for the above time constant values
+float prev_noiseSubLpfTimeConstant=0;	// used for tracking and seeing if the factors needs recalculations
 
-// previous values for recalculation
-float prev_FREQ_LPF_TIME_CONSTANT=0, prev_NOISE_SUB_LPF_TIME_CONSTANT=0;
-
-// enhancement 6 parameters
-float enhance6HighFreqLowerBound = 0.25f;
+/* enhancement 6 parameters */
+float enhance6HighFreqLowerBound = 0.25f;	// fraction of frequency bin to consider as the lower bound for "high freq"
 float enhance6HighFreqUpperBound = 0.75;	// the former two should add to one
-float enhance6LowFreqGain = 1.2f;
-float enhance6HighFreqGain = 1.f;
-float enhance6LowFreqThreshold = 2.f;
-float enhance6HighFreqThreshold = 5.f;
-
-
+float enhance6LowFreqGain = 1.2f;			// factor to multiply with alpha for low freq
+float enhance6HighFreqGain = 1.f;			// factor to multiply with alpha for high freq
+float enhance6LowFreqThreshold = 2.f;		// low freq SNR threshold (NOT in dB)
+float enhance6HighFreqThreshold = 5.f;		// high freq SNR threshold (NOT in dB)
 
 // calculated enhancement 6 parameters
-float prev_enhance6HighFreqLowerBound = 0, prev_enhance6HighFreqUpperBound=0;
-int enhance6HighFreqBinLowerBound, enhance6HighFreqBinUpperBound;
+int enhance6HighFreqBinLowerBound, enhance6HighFreqBinUpperBound;	// calculated actual frequency bin numbers
+float prev_enhance6HighFreqLowerBound = 0, prev_enhance6HighFreqUpperBound=0;	// previous values for the thresholds above to see if recalculation is needed
 
 // enhancement 8 threshold
-float enhancement8Threshold = 3.f;
+float enhancement8Threshold = 3.f;			// N/X ratio threshold for enhancement 8
 
-// Enhancement switches
+/************** enhancement switches *****************/
 short enhancement1 = 1;
-short enhancement2 = 1; // overrides enh1
-
-
+short enhancement2 = 1; 	// this overrides enhancement 1
 short enhancement3 = 1;
-short enhancement4Choice = 4;
+short enhancement4Choice = 4;	// choose zero to turn enhancement 4/5 off.
 short enhancement6 = 1;
-
 short enhancement8 = 0;
-
 
  /******************************* Function prototypes *******************************/
 void init_hardware(void);    	/* Initialize codec */ 
@@ -149,8 +145,9 @@ void main()
 
   	int k; // used in various for loops
   
-/*  Initialize and zero fill arrays */  
+	/*  Initialize and zero fill arrays */  
 
+	/*** buffers ***/
 	inbuffer	= (float *) calloc(CIRCBUF, sizeof(float));	/* Input array */
     outbuffer	= (float *) calloc(CIRCBUF, sizeof(float));	/* Output array */
     
@@ -162,7 +159,7 @@ void main()
     inwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Input window */
     outwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Output window */
     
-    noiseBuffer			= (float *) calloc(NOISE_BUFFER_NUM*FFTLEN, sizeof(float));		// noise estmiation buffer
+    noiseBuffer			= (float *) calloc(NOISE_BUFFER_NUM*FFTLEN, sizeof(float));	// noise estmiation buffer
     
     previousFFTvalue 	= (float *) calloc(FFTLEN, sizeof(float));		// enhancement 2 buffer
     
@@ -191,19 +188,19 @@ void main()
 
  							
   	/* main loop, wait for interrupt */  
-  	while(1) //TODO: kill irrelevant
+  	while(1) 
   	{ 	
   		// recalculate values if necessary
-  		if (prev_FREQ_LPF_TIME_CONSTANT != FREQ_LPF_TIME_CONSTANT)
+  		if (prev_freqLpfTimeConstant != freqLpfTimeConstant)
   		{
-  			prev_FREQ_LPF_TIME_CONSTANT = FREQ_LPF_TIME_CONSTANT;
-  			freqLPF_K = exp(-1.f*TFRAME/FREQ_LPF_TIME_CONSTANT);
+  			prev_freqLpfTimeConstant = freqLpfTimeConstant;
+  			freqLPF_K = exp(-1.f*TFRAME/freqLpfTimeConstant);
   		}
   		
-  		if (prev_NOISE_SUB_LPF_TIME_CONSTANT != NOISE_SUB_LPF_TIME_CONSTANT)
+  		if (prev_noiseSubLpfTimeConstant != noiseSubLpfTimeConstant)
   		{
-  			prev_NOISE_SUB_LPF_TIME_CONSTANT = NOISE_SUB_LPF_TIME_CONSTANT;
-  			noiseSubK = exp(-1.f*TFRAME/NOISE_SUB_LPF_TIME_CONSTANT);
+  			prev_noiseSubLpfTimeConstant = noiseSubLpfTimeConstant;
+  			noiseSubK = exp(-1.f*TFRAME/noiseSubLpfTimeConstant);
   		}
   		
   		if (prev_enhance6HighFreqLowerBound != enhance6HighFreqLowerBound)
@@ -262,18 +259,17 @@ void init_HWI(void)
 /******************************** process_frame() ***********************************/  
 void process_frame(void)
 {
-	// TODO: filter
 	int i, j, k, m; 	// various loop counters
 	float noiseFactor, noiseMin;	// noise subtraction
 	float noiseFactorA, noiseFactorB;	// enhancement 4
-	float x;
+	float x;			// holds the abs for the current sample
 	
-	static int frame_cnt = 0;
+	static int frameCounter = 0;		// frame counter for noise buffer rotation
 	
-	short rotatedM;
-	float noise_vote;
+	short rotatedM;		// whether noise buffer rotation has been done
+	float noiseVote;	// low pass filtered noise estimate P(w) (enhancement 1/2)
 	
-	int io_ptr0;   
+	int io_ptr0;   // IO pointer
 
 	/* work out fraction of available CPU time used by algorithm */    
 	cpufrac = ((float) (io_ptr & (FRAMEINC - 1)))/FRAMEINC;  
@@ -302,9 +298,9 @@ void process_frame(void)
 	fft(FFTLEN, frameN);	// perform FFT of this frame
 	
 	// Noise minimum buffer handling
-	if (++frame_cnt >= FRAMES_PER_NOISE_BUF) // rotate noise buffer if time period passed
+	if (++frameCounter >= FRAMES_PER_NOISE_BUF) // rotate noise buffer if time period passed
 	{ 
-		frame_cnt = 0;
+		frameCounter = 0;
 		
 		if (++curM_offset >= NOISE_BUFFER_NUM) // circular buffer wrap for noise bufs
 			curM_offset = 0;
@@ -320,28 +316,28 @@ void process_frame(void)
 	// iterate over fft bins
 	for (i = 0; i < FFTLEN; i++)
 	{	
-		x = cabs(frameN[i]);
+		x = cabs(frameN[i]);		// absolute of the current frame. Used in various places
 		
-		noise_vote = x; //default
+		noiseVote = x; //default
 		
 		////////////////////////////////////////////////////////////////////////////
 		// Optional enhancements
 		if (enhancement1 && !enhancement2) // LPF the FFT bins
 		{
-			noise_vote = (1-freqLPF_K)*x + freqLPF_K*(previousFFTvalue[i]);	
-			previousFFTvalue[i] = noise_vote;
+			noiseVote = (1-freqLPF_K)*x + freqLPF_K*(previousFFTvalue[i]);	
+			previousFFTvalue[i] = noiseVote;
 		}
 		if (enhancement2) // power domain LPF of FFT bins
 		{
-			noise_vote = sqrt((1-freqLPF_K)*x*x + freqLPF_K*(previousFFTvalue[i]*previousFFTvalue[i]));	
-			previousFFTvalue[i] = noise_vote;
+			noiseVote = sqrt((1-freqLPF_K)*x*x + freqLPF_K*(previousFFTvalue[i]*previousFFTvalue[i]));	
+			previousFFTvalue[i] = noiseVote;
 		}
 		////////////////////////////////////////////////////////////////////////////
 
 		
 		// if M buffers rotated -> overwrite bin with new vote
 		// store the minimum of the current noise value in M0 and the new bin value
-		*(noiseBuffer + curM_offset*FFTLEN + i) = (rotatedM) ? noise_vote : min(noise_vote, *(noiseBuffer + curM_offset*FFTLEN + i)); //TODO: []?
+		*(noiseBuffer + curM_offset*FFTLEN + i) = (rotatedM) ? noiseVote : min(noiseVote, *(noiseBuffer + curM_offset*FFTLEN + i)); //TODO: []?
 		
 		////////////////////////////////////////////////////////////////////////////
 		// iterate over noise min buffers and select the smallest bin value
@@ -352,7 +348,7 @@ void process_frame(void)
 			noiseMin = min(noiseMin, *(noiseBuffer + j*FFTLEN + i));
 		}
 		// oversubstract by alpha coefficient
-		noiseMin *= NOISE_OVERSUBTRACTION;
+		noiseMin *= noiseOversubtract;
 		
 		////////////////////////////////////////////////////////////////////////////
 		// Perform spectral substraction
@@ -380,56 +376,56 @@ void process_frame(void)
 			}
 		}
 		
-		/* enhancement 4 */
-		switch (enhancement4Choice)
+		/* enhancement 4 & 5 */
+		switch (enhancement4Choice)		// the various different ways of calculating G(w)
 		{
 			float temp;
 			case 1:
 				temp = noiseMin/x;
-				noiseFactorA = NOISE_LAMBDA * temp;
+				noiseFactorA = noiseLambda * temp;
 				noiseFactorB = 1.f - temp;
 				break;
 			case 2: 
-				noiseFactorA = NOISE_LAMBDA * noise_vote/x;
+				noiseFactorA = noiseLambda * noiseVote/x;
 				noiseFactorB = 1.f - noiseMin/x;
 				break;
 			case 3: 
-				temp = noiseMin/noise_vote;
-				noiseFactorA = NOISE_LAMBDA * temp;
+				temp = noiseMin/noiseVote;
+				noiseFactorA = noiseLambda * temp;
 				noiseFactorB = 1.f - temp;
 				break;
 			case 4: 
-				noiseFactorA =  NOISE_LAMBDA;
-				noiseFactorB = 1.f -  noiseMin/noise_vote;
+				noiseFactorA =  noiseLambda;
+				noiseFactorB = 1.f -  noiseMin/noiseVote;
 				break;
 				
 			/* enhancement 5 power handling */	
 			case 5:	// power version of no enhancement 4
-				noiseFactorA =  NOISE_LAMBDA;
+				noiseFactorA =  noiseLambda;
 				noiseFactorB =  sqrt(1.0 - noiseMin*noiseMin/(x*x));
 				break;
 			case 6:	// power version of enhancement 4 - 1
 				temp = noiseMin*noiseMin/(x*x);
-				noiseFactorA = NOISE_LAMBDA * sqrt(temp);
+				noiseFactorA = noiseLambda * sqrt(temp);
 				noiseFactorB = sqrt(1.f - temp);
 				break;
 			case 7:	// power version of enhancement 4 - 2
-				noiseFactorA = NOISE_LAMBDA * sqrt(noise_vote*noise_vote/(x*x));
+				noiseFactorA = noiseLambda * sqrt(noiseVote*noiseVote/(x*x));
 				noiseFactorB = sqrt(1.f - noiseMin*noiseMin/(x*x));
 				break;
 			case 8:	// power version of enhancement 4 - 3
-				temp = noiseMin*noiseMin/(noise_vote*noise_vote);
-				noiseFactorA = NOISE_LAMBDA * sqrt(temp);
+				temp = noiseMin*noiseMin/(noiseVote*noiseVote);
+				noiseFactorA = noiseLambda * sqrt(temp);
 				noiseFactorB = sqrt(1.f - temp);
 				break;
 			case 9: // power version of enhancement 4 - 4
-				noiseFactorA =  NOISE_LAMBDA;
-				noiseFactorB = sqrt(1.f -  noiseMin*noiseMin/(noise_vote*noise_vote));
+				noiseFactorA =  noiseLambda;
+				noiseFactorB = sqrt(1.f -  noiseMin*noiseMin/(noiseVote*noiseVote));
 				break;
 			/* enhancement 4 & 5 off */
 			case 0: 	
 			default: 	
-				noiseFactorA = NOISE_LAMBDA;
+				noiseFactorA = noiseLambda;
 				noiseFactorB = 1.0 - noiseMin/x;
 				break;
 		}
@@ -472,8 +468,8 @@ void process_frame(void)
 	if (enhancement8)	// if enhancement 8, swap some buffers
 	{
 		complex *tempFrame;
-		tempFrame = frameN2;
 		
+		tempFrame = frameN2;
 		frameN2 = frameN1; // new N-2 frame is old N-1 frame
 		frameN1 = frameN;  // new N-1 frame is old N frame
 		frameN = tempFrame;	// new N frame reuses the old N-2 frame buffer for new input incoming
