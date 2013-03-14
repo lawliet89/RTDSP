@@ -340,9 +340,43 @@ void process_frame(void)
 		
 		// Optionals go here
 		
+		/* enhancement 3 - LPF noise estimate */
+		if (enhancement3)	
+		{
+			noiseSubLpf[i] = (1-noiseSubK)*noiseMin + noiseSubK*noiseSubLpf[i];
+			noiseMin = noiseSubLpf[i];
+		}
+		
+		/* enhancement 4 */
+		switch (enhancement4Choice)
+		{
+			float temp;
+			case 1:
+				temp = noiseMin/x;
+				noiseFactorA = NOISE_LAMBDA * temp;
+				noiseFactorB = 1.f - temp;
+				break;
+			case 2: 
+				noiseFactorA = NOISE_LAMBDA * previousFFTvalue[i]/x;
+				noiseFactorB = 1.f - noiseMin/x;
+				break;
+			case 3: 
+				temp = noiseMin/previousFFTvalue[i];
+				noiseFactorA = NOISE_LAMBDA * temp;
+				noiseFactorB = 1.f - temp;
+				break;
+			case 4: 
+				noiseFactorA =  NOISE_LAMBDA;
+				noiseFactorB = 1.f -  noiseMin/previousFFTvalue[i];
+				break;
+			default: 	// enhancement 4 off
+				noiseFactorA = NOISE_LAMBDA;
+				noiseFactorB = 1.0 - noiseMin/x;
+				break;
+		}
+		
 		// default for no enh and enh1
-		noiseFactorA = NOISE_LAMBDA;
-		noiseFactorB = 1.0 - noiseMin/x;
+		
 		
 		noiseFactor = max(noiseFactorA, noiseFactorB);
 		frame[i] = rmul(noiseFactor, frame[i]);
