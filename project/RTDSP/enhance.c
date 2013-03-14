@@ -90,7 +90,12 @@ volatile int frame_ptr=0;           /* Frame pointer */
 float *noiseBuffer;				// the noise circular buffer of all the M subbufs
 int curM_offset = 0;			// noise sub-buffer pointer (which M buffer we're chosing)
 float *previousFFTvalue;		// for LPFing the FFT bins
+
+/* Enhancement 8 buffers */
 float *previousFrameNXRatio;		// for storing previous |N(w)|/|X(w)|
+float *frameN1ModY;					// for storing frame N-1 |Y(w)|
+float *frameN2ModY;					// for storing frame N-2 |Y(w)|
+
 
 float *noiseSubLpf;				// buffer to LPF the noise estimate to subtract (enhancement 3)
 
@@ -103,14 +108,11 @@ float NOISE_SUB_LPF_TIME_CONSTANT = 0.1f;
 // previous values for recalculation
 float prev_FREQ_LPF_TIME_CONSTANT=0, prev_NOISE_SUB_LPF_TIME_CONSTANT=0;
 
-
-
-//TODO: refactor
 // enhancement 6 parameters
 float enhance6HighFreqLowerBound = 0.25f;
 float enhance6HighFreqUpperBound = 0.75;	// the former two should add to one
-float enhance6LowFreqGain = 1.2;//0.9f;
-float enhance6HighFreqGain = 1;//3.f;
+float enhance6LowFreqGain = 1.2f;
+float enhance6HighFreqGain = 1.f;
 float enhance6LowFreqThreshold = 2.f;
 float enhance6HighFreqThreshold = 5.f;
 
@@ -152,19 +154,24 @@ void main()
 	inbuffer	= (float *) calloc(CIRCBUF, sizeof(float));	/* Input array */
     outbuffer	= (float *) calloc(CIRCBUF, sizeof(float));	/* Output array */
     
-	frameN		= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
-	frameN1		= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
-	frameN2		= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
-	outFrame 	= (complex *) calloc(FFTLEN, sizeof(complex));
+	frameN		= (complex *) calloc(FFTLEN, sizeof(complex));	/* FrameN for processing*/
+	frameN1		= (complex *) calloc(FFTLEN, sizeof(complex));	/* FrameN-1 for processing*/
+	frameN2		= (complex *) calloc(FFTLEN, sizeof(complex));	/* FrameN-2 for processing*/
+	outFrame 	= (complex *) calloc(FFTLEN, sizeof(complex));	/* final Output Frame */
 	
     inwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Input window */
     outwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Output window */
     
-    noiseBuffer			= (float *) calloc(NOISE_BUFFER_NUM*FFTLEN, sizeof(float));
-    previousFFTvalue 	= (float *) calloc(FFTLEN, sizeof(float));
-    noiseSubLpf 		= (float *) calloc(FFTLEN, sizeof(float));
+    noiseBuffer			= (float *) calloc(NOISE_BUFFER_NUM*FFTLEN, sizeof(float));		// noise estmiation buffer
     
+    previousFFTvalue 	= (float *) calloc(FFTLEN, sizeof(float));		// enhancement 2 buffer
+    
+    noiseSubLpf 		= (float *) calloc(FFTLEN, sizeof(float));		// enhancement 3 buffer
+    
+    /* enhancement 8 buffers */
     previousFrameNXRatio 	= (float *) calloc(FFTLEN, sizeof(float));
+    frameN1ModY				= (float *) calloc(FFTLEN, sizeof(float));
+    frameN2ModY				= (float *) calloc(FFTLEN, sizeof(float));
     	
 	/* initialize board and the audio port */
   	init_hardware();
@@ -349,9 +356,7 @@ void process_frame(void)
 		
 		////////////////////////////////////////////////////////////////////////////
 		// Perform spectral substraction
-		
-		// Optionals go here
-		
+				
 		/* enhancement 3 - LPF noise estimate */
 		if (enhancement3)	
 		{
@@ -437,26 +442,18 @@ void process_frame(void)
 		/* Enhancement 8 */
 		if (enhancement8)
 		{
+			x *= noiseFactor;			// absolute of Yn
+			
 			// check if previous frame N/X ratio is above a certain threshold
 			if (previousFrameNXRatio[i] > enhancement8Threshold)
 			{
-				x = cabs(frameN[i]);			// absolute of Yn
-				float x1 = cabs(frameN1[i]);	// absolute of Yn-1
-				float x2 = cabs(frameN2[i]);	// absolute of Yn-2
-				
 				// find the frame with the min abs(Y) and use that frame as the output
-				if (x2 < x1 && x2 < x)		// min is N-2 frame
-				{
-					outFrame[i] = frameN2[i];	
-				}
-				else if (x < x1 && x < x2)	// min is N frame
-				{
-					outFrame[i] = frameN[i];	
-				}
-				else						// min is N-1 frame
-				{
-					outFrame[i] = frameN1[i];	
-				}
+				if (x < frameN1ModY[i] && x < frameN2ModY[i])
+					outFrame[i] = frameN[i];
+				else if (frameN1ModY[i] < x && frameN1ModY[i] < frameN2ModY[i])
+					outFrame[i] = frameN1[i];
+				else
+					outFrame[i] = frameN2[i];
 			}
 			else	// below threshold? just output the previous frame
 			{
@@ -464,6 +461,7 @@ void process_frame(void)
 			}
 			
 			previousFrameNXRatio[i] = noiseMin/x;		// update the N/X ratio
+			frameN2ModY[i] = x;		// overwrite the value for N-2 frame
 		}
 		else // plain old no enhancement8
 		{		
@@ -479,6 +477,13 @@ void process_frame(void)
 		frameN2 = frameN1; // new N-2 frame is old N-1 frame
 		frameN1 = frameN;  // new N-1 frame is old N frame
 		frameN = tempFrame;	// new N frame reuses the old N-2 frame buffer for new input incoming
+		
+		// swap |Y(w)| buffers
+		float *temp;
+		
+		temp = frameN2ModY;		// note that the mod Y for frame N is already stored here
+		frameN2ModY = frameN1ModY;
+		frameN1ModY = temp;
 		
 	}    
 	
