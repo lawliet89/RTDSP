@@ -49,7 +49,7 @@
 
 // Noise Minimum Buffer Related
 #define NOISE_BUFFER_NUM 4.0		// this is the number of noise buffers we are keeping
-#define NOISE_TIME 10.0				// the time, in seconds for the period of time that we are keeping the buffers for
+#define NOISE_TIME 4.0				// the time, in seconds for the period of time that we are keeping the buffers for
 #define FRAMES_PER_NOISE_BUF ((int)(NOISE_TIME/NOISE_BUFFER_NUM/TFRAME))  // this is the number of frames processed before a noise buffer rotation happens
 
 /******************************* Global declarations ********************************/
