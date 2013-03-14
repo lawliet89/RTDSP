@@ -120,7 +120,9 @@ int enhance6HighFreqBinLowerBound, enhance6HighFreqBinUpperBound;
 
 // Enhancement switches
 short enhancement1 = 1;
-short enhancement2 = 0;
+short enhancement2 = 1; // overrides enh1
+
+
 short enhancement3 = 1;
 short enhancement4Choice = 4;
 short enhancement6 = 1;
@@ -245,10 +247,7 @@ void process_frame(void)
 	int i, j, k, m; 	// various loop counters
 	float noiseFactor, noiseMin;	// noise subtraction
 	float noiseFactorA, noiseFactorB;	// enhancement 4
-	float x, SNR;
-	float sampleAbs;		// absolute of the sample
-	float temp;		// general purpose temp variable
-	
+
 	static int frame_cnt = 0;
 	
 	short rotatedM;
@@ -330,8 +329,7 @@ void process_frame(void)
 		noiseMin = *(noiseBuffer + i);
 		for (j = 1; j < NOISE_BUFFER_NUM; ++j)
 		{
-			if (*(noiseBuffer + j*FFTLEN + i) < noiseMin) 
-				noiseMin = *(noiseBuffer + j*FFTLEN + i);
+			noiseMin = min(noiseMin, *(noiseBuffer + j*FFTLEN + i));
 		}
 		// oversubstract by alpha coefficient
 		noiseMin *= NOISE_OVERSUBTRACTION;
