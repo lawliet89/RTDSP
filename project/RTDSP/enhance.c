@@ -347,6 +347,22 @@ void process_frame(void)
 			noiseMin = noiseSubLpf[i];
 		}
 		
+		/* Enhancement 6 - further noise overestimation */
+		if (enhancement6)	
+		{
+			float SNR = x/noiseMin;
+			if (i > enhance6HighFreqBinLowerBound && i < enhance6HighFreqBinUpperBound)
+			{	// high frequency handling
+				if (SNR < enhance6HighFreqThreshold )
+					noiseMin *= enhance6HighFreqGain;
+			}
+			else
+			{	// low frequency handling
+				if (SNR < enhance6LowFreqThreshold  )
+					noiseMin *= enhance6LowFreqGain ;
+			}
+		}
+		
 		/* enhancement 4 */
 		switch (enhancement4Choice)
 		{
