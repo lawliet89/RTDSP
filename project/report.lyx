@@ -703,7 +703,7 @@ where
 \end_layout
 
 \begin_layout Subsection
-Low-Pass Filter Noise Estimate
+Low-Pass Filter Noise Estimatex
 \end_layout
 
 \begin_layout Subsection
@@ -720,6 +720,10 @@ Dynamic Underestimation Correction
 
 \begin_layout Subsection
 Residual Noise Reduction
+\end_layout
+
+\begin_layout Subsection
+Changing the Noise Estimation Period
 \end_layout
 
 \begin_layout Section
