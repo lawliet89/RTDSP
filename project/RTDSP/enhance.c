@@ -1,25 +1,3 @@
-/*************************************************************************************
-			       DEPARTMENT OF ELECTRICAL AND ELECTRONIC ENGINEERING
-					   		     IMPERIAL COLLEGE LONDON 
-
- 				      EE 3.19: Real Time Digital Signal Processing
-					       Dr Paul Mitcheson and Daniel Harvey
-
-				        		 PROJECT: Frame Processing
-
- 				            ********* ENHANCE. C **********
-							 Shell for speech enhancement 
-
-  		Demonstrates overlap-add frame processing (interrupt driven) on the DSK. 
-
- *************************************************************************************
- 				             By Danny Harvey: 21 July 2006
-							 Updated for use on CCS v4 Sept 2010
- ************************************************************************************/
-/*
- *	You should modify the code so that a speech enhancement project is built 
- *  on top of this template.
- */
 /**************************** Pre-processor statements ******************************/
 //  library required when using calloc
 #include <stdlib.h>
@@ -43,7 +21,7 @@
 #include <helper_functions_ISR.h>
 
 #define WINCONST 0.85185			/* 0.46/0.54 for Hamming window */
-#define FSAMP 8000.0		/* sample frequency, ensure this matches Config for AIC */
+#define FSAMP 8000.0				/* sample frequency, ensure this matches Config for AIC */
 #define FFTLEN 256					/* fft length = frame length 256/8000 = 32 ms*/
 #define NFREQ (1+FFTLEN/2)			/* number of frequency bins from a real FFT */
 #define OVERSAMP 4					/* oversampling ratio (2 or 4) */  
@@ -52,15 +30,14 @@
 
 #define OUTGAIN 16000.0				/* Output gain for DAC */
 #define INGAIN  (1.0/OUTGAIN)		/* Input gain for ADC  */
-// PI defined here for use in your code 
-#define PI 3.141592653589793
-#define TFRAME FRAMEINC/FSAMP       /* time between calculation of each frame */
+
+#define PI 3.141592653589793 		// PI defined here for use in your code 
+#define TFRAME (FRAMEINC/FSAMP)       /* time between calculation of each frame */
 
 // Noise Minimum Buffer Related
-#define NOISE_BUFFER_NUM 4		// this is the number of noise buffers we are keeping
-#define NOISE_TIME 10	// the time, in seconds for the period of time that we are keeping the buffers for
-#define NOISE_SAMPLES_PER_SUBBUF (NOISE_TIME*FSAMP/NOISE_BUFFER_NUM)	// the number of samples before the noise buffers are rotated
-
+#define NOISE_BUFFER_NUM 4.0		// this is the number of noise buffers we are keeping
+#define NOISE_TIME 10.0				// the time, in seconds for the period of time that we are keeping the buffers for
+#define FRAMES_PER_NOISE_BUF ((int)(NOISE_TIME/NOISE_BUFFER_NUM/TFRAME))
 
 /******************************* Global declarations ********************************/
 
@@ -96,20 +73,36 @@ volatile int frame_ptr=0;           /* Frame pointer */
 
 float *noiseBuffer;					// the noise buffer
 float *noiseEstimateBuffer;		// noise LPF estimate Buffer
+float *noiseSubLpf;				// buffer to LPF the noise estimate to subtract (enhancement 3)
 volatile int noiseSubbufIndex = 0;		// noise buffer pointer
 volatile int sampleCount = 0;	// the number of samples
-float noiseK;
+float noiseK, noiseSubK;
+float NOISE_OVERSUBTRACTION = 3.2f;
+float NOISE_LPF_TIME_CONSTANT = 0.04f;		//20-80 ms	- enhancement 1
+float NOISE_LAMBDA = 0.03f;
+float NOISE_SUB_LPF_TIME_CONSTANT = 0.1f;//0.04f;	// enhancement 3
 
-// Filter numbers to tweak
-float NOISE_OVERSUBTRACTION = 2.f;
-float NOISE_LPF_TIME_CONSTANT = 0.04;		//20-80 ms
-float NOISE_LAMBDA = 0.05f;
+// previous values for recalculation
+float prev_NOISE_LPF_TIME_CONSTANT=0, prev_NOISE_SUB_LPF_TIME_CONSTANT=0;
+
+// enhancement 6 parameters
+float enhance6HighFreqLowerBound = 0.25f;
+float enhance6HighFreqUpperBound = 0.75;	// the former two should add to one
+float enhance6LowFreqGain = 1.2;//0.9f;
+float enhance6HighFreqGain = 1;//3.f;
+float enhance6LowFreqThreshold = 2.f;
+float enhance6HighFreqThreshold = 5.f;
+
+// calculated enhancement 6 parameters
+float prev_enhance6HighFreqLowerBound = 0, prev_enhance6HighFreqUpperBound=0;
+int enhance6HighFreqBinLowerBound, enhance6HighFreqBinUpperBound;
 
 // Enhancement switches
 short enhancement1 = 1;
-short enhancement2 = 1;		// you MUST have enhacement1 on too.
-short g_calc_type = 0;
-
+short enhancement2 = 0;
+short enhancement3 = 1;
+short enhancement4Choice = 4;
+short enhancement6 = 1;
 
  /******************************* Function prototypes *******************************/
 void init_hardware(void);    	/* Initialize codec */ 
@@ -134,8 +127,8 @@ void main()
     
     noiseBuffer		= (float *) calloc(NOISE_BUFFER_NUM*FFTLEN, sizeof(float));
     noiseEstimateBuffer = (float *) calloc(FFTLEN, sizeof(float));
-    noiseK = exp(-1.f*TFRAME/NOISE_LPF_TIME_CONSTANT);
-	
+    noiseSubLpf = (float *) calloc(FFTLEN, sizeof(float));
+    	
 	/* initialize board and the audio port */
   	init_hardware();
   
@@ -154,7 +147,36 @@ void main()
 
  							
   	/* main loop, wait for interrupt */  
-  	while(1) 	process_frame();
+  	while(1)
+  	{ 	
+  		// recalculate values if necessary
+  		if (prev_NOISE_LPF_TIME_CONSTANT != NOISE_LPF_TIME_CONSTANT)
+  		{
+  			prev_NOISE_LPF_TIME_CONSTANT = NOISE_LPF_TIME_CONSTANT;
+  			noiseK = exp(-1.f*TFRAME/NOISE_LPF_TIME_CONSTANT);
+  		}
+  		
+  		if (prev_NOISE_SUB_LPF_TIME_CONSTANT != NOISE_SUB_LPF_TIME_CONSTANT)
+  		{
+  			prev_NOISE_SUB_LPF_TIME_CONSTANT = NOISE_SUB_LPF_TIME_CONSTANT;
+  			noiseSubK = exp(-1.f*TFRAME/NOISE_SUB_LPF_TIME_CONSTANT);
+  		}
+  		
+  		if (prev_enhance6HighFreqLowerBound != enhance6HighFreqLowerBound)
+  		{
+  			prev_enhance6HighFreqLowerBound = enhance6HighFreqLowerBound;
+  			enhance6HighFreqBinLowerBound = (int) (FFTLEN*enhance6HighFreqLowerBound);
+  		}
+  		
+  		if (prev_enhance6HighFreqUpperBound != enhance6HighFreqUpperBound)
+  		{
+  			prev_enhance6HighFreqUpperBound = enhance6HighFreqUpperBound;
+  			enhance6HighFreqBinUpperBound = (int) (FFTLEN*enhance6HighFreqUpperBound);
+  		}
+  		
+  		process_frame();
+  	
+  	}
 }
     
 /********************************** init_hardware() *********************************/  
@@ -197,12 +219,15 @@ void init_HWI(void)
 void process_frame(void)
 {
 	int i, j, k, m; 	// various loop counters
-	float g, n;	// noise subtraction
-	float x;
-	float temp;
+	float noiseFactor, noiseMin;	// noise subtraction
+	float noiseFactorA, noiseFactorB;	// enhancement 4
+	float x, SNR;
+	float sampleAbs;		// absolute of the sample
+	float temp;		// general purpose temp variable
+	
+	static int frame_cnt = 0;
 	
 	int io_ptr0;   
-	noiseK = exp(-1.f*TFRAME/NOISE_LPF_TIME_CONSTANT);
 
 	/* work out fraction of available CPU time used by algorithm */    
 	cpufrac = ((float) (io_ptr & (FRAMEINC - 1)))/FRAMEINC;  
@@ -228,24 +253,36 @@ void process_frame(void)
 	} 
 	
 	/************************* DO PROCESSING OF FRAME  HERE **************************/
-				
 	fft(FFTLEN, inframe);	// perform FFT of this frame
 	
 	// Noise minimum buffer handling
-	if (sampleCount >= NOISE_SAMPLES_PER_SUBBUF) // time to rotate noise buffer
+	if (++frame_cnt >= FRAMES_PER_NOISE_BUF) // rotate noise buffer if time period passed
 	{ 
-		noiseSubbufIndex = (noiseSubbufIndex == NOISE_BUFFER_NUM-1) ? 0 : noiseSubbufIndex+1;
-		sampleCount = 0;
+		if (++noiseSubbufIndex >= NOISE_BUFFER_NUM) // circular buffer wrap for noise bufs
+			noiseSubbufIndex = 0;
+		frame_cnt = 0;
 		
-		if (enhancement1)			// enhancement 1
+		if (enhancement1)			// Enhancement 1 PART I
+		{
+			for (i = 0; i < FFTLEN; i++){
+				x = cabs(inframe[i]);		// LPF filtering
+				noiseEstimateBuffer[i] = (1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]);
+				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  noiseEstimateBuffer[i];
+			}
+		} 
+		else if (enhancement2) // Enhancement 2 PART I
+		{
+			for (i = 0; i < FFTLEN; i++){
+				x = cabs(inframe[i]);	
+				x *= x;	
+				noiseEstimateBuffer[i] = sqrt((1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]*noiseEstimateBuffer[i]));
+				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  noiseEstimateBuffer[i];
+			}
+		}
+		else		// no enhancements
 		{
 			for (i = 0; i < FFTLEN; i++)
-			{		
-				x = cabs(inframe[i]);
-				noiseEstimateBuffer[i] = (1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]);
-				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = noiseEstimateBuffer[i] ;
-			}
-			
+				*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) =  cabs(inframe[i]);
 		}
 		else if (enhancement2)		// enhancement 2
 		{
@@ -266,29 +303,35 @@ void process_frame(void)
 			}
 		}	
 	}
-	else		// minimisation
+	else // process noise minimisation
 	{
-		if (enhancement1)			// enhancement 1
+		if (enhancement1)			// Enhancement 1 PART II
 		{
 			for (i = 0; i < FFTLEN; i++)
-			{		
+			{
 				x = cabs(inframe[i]);
 				noiseEstimateBuffer[i] = (1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]);
 				if (noiseEstimateBuffer[i] < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
 					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = noiseEstimateBuffer[i];
 			}
-			
 		}
-		else if (enhancement2)		// enhancement 2
+		else if (enhancement2)			// Enhancement 2 PART II
 		{
 			for (i = 0; i < FFTLEN; i++)
-			{		
+			{
 				x = cabs(inframe[i]);
-				x = x*x;
-				noiseEstimateBuffer[i] = (1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]);
-				
-				if ( sqrt(noiseEstimateBuffer[i]) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
-					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = sqrt(noiseEstimateBuffer[i]);
+				x *= x;	
+				noiseEstimateBuffer[i] = sqrt((1-noiseK)*x + noiseK*(noiseEstimateBuffer[i]*noiseEstimateBuffer[i]));
+				if (noiseEstimateBuffer[i] < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
+					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = noiseEstimateBuffer[i];
+			}
+		}
+		else		// no enhancements
+		{
+			for (i = 0; i < FFTLEN; i++)
+			{
+				if (cabs(inframe[i]) < *(noiseBuffer + noiseSubbufIndex*FFTLEN + i))
+					*(noiseBuffer + noiseSubbufIndex*FFTLEN + i) = cabs(inframe[i]);
 			}
 		}
 		else			// original
@@ -304,28 +347,66 @@ void process_frame(void)
 	// Now we will subtract the noise
 	for (i = 0; i < FFTLEN; i++)
 	{
-		n = *(noiseBuffer+i);
+		sampleAbs = cabs(inframe[i]);
+		noiseMin = *(noiseBuffer+i);
 		// determine the noise min for this frequency bin
 		for (j = 1; j < NOISE_BUFFER_NUM; j++)
 		{
-			if (*(noiseBuffer + j*FFTLEN + i) < n) 
-				n = *(noiseBuffer + j*FFTLEN + i);
+			if (*(noiseBuffer + j*FFTLEN + i) < noiseMin) 
+				noiseMin = *(noiseBuffer + j*FFTLEN + i);
 		}
-		n *= NOISE_OVERSUBTRACTION;
+		noiseMin *= NOISE_OVERSUBTRACTION;
 		
-		// calculate g
-		if (g_calc_type==0) 
+		if (enhancement6)	// Enhancement 6 - further noise overestimation
 		{
-			g = 1.f -  n/cabs(inframe[i]);
-			g = (g < NOISE_LAMBDA) ? NOISE_LAMBDA : g;
+			SNR = sampleAbs/noiseMin;
+			if (i > enhance6HighFreqBinLowerBound && i < enhance6HighFreqBinUpperBound)
+			{	// high frequency handling
+				if (SNR < enhance6HighFreqThreshold )
+					noiseMin *= enhance6HighFreqGain;
+			}
+			else
+			{	// low frequency handling
+				if (SNR < enhance6LowFreqThreshold  )
+					noiseMin *= enhance6LowFreqGain ;
+			}
 		}
-		else
+
+		if (enhancement3)	// enhancement 3 - LPF noise estimate
 		{
-			temp =  n/cabs(inframe[i]);
-			g = (1-temp < NOISE_LAMBDA*temp) ? NOISE_LAMBDA*temp : 1-temp;				
+			noiseSubLpf[i] = (1-noiseSubK)*noiseMin + noiseSubK*noiseSubLpf[i];
+			noiseMin = noiseSubLpf[i];
+		}		
+		
+		// calculate noiseFactor (g)
+		switch (enhancement4Choice)
+		{
+			case 1:
+				temp = noiseMin/sampleAbs;
+				noiseFactorA = NOISE_LAMBDA * temp;
+				noiseFactorB = 1.f - temp;
+				break;
+			case 2: 
+				noiseFactorA = NOISE_LAMBDA * noiseEstimateBuffer[i]/sampleAbs;
+				noiseFactorB = 1.f - noiseMin/sampleAbs;
+				break;
+			case 3: 
+				temp = noiseMin/noiseEstimateBuffer[i];
+				noiseFactorA = NOISE_LAMBDA * temp;
+				noiseFactorB = 1.f - temp;
+				break;
+			case 4: 
+				noiseFactorA =  NOISE_LAMBDA;
+				noiseFactorB = 1.f -  noiseMin/noiseEstimateBuffer[i];
+				break;
+			default: 	// as though enhancement 4 is off
+				noiseFactorA =  NOISE_LAMBDA;
+				noiseFactorB = 1.f -  noiseMin/sampleAbs;
+				break;
 		}
 		
-		outframe[i] = rmul(g, inframe[i]);
+		noiseFactor = (noiseFactorA > noiseFactorB) ? noiseFactorA : noiseFactorB;
+		outframe[i] = rmul(noiseFactor, inframe[i]);
 	}
 	
 	ifft(FFTLEN, outframe);
@@ -364,7 +445,6 @@ void ISR_AIC(void)
 	/* update io_ptr and check for buffer wraparound */    
 	
 	if (++io_ptr >= CIRCBUF) io_ptr=0;
-	sampleCount++;
 }
 
 /************************************************************************************/

@@ -1,0 +1,713 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{ %
+  basicstyle=\footnotesize,       % the size of the fonts that are used for the code
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                % sets automatic line breaking
+  captionpos=b,                   % sets the caption-position to bottom
+  commentstyle=\color{dkgreen},   % comment style
+  escapeinside={\%*}{*)},         % if you want to add LaTeX within your code
+  keywordstyle=\color{blue},      % keyword style
+  language=C,                     % the language of the code
+  numbers=left,                   % where to put the line-numbers; possible values are (none, left, right)
+  numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
+  stringstyle=\color{mauve},      % string literal style
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  xleftmargin=12pt,          % left margin
+  frame=leftline
+}
+
+\lfoot{ywc110 \& rs5010}
+\cfoot{}
+\rfoot{\thepage}
+\end_preamble
+\use_default_options true
+\begin_modules
+figs-within-sections
+tabs-within-sections
+eqs-within-sections
+customHeadersFooters
+\end_modules
+\maintain_unincluded_children false
+\language british
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family sfdefault
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format pdf5
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing onehalf
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered true
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
+\pdf_quoted_options "linkcolor=blue, bookmarks=false, pdfstartview={FitH}"
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 1.5cm
+\bottommargin 2cm
+\headheight 2cm
+\secnumdepth 3
+\tocdepth 2
+\paragraph_separation skip
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Real Time Digital Signal Processing Speech Enhancement Project
+\end_layout
+
+\begin_layout Author
+Yong Wen Chua (ywc110) & Ryan Savitski (rs5010)
+\end_layout
+
+\begin_layout Section*
+Declaration
+\end_layout
+
+\begin_layout Standard
+Declaration: We confirm that this submission is our own work.
+ In it, we give references and citations whenever we refer to or use the
+ published, or unpublished, work of others.
+ We are aware that this course is bound by penalties as set out in the College
+ examination offences policy.
+ 
+\end_layout
+
+\begin_layout Standard
+Signed:
+\bar under
+ Yong Wen Chua & Ryan Savitski
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+In this Digital Age, more communication are now happening over networks
+ rather than in person.
+ Driven primarily by telephony, this increase in prevalence of digital communica
+tion has made the transmission of clear and noise-free sound more important
+ than ever before.
+ Implementations of such a system is complicated by the fact that the implemente
+rs can never fully know what sort of noise environment users are in when
+ they are speaking through the digital communication system.
+ In addition, such a noise reduction system have to run in real-time, or
+ users would not be able to communicate in real-time.
+\end_layout
+
+\begin_layout Standard
+This project aims to implement such a noise-reduction system on various
+ noise corrupted sound files in real-time.
+ Various heuristics are first used to estimate the noise profile.
+ Once estimated, spectral subtraction is used to 
+\begin_inset Quotes eld
+\end_inset
+
+subtract
+\begin_inset Quotes erd
+\end_inset
+
+ the noise spectrum to obtain a noise reduced version of the noise corrupted
+ files.
+ 
+\end_layout
+
+\begin_layout Standard
+In 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sec:sec-basic"
+
+\end_inset
+
+, we first explore a basic implementation of the noise filter.
+ This will also establish the basic structure of the filtering system.
+ In 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sec:sec-enhancement"
+
+\end_inset
+
+, various enhancements to the basic system are explored, along with details
+ of the parameters used in those enhancements.
+ Finally, in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sec:Final-Implementation"
+
+\end_inset
+
+, the combination of the enhancements chosen to be used are described.
+ The code for the project can be found in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sec:Project-Code"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:sec-basic"
+
+\end_inset
+
+Basic Implementation
+\end_layout
+
+\begin_layout Standard
+\noindent
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename resources/filter-flow.PNG
+	lyxscale 35
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:fft-block"
+
+\end_inset
+
+Block diagram on the processing of the input signal to generate a filtered
+ output.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename resources/frame-flow.PNG
+	lyxscale 35
+	scale 25
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:fame-overlap"
+
+\end_inset
+
+Block diagram on the overlapped processing of the frames.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Block diagrams of how the samples are processed.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\begin_layout Standard
+Filtering of the noisy input signal is done primarily in the frequency domain.
+ As shown in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:fft-block"
+
+\end_inset
+
+, the Fast Fourier Transform (FFT) algorithm is employed to perform a Discrete
+ Fourier Transform (DFT) on the input signal.
+ Then, the noise spectrum is estimated and subtracted from the noisy signal.
+ Finally, an inverse DFT (IDFT) is performed on the input before sending
+ it to the output.
+\end_layout
+
+\begin_layout Standard
+Due to the real-time requirements of the system, it is not plausible to
+ take a FFT of the entire noisy input.
+ Thus, frames are passed through FFT and then processed accordingly.
+ In order to prevent discontinuities at frame boundaries (which manifest
+ as clicking sounds heard in the output), frames are processed in an overlapping
+ manner, with appropriate windowing done on the frames so that the overall
+ gain at the frame boundaries add up to unity.
+ This process is illustrated in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:fame-overlap"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Frame Processing Implementation
+\end_layout
+
+\begin_layout Standard
+A frame size of 256 samples was chosen for frame processing, and an oversampling
+ ratio of four was chosen along the the square root of the Hamming Window.
+ This ensures that there are no sharp discontinuities at frame edges and
+ that the overall gain at the edges sum to unity.
+ This means that a full frame is taken for frequency domain processing every
+ 
+\begin_inset Formula $\nicefrac{1}{4}$
+\end_inset
+
+ of a frame, known as a frame segment.
+ Each segment is thus 64 samples long.
+ The processing is illustrated in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:overlap-frame"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename resources/frame-overlap.PNG
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:overlap-frame"
+
+\end_inset
+
+Implementation of the overlapped frame processing.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The input and output buffer are implemented as circular buffers with five
+ segments each.
+ At any time, four of those input segments will be fully filled (and can
+ be used for frame processing) with one being used to store the inputs coming
+ into the system.
+ At the same time, one of the output segments will have been fully added
+ with its overlapped frame (and therefore ripe for output), while the other
+ four frames are being added with the current processed frame.
+ The inputs are read from the input port via an interrupt, and the relevant
+ output is then sent to the output port.
+ This results in a 1.25 frame latency from the input port to the output port.
+ 
+\end_layout
+
+\begin_layout Subsection
+Noise Spectrum Estimation
+\end_layout
+
+\begin_layout Standard
+The heuristics used in the estimation of noise assumes that within a 10
+ second window, the speaker would have at least paused for a fraction of
+ the time.
+ During this time, the spectrum of the input would simply correspond to
+ that of the noise spectrum.
+ Thus, the minimum of the spectrum content over a ten-second sliding window
+ can be used to estimate the noise spectrum.
+ Due to the fact that the phase of the noise spectrum cannot be known, only
+ the absolute of the spectrum is analysed.
+\end_layout
+
+\begin_layout Standard
+In practice, however, it is not feasible to store ten seconds worth of spectra
+ content.
+ Four separate 2.5 seconds sliding windows are used in place of a full 10
+ seconds sliding window.
+ For 2.5 seconds, the lowest spectrum content is stored in a relevant buffer.
+ After 2.5 seconds have passed, the oldest buffer is discarded and is used
+ to store the minimum spectra content for the next 2.5 seconds.
+ These four separate sliding windows are implemented as a single circular
+ buffer, with the appropriate program logic to separate the segments.
+ For the current window 
+\begin_inset Formula $M_{i}(\omega)$
+\end_inset
+
+ (where 
+\begin_inset Formula $i\in[1,4]$
+\end_inset
+
+ ) and an input spectrum of 
+\begin_inset Formula $X(\omega)$
+\end_inset
+
+, 
+\begin_inset Formula $M_{i}(\omega)=\min\left[|X(\omega)|,M_{i}(\omega)\right].$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When the noise spectrum is to be estimated for use in spectral subtraction,
+ the minimum over the four 2.5 seconds segments are used.
+ This essentially provides a ten second noise spectrum window that slides
+ once every 2.5 seconds.
+ The minimum is multiplied with a constant factor 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ to correct any underestimation.
+ Thus, the minimum estimated noise spectrum 
+\begin_inset Formula $N(\omega)$
+\end_inset
+
+ is given by 
+\begin_inset Formula 
+\begin{equation}
+N(\omega)=\alpha\min_{i\in[1,4]}\left[M_{i}(\omega)\right]
+\end{equation}
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Subsection
+Noise Spectrum Subtraction
+\end_layout
+
+\begin_layout Standard
+Let the output be 
+\begin_inset Formula $Y(\omega)$
+\end_inset
+
+, and the input and noise be 
+\begin_inset Formula $X(\omega)$
+\end_inset
+
+ and 
+\begin_inset Formula $N(\omega)$
+\end_inset
+
+ respectively.
+ To preserve the phase of 
+\begin_inset Formula $X(\omega)$
+\end_inset
+
+ (and achieve a zero-phase filtering), only the magnitude should be altered,
+ as mentioned before.
+ Thus, the output is given by
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{alignat}{1}
+Y(\omega) & =X(\omega)G(\omega)\\
+G(\omega) & =\max\left(\lambda,1-\frac{|N(\omega)|}{|X(\omega)|}\right)
+\end{alignat}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $G(\omega)$
+\end_inset
+
+ is a essentially a real-gain factor that is calculated from the estimated
+ noise spectrum.
+ Because of the fact that the expression 
+\begin_inset Formula $1-\frac{|N(\omega)|}{|X(\omega)|}$
+\end_inset
+
+ can potentially go to negative, 
+\begin_inset Formula $G(\omega)$
+\end_inset
+
+ should be lower bounded by a positive value 
+\begin_inset Formula $\lambda$
+\end_inset
+
+.
+ 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ is chosen to be slightly above zero to reduce the amount of 
+\begin_inset Quotes eld
+\end_inset
+
+musical noise
+\begin_inset Quotes erd
+\end_inset
+
+ introduced by the spectral subtraction.
+\end_layout
+
+\begin_layout Subsection
+Evaluation
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:sec-enhancement"
+
+\end_inset
+
+Enhancements
+\end_layout
+
+\begin_layout Standard
+Various enhancements are implemented, and evaluated for their effectiveness
+ in removing the noise from the signal.
+ Some of these enhancements improve the noise removal, while some exacerbate
+ the noise.
+ Each are thus evaluated in turn for their effectiveness, and a final combinatio
+n of these enhancements are described in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sec:Final-Implementation"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Low-Pass Filter Input for Noise Estimation
+\end_layout
+
+\begin_layout Subsection
+Low-Pass Filter Noise Estimate
+\end_layout
+
+\begin_layout Subsection
+Alternate Calculations for 
+\begin_inset Formula $G(\omega)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Dynamic Underestimation Correction
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Final-Implementation"
+
+\end_inset
+
+Final Implementation
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+\start_of_appendix
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Project-Code"
+
+\end_inset
+
+Project Code
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset include
+LatexCommand lstinputlisting
+filename "RTDSP/enhance.c"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
