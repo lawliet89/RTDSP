@@ -90,7 +90,7 @@ volatile int frame_ptr=0;           /* Frame pointer */
 float *noiseBuffer;				// the noise circular buffer of all the M subbufs
 int curM_offset = 0;			// noise sub-buffer pointer (which M buffer we're chosing)
 float *previousFFTvalue;		// for LPFing the FFT bins
-float *enhancement8Buffer;		// for storing previous |N(w)|/|X(w)|
+float *previousFrameNXRatio;		// for storing previous |N(w)|/|X(w)|
 
 float *noiseSubLpf;				// buffer to LPF the noise estimate to subtract (enhancement 3)
 
@@ -132,7 +132,7 @@ short enhancement3 = 1;
 short enhancement4Choice = 4;
 short enhancement6 = 1;
 
-short enhancement8 = 1;
+short enhancement8 = 0;
 
 
  /******************************* Function prototypes *******************************/
@@ -164,7 +164,7 @@ void main()
     previousFFTvalue 	= (float *) calloc(FFTLEN, sizeof(float));
     noiseSubLpf 		= (float *) calloc(FFTLEN, sizeof(float));
     
-    enhancement8Buffer 	= (float *) calloc(FFTLEN, sizeof(float));
+    previousFrameNXRatio 	= (float *) calloc(FFTLEN, sizeof(float));
     	
 	/* initialize board and the audio port */
   	init_hardware();
@@ -429,50 +429,56 @@ void process_frame(void)
 				break;
 		}
 		
+		// multiply input frame by noise subtraction factor
 		noiseFactor = max(noiseFactorA, noiseFactorB);
 		frameN[i] = rmul(noiseFactor, frameN[i]);
 		
-		// enhancement 8
+		////////////////////////////////////////////////////////////////////////////
+		/* Enhancement 8 */
 		if (enhancement8)
 		{
-			if (enhancement8Buffer[i] > enhancement8Threshold)
+			// check if previous frame N/X ratio is above a certain threshold
+			if (previousFrameNXRatio[i] > enhancement8Threshold)
 			{
-				float x1 = cabs(frameN1[i]);
-				float x2 = cabs(frameN2[i]);
+				x = cabs(frameN[i]);			// absolute of Yn
+				float x1 = cabs(frameN1[i]);	// absolute of Yn-1
+				float x2 = cabs(frameN2[i]);	// absolute of Yn-2
 				
-				if (x2 < x1 && x2 < x)
+				// find the frame with the min abs(Y) and use that frame as the output
+				if (x2 < x1 && x2 < x)		// min is N-2 frame
 				{
 					outFrame[i] = frameN2[i];	
 				}
-				else if (x < x1 && x < x2)
+				else if (x < x1 && x < x2)	// min is N frame
 				{
 					outFrame[i] = frameN[i];	
 				}
-				else
+				else						// min is N-1 frame
 				{
 					outFrame[i] = frameN1[i];	
 				}
 			}
-			else
+			else	// below threshold? just output the previous frame
 			{
 				outFrame[i] = frameN1[i];	
 			}
-			enhancement8Buffer[i] = noiseMin/x;		// update buffer
+			
+			previousFrameNXRatio[i] = noiseMin/x;		// update the N/X ratio
 		}
-		else{	// plain old no enhancement8
-			outFrame[i] = frameN[i];		
+		else // plain old no enhancement8
+		{		
+			outFrame[i] = frameN[i]; // direct assignment
 		}
 	}
 	
 	if (enhancement8)	// if enhancement 8, swap some buffers
 	{
 		complex *tempFrame;
-		
 		tempFrame = frameN2;
 		
-		frameN2 = frameN1;
-		frameN1 = frameN;
-		frameN = tempFrame;
+		frameN2 = frameN1; // new N-2 frame is old N-1 frame
+		frameN1 = frameN;  // new N-1 frame is old N frame
+		frameN = tempFrame;	// new N frame reuses the old N-2 frame buffer for new input incoming
 		
 	}    
 	
