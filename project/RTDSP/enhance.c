@@ -77,7 +77,9 @@ DSK6713_AIC23_Config Config = { \
 DSK6713_AIC23_CodecHandle H_Codec;
 
 float *inbuffer, *outbuffer;   		/* Input/output circular buffers */
-complex *frame, *outframe;          /* Input and output frames */
+complex *frameN;         			/* frame N */
+complex *frameN1;					/* frame N-1 */
+complex *frameN2;					/* frame N-2 */
 float *inwin, *outwin;              /* Input and output windows */
 float ingain, outgain;				/* ADC and DAC gains */ 
 float cpufrac; 						/* Fraction of CPU time used */
@@ -116,7 +118,8 @@ float enhance6HighFreqThreshold = 5.f;
 float prev_enhance6HighFreqLowerBound = 0, prev_enhance6HighFreqUpperBound=0;
 int enhance6HighFreqBinLowerBound, enhance6HighFreqBinUpperBound;
 
-
+// enhancement 8 threshold
+float enhancement8Threshold = 3.f;
 
 // Enhancement switches
 short enhancement1 = 1;
@@ -127,7 +130,7 @@ short enhancement3 = 1;
 short enhancement4Choice = 4;
 short enhancement6 = 1;
 
-
+short enhancement8 = 1;
 
 
  /******************************* Function prototypes *******************************/
@@ -146,7 +149,11 @@ void main()
 
 	inbuffer	= (float *) calloc(CIRCBUF, sizeof(float));	/* Input array */
     outbuffer	= (float *) calloc(CIRCBUF, sizeof(float));	/* Output array */
-	frame		= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
+    
+	frameN		= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
+	frameN1		= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
+	frameN2		= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
+	
     inwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Input window */
     outwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Output window */
     
@@ -274,13 +281,13 @@ void process_frame(void)
 	m=io_ptr0;
     for (k=0;k<FFTLEN;k++)
 	{                           
-		frame[k].r = inbuffer[m] * inwin[k]; 
-		frame[k].i = 0.f;
+		frameN[k].r = inbuffer[m] * inwin[k]; 
+		frameN[k].i = 0.f;
 		if (++m >= CIRCBUF) m=0; /* wrap if required */
 	} 
 	
 	/************************* DO PROCESSING OF FRAME  HERE **************************/
-	fft(FFTLEN, frame);	// perform FFT of this frame
+	fft(FFTLEN, frameN);	// perform FFT of this frame
 	
 	// Noise minimum buffer handling
 	if (++frame_cnt >= FRAMES_PER_NOISE_BUF) // rotate noise buffer if time period passed
@@ -301,7 +308,7 @@ void process_frame(void)
 	// iterate over fft bins
 	for (i = 0; i < FFTLEN; i++)
 	{	
-		x = cabs(frame[i]);
+		x = cabs(frameN[i]);
 		
 		noise_vote = x; //default
 		
@@ -418,10 +425,19 @@ void process_frame(void)
 		}
 		
 		noiseFactor = max(noiseFactorA, noiseFactorB);
-		frame[i] = rmul(noiseFactor, frame[i]);
+		frameN[i] = rmul(noiseFactor, frameN[i]);
 	}
-
-	ifft(FFTLEN, frame);	// perform inverse FFT to return us back to time domain
+	
+	if (!enhancement8)	// no enhancement 8. just swap frameN and frameN1
+	{
+		complex *tempFrame;
+		
+		tempFrame = frameN;
+		frameN = frameN1;
+		frameN1 = tempFrame;
+	}
+	
+	ifft(FFTLEN, frameN1);	// perform inverse FFT to return us back to time domain
 	
 	/********************************************************************************/
 	
@@ -431,14 +447,26 @@ void process_frame(void)
     
     for (k=0;k<(FFTLEN-FRAMEINC);k++) 
 	{    										/* this loop adds into outbuffer */                       
-	  	outbuffer[m] = outbuffer[m]+frame[k].r*outwin[k];   
+	  	outbuffer[m] = outbuffer[m]+frameN1[k].r*outwin[k];   
 		if (++m >= CIRCBUF) m=0; /* wrap if required */
 	}         
     for (;k<FFTLEN;k++) 
 	{                           
-		outbuffer[m] = frame[k].r*outwin[k];   /* this loop over-writes outbuffer */        
+		outbuffer[m] = frameN1[k].r*outwin[k];   /* this loop over-writes outbuffer */        
 	    m++;
-	}	                                   
+	}	           
+	
+	if (enhancement8)	// if enhancement 8, swap some buffers
+	{
+		complex *tempFrame;
+		
+		tempFrame = frameN2;
+		
+		frameN2 = frameN1;
+		frameN1 = frameN;
+		frameN = tempFrame;
+		
+	}                        
 }        
 /*************************** INTERRUPT SERVICE ROUTINE  *****************************/
 
