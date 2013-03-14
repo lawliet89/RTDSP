@@ -77,7 +77,7 @@ DSK6713_AIC23_Config Config = { \
 DSK6713_AIC23_CodecHandle H_Codec;
 
 float *inbuffer, *outbuffer;   		/* Input/output circular buffers */
-complex *previousOutputFrame, *currentProcessFrame, *outputFrame ; /* previous frame that was output, currently processing frame, and frame to output respectively */       
+complex *frame, *outframe;          /* Input and output frames */
 float *inwin, *outwin;              /* Input and output windows */
 float ingain, outgain;				/* ADC and DAC gains */ 
 float cpufrac; 						/* Fraction of CPU time used */
@@ -121,10 +121,12 @@ int enhance6HighFreqBinLowerBound, enhance6HighFreqBinUpperBound;
 // Enhancement switches
 short enhancement1 = 1;
 short enhancement2 = 1; // overrides enh1
+
+
 short enhancement3 = 1;
 short enhancement4Choice = 4;
 short enhancement6 = 1;
-short enhancement8 = 1;
+
 
 
 
@@ -144,9 +146,7 @@ void main()
 
 	inbuffer	= (float *) calloc(CIRCBUF, sizeof(float));	/* Input array */
     outbuffer	= (float *) calloc(CIRCBUF, sizeof(float));	/* Output array */
-	previousOutputFrame	= (complex *) calloc(FFTLEN, sizeof(complex));
-	currentProcessFrame		= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
-	outputFrame 	= (complex *) calloc(FFTLEN, sizeof(complex));
+	frame		= (complex *) calloc(FFTLEN, sizeof(complex));	/* Array for processing*/
     inwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Input window */
     outwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Output window */
     
@@ -268,28 +268,19 @@ void process_frame(void)
  	/* save a pointer to the position in the I/O buffers (inbuffer/outbuffer) where the 
  	data should be read (inbuffer) and saved (outbuffer) for the purpose of processing */
  	io_ptr0=frame_ptr * FRAMEINC;
- 	
- 	/* frame management, for enhancement 8 */
- 	if (enhancement8)
- 	{
-		complex *tempFrame;
-		tempFrame = outputFrame;
-		outputFrame = currentProcessFrame;
-		currentProcessFrame = previousOutputFrame;
-		previousOutputFrame = tempFrame;
- 	}
- 	/* copy input data from inbuffer into inframe (starting from the pointer position) */ 
+	
+	/* copy input data from inbuffer into inframe (starting from the pointer position) */ 
 	 
 	m=io_ptr0;
     for (k=0;k<FFTLEN;k++)
 	{                           
-		currentProcessFrame[k].r = inbuffer[m] * inwin[k]; 
-		currentProcessFrame[k].i = 0.f;
+		frame[k].r = inbuffer[m] * inwin[k]; 
+		frame[k].i = 0.f;
 		if (++m >= CIRCBUF) m=0; /* wrap if required */
 	} 
 	
 	/************************* DO PROCESSING OF FRAME  HERE **************************/
-	fft(FFTLEN, currentProcessFrame);	// perform FFT of this frame
+	fft(FFTLEN, frame);	// perform FFT of this frame
 	
 	// Noise minimum buffer handling
 	if (++frame_cnt >= FRAMES_PER_NOISE_BUF) // rotate noise buffer if time period passed
@@ -310,7 +301,7 @@ void process_frame(void)
 	// iterate over fft bins
 	for (i = 0; i < FFTLEN; i++)
 	{	
-		x = cabs(currentProcessFrame[i]);
+		x = cabs(frame[i]);
 		
 		noise_vote = x; //default
 		
@@ -401,20 +392,11 @@ void process_frame(void)
 		}
 		
 		noiseFactor = max(noiseFactorA, noiseFactorB);
-		currentProcessFrame[i] = rmul(noiseFactor, currentProcessFrame[i]);
+		frame[i] = rmul(noiseFactor, frame[i]);
 	}
 
-	ifft(FFTLEN, currentProcessFrame);	// perform inverse FFT to return us back to time domain
-
-	// not doing enhancement8
-	if (!enhancement8)
-	{
-		complex *tempFrame;
-		tempFrame = outputFrame;
-		outputFrame = currentProcessFrame;
-		currentProcessFrame = tempFrame;
-	}
-
+	ifft(FFTLEN, frame);	// perform inverse FFT to return us back to time domain
+	
 	/********************************************************************************/
 	
     /* multiply outframe by output window and overlap-add into output buffer */  
@@ -423,12 +405,12 @@ void process_frame(void)
     
     for (k=0;k<(FFTLEN-FRAMEINC);k++) 
 	{    										/* this loop adds into outbuffer */                       
-	  	outbuffer[m] = outbuffer[m]+outputFrame[k].r*outwin[k];   
+	  	outbuffer[m] = outbuffer[m]+frame[k].r*outwin[k];   
 		if (++m >= CIRCBUF) m=0; /* wrap if required */
 	}         
     for (;k<FFTLEN;k++) 
 	{                           
-		outbuffer[m] = outputFrame[k].r*outwin[k];   /* this loop over-writes outbuffer */        
+		outbuffer[m] = frame[k].r*outwin[k];   /* this loop over-writes outbuffer */        
 	    m++;
 	}	                                   
 }        
