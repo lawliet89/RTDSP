@@ -76,8 +76,8 @@ customHeadersFooters
 \use_esint 1
 \use_mhchem 1
 \use_mathdots 1
-\cite_engine basic
-\use_bibtopic false
+\cite_engine natbib_authoryear
+\use_bibtopic true
 \use_indices false
 \paperorientation portrait
 \suppress_date false
@@ -340,6 +340,7 @@ Block diagram on the overlapped processing of the frames.
 
 \begin_layout Plain Layout
 Block diagrams of how the samples are processed.
+ 
 \end_layout
 
 \end_inset
@@ -367,7 +368,8 @@ reference "fig:fft-block"
 
 , the Fast Fourier Transform (FFT) algorithm is employed to perform a Discrete
  Fourier Transform (DFT) on the input signal.
- Then, the noise spectrum is estimated and subtracted from the noisy signal.
+ Then assuming that the noise is additive, the noise spectrum is estimated
+ and subtracted from the noisy signal.
  Finally, an inverse DFT (IDFT) is performed on the input before sending
  it to the output.
 \end_layout
@@ -428,6 +430,7 @@ status collapsed
 \align center
 \begin_inset Graphics
 	filename resources/frame-overlap.PNG
+	lyxscale 30
 	scale 35
 
 \end_inset
@@ -489,8 +492,9 @@ The heuristics used in the estimation of noise assumes that within a 10
  that of the noise spectrum.
  Thus, the minimum of the spectrum content over a ten-second sliding window
  can be used to estimate the noise spectrum.
- Due to the fact that the phase of the noise spectrum cannot be known, only
- the absolute of the spectrum is analysed.
+ Due to the fact that the phase of the noise spectrum cannot be known, and
+ the fact that slightly phase distortion is not audible to the human ears,
+ only the absolute of the spectrum is analysed and processed.
 \end_layout
 
 \begin_layout Standard
@@ -621,6 +625,10 @@ musical noise
  introduced by the spectral subtraction.
 \end_layout
 
+\begin_layout Standard
+Describe musical noise now
+\end_layout
+
 \begin_layout Subsection
 Evaluation
 \end_layout
@@ -655,6 +663,45 @@ reference "sec:Final-Implementation"
 Low-Pass Filter Input for Noise Estimation
 \end_layout
 
+\begin_layout Standard
+The noise estimate 
+\begin_inset Formula $P_{t}(\omega)$
+\end_inset
+
+ for a frame 
+\begin_inset Formula $t$
+\end_inset
+
+ can be put through a low-pass filter to moderate the effects of a sharp
+ drop in the noise estimation.
+ The filtering can be done according to
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray}
+P_{t}(\omega) & = & (1-k)\times|X(\omega)|+k\times P_{t-1}(\omega)\\
+k & = & e^{(-\nicefrac{T}{\tau})}
+\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $T$
+\end_inset
+
+ is the frame rate (the time between frame calculation), and 
+\begin_inset Formula $\tau$
+\end_inset
+
+ is the time constant parameter for this filter.
+ 
+\end_layout
+
 \begin_layout Subsection
 Low-Pass Filter Noise Estimate
 \end_layout
@@ -669,6 +716,10 @@ Alternate Calculations for
 
 \begin_layout Subsection
 Dynamic Underestimation Correction
+\end_layout
+
+\begin_layout Subsection
+Residual Noise Reduction
 \end_layout
 
 \begin_layout Section
@@ -703,6 +754,18 @@ Project Code
 \begin_inset CommandInset include
 LatexCommand lstinputlisting
 filename "RTDSP/enhance.c"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+btprint "btPrintAll"
+bibfiles "resources/ref"
+options "plainnat"
 
 \end_inset
 
