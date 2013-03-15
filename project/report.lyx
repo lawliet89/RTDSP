@@ -702,8 +702,138 @@ where
  
 \end_layout
 
+\begin_layout Standard
+=======================================================
+\end_layout
+
+\begin_layout Subsubsection
+Magnitude domain
+\end_layout
+
+\begin_layout Standard
+The problem with the above approach is that each frame's FFT is considered
+ alone when estimating noise.
+ 
+\end_layout
+
+\begin_layout Standard
+Hence:
+\end_layout
+
+\begin_layout Standard
+<NB: see above, some stuff already covered>
+\end_layout
+
+\begin_layout Standard
+if a particular noise frequency is not very pronounced in one frame (i.e.
+ it's bin magnitude is low), it becomes the lowest noise estimate for that
+ particular frequency for the duration of the noise estimation period.
+ Noting that a frame length at 256 point FFT at 8 kHz sampling rate is 32
+ ms, whereas one particularly overestimated noise value will stay within
+ the minimum noise buffer for a period that can last seconds.
+\end_layout
+
+\begin_layout Standard
+This underestimation of the noise can be counteracted slightly via an oversubtra
+ction factor α.
+\end_layout
+
+\begin_layout Standard
+<elaborate on alpha values>
+\end_layout
+
+\begin_layout Standard
+Noise with very minimal pauses would defeat this kind of filtering easily,
+ bringing the spectral subtraction component close to nothing.
+\end_layout
+
+\begin_layout Standard
+a particularly small bin value in one frame will affect the filtering of
+ that frequency while the noise estimate stays in the noise mimimum buffer
+ (the noise estimation period, which is usually in the range of seconds).
+\end_layout
+
+\begin_layout Standard
+<throw in Burouti paper for alpha/beta values>
+\end_layout
+
+\begin_layout Standard
+========================
+\end_layout
+
+\begin_layout Standard
+Therefore to fix the above issue, LPF of frequency bins is used for 
+\end_layout
+
+\begin_layout Standard
++ smoothes transitions between noise estimations, i.e.
+ the filter with track the noise front in a smoother fashion.
+ This is also a downside theoretically, but in practice works well.
+\end_layout
+
+\begin_layout Standard
++ goodgoodgood - main improvement -> LPF lets us pick out the persistent
+ noise
+\end_layout
+
+\begin_layout Standard
++ we can take advantage of the entire pause between speech segments and
+ average the noise content over it, therefore getting a close estimate of
+ the mean of the persistent noise -> alpha can be lowered
+\end_layout
+
+\begin_layout Standard
++ show spectrograms and explain what it shows
+\end_layout
+
+\begin_layout Standard
++ not affected by individual frame FFTs underestimating the true noise content
+ for a long time
+\end_layout
+
+\begin_layout Standard
+change in alpha from 20 to 3.2
+\end_layout
+
+\begin_layout Standard
+<tau values, what it affects, what we chose>
+\end_layout
+
+\begin_layout Standard
+<spectrograms of no lpf vs lpf to show correct averaging>
+\end_layout
+
+\begin_layout Standard
+---------------------------------------------------
+\end_layout
+
+\begin_layout Subsubsection
+Power domain
+\end_layout
+
+\begin_layout Standard
+tried:
+\end_layout
+
+\begin_layout Standard
+y = x - sqrt(d^2) 
+\end_layout
+
+\begin_layout Standard
+proposing, but no perceivable difference, also quote vankirk:
+\end_layout
+
+\begin_layout Standard
+y^2 = (x^2 - d^2)
+\end_layout
+
 \begin_layout Subsection
-Low-Pass Filter Noise Estimatex
+Low-Pass Filter Noise Estimate
+\end_layout
+
+\begin_layout Standard
+remove discontinuities due to sudden changes in noise level estimate introduced
+ by rotating the buffers.
 \end_layout
 
 \begin_layout Subsection
@@ -714,8 +844,68 @@ Alternate Calculations for
 
 \end_layout
 
+\begin_layout Standard
+adaptive noise floor level based on SNR
+\end_layout
+
+\begin_layout Standard
+1 - n/p 
+\end_layout
+
 \begin_layout Subsection
-Dynamic Underestimation Correction
+Frame lengths
+\end_layout
+
+\begin_layout Standard
+time resolution vs frequency resolution (and memory/computation)
+\end_layout
+
+\begin_layout Standard
+I think that because the filter has already 3s lag or so, going from 32
+ to 64 ms frame length is not a significant time domain loss.
+\end_layout
+
+\begin_layout Standard
+From experimentation, no significant difference between 256 and 512 observed
+ though
+\end_layout
+
+\begin_layout Subsection
+Further bin-dependent oversubtraction
+\end_layout
+
+\begin_layout Standard
+<enh6?>
+\end_layout
+
+\begin_layout Standard
+the main spectral content of human speech can be assumed to be between 50
+ and 8000 Hz.
+ 
+\end_layout
+
+\begin_layout Standard
+Therefore one possible improvement is to oversubtract 0-50 Hz band even
+ further.
+\end_layout
+
+\begin_layout Standard
+We also explored completely zeroing the 0-50 Hz band, results were <ok?
+ do a quick test>
+\end_layout
+
+\begin_layout Standard
+When listening to filtering of 
+\begin_inset Quotes eld
+\end_inset
+
+car1.wav
+\begin_inset Quotes erd
+\end_inset
+
+ corrupted signal with a pair of high quality headphones, the low frequency
+ components could actually be heard leaking into the signal.
+ This additional oversubtraction helped combat this effect.
 \end_layout
 
 \begin_layout Subsection
@@ -726,6 +916,20 @@ Residual Noise Reduction
 Changing the Noise Estimation Period
 \end_layout
 
+\begin_layout Standard
+quicker tracking vs potentially filtering voice out if it stays audible
+ for long periods of time,
+\end_layout
+
+\begin_layout Standard
+quicker tracking -> more relevant noise pattern -> better filtering for
+ changing noise
+\end_layout
+
+\begin_layout Standard
+<elaborate on tradeoff?>
+\end_layout
+
 \begin_layout Section
 \begin_inset CommandInset label
 LatexCommand label
@@ -734,6 +938,33 @@ name "sec:Final-Implementation"
 \end_inset
 
 Final Implementation
+\end_layout
+
+\begin_layout Section
+\begin_inset CommandInset label
+LatexCommand label
+name "sec:Further possible ideas"
+
+\end_inset
+
+Further ideas
+\end_layout
+
+\begin_layout Standard
+- as in mobile telephony, when new signal starts (i.e.
+ call connected), use the first noise estimates to overwrite all MNB buffers
+ to start tracking the noise instantly (instead of the noise buffer period
+ lag)
+\end_layout
+
+\begin_layout Standard
+- since we know the speaker in advance, we can have a filter that can be
+ trained to track particular speaker's speech components.
+ In a mobile phone, it'd be sensible to have a model of the user's voice.
+\end_layout
+
+\begin_layout Standard
+- Markovian models for noise tracking?
 \end_layout
 
 \begin_layout Standard
