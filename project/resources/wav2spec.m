@@ -16,5 +16,8 @@ function [S,F,T,P] = wav2spec( filename )
     
     % comment the next line to not rotate
     %view([-47 22]);
+    
+    % show the colour bar
+    colorbar('EastOutside');
 end
 
