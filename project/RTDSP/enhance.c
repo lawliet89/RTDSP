@@ -315,7 +315,7 @@ void process_frame(void)
 	}
 		
 	// iterate over fft bins
-	for (i = 0; i < FFTLEN; i++)
+	for (i = 0; i < FFTLEN/2; i++)
 	{	
 		x = cabs(frameN[i]); // absolute of the signal's fft bin
 		
@@ -485,6 +485,17 @@ void process_frame(void)
 		frameN1ModY = temp;
 		
 	}    
+	/*
+	for (i = FFTLEN/2 ; i < FFTLEN-1; i++)
+	{
+		outFrame[i] = conjg(outFrame[FFTLEN - 1 - i]);
+	}
+	outFrame[FFTLEN-1] = rmul(-1.f, outFrame[0]);
+	*/
+	for (i = FFTLEN/2 ; i < FFTLEN; i++)
+	{
+		outFrame[i] = cmplx(0,0);
+	}
 	
 	ifft(FFTLEN, outFrame);	// perform inverse FFT to return us back to time domain
 	
