@@ -159,16 +159,16 @@ void main()
     inwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Input window */
     outwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Output window */
     
-    noiseBuffer			= (float *) calloc(NOISE_BUFFER_NUM*FFTLEN, sizeof(float));	// noise estmiation buffer
+    noiseBuffer			= (float *) calloc(NOISE_BUFFER_NUM*FFTLEN/2 + NOISE_BUFFER_NUM, sizeof(float));	// noise estmiation buffer
     
-    previousFFTvalue 	= (float *) calloc(FFTLEN, sizeof(float));		// enhancement 1/2 buffer
+    previousFFTvalue 	= (float *) calloc(FFTLEN/2, sizeof(float));		// enhancement 1/2 buffer
     
-    noiseLpfBuffer 		= (float *) calloc(FFTLEN, sizeof(float));		// enhancement 3 buffer
+    noiseLpfBuffer 		= (float *) calloc(FFTLEN/2, sizeof(float));		// enhancement 3 buffer
     
     /* enhancement 8 buffers */
-    previousFrameNXRatio 	= (float *) calloc(FFTLEN, sizeof(float));
-    frameN1ModY				= (float *) calloc(FFTLEN, sizeof(float));
-    frameN2ModY				= (float *) calloc(FFTLEN, sizeof(float));
+    previousFrameNXRatio 	= (float *) calloc(FFTLEN/2, sizeof(float));
+    frameN1ModY				= (float *) calloc(FFTLEN/2, sizeof(float));
+    frameN2ModY				= (float *) calloc(FFTLEN/2, sizeof(float));
     	
 	/* initialize board and the audio port */
   	init_hardware();
