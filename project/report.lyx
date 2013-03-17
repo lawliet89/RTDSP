@@ -29,6 +29,9 @@
 \lfoot{ywc110 \& rs5010}
 \cfoot{}
 \rfoot{\thepage}
+
+% for special page numbering
+\pagenumbering{roman}
 \end_preamble
 \use_default_options true
 \begin_modules
@@ -54,7 +57,7 @@ customHeadersFooters
 
 \graphics default
 \default_output_format pdf5
-\output_sync 0
+\output_sync 1
 \bibtex_command default
 \index_command default
 \paperfontsize default
@@ -146,6 +149,24 @@ LatexCommand tableofcontents
 
 \begin_layout Standard
 \begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+pagenumbering{arabic} 
+\backslash
+setcounter{page}{1}
+\end_layout
+
 \end_inset
 
 
@@ -974,8 +995,26 @@ Further ideas
 
 \end_layout
 
-\begin_layout Section
+\begin_layout Standard
 \start_of_appendix
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+pagenumbering{alph} 
+\backslash
+setcounter{page}{1}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
 \begin_inset CommandInset label
 LatexCommand label
 name "sec:Project-Code"
@@ -993,6 +1032,10 @@ filename "RTDSP/enhance.c"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Section
+References
 \end_layout
 
 \begin_layout Standard
