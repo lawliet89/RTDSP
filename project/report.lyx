@@ -32,6 +32,9 @@
 
 % for special page numbering
 \pagenumbering{roman}
+
+\setlength{\textfloatsep}{1ex plus 0.5ex minus 0.5ex}
+\setlength{\intextsep}{1ex plus 0.5ex minus 0.5ex}
 \end_preamble
 \use_default_options true
 \begin_modules
@@ -643,15 +646,324 @@ musical noise
 \begin_inset Quotes erd
 \end_inset
 
- introduced by the spectral subtraction.
-\end_layout
-
-\begin_layout Standard
-Describe musical noise now
+ (see below) introduced by the spectral subtraction.
 \end_layout
 
 \begin_layout Subsection
 Evaluation
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename resources/spec-clean.png
+	lyxscale 35
+	scale 21
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:spec-clean"
+
+\end_inset
+
+Spectrogram of the clean file
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename resources/spec-factory2.png
+	lyxscale 35
+	scale 21
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:spec-factory2"
+
+\end_inset
+
+Spectrogram of 
+\begin_inset Quotes eld
+\end_inset
+
+factory2
+\begin_inset Quotes erd
+\end_inset
+
+ file
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Spectrograms of provided files.
+ Note that the sampling frequency is at 11025 Hz instead of the 8000 Hz
+ used for processing.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Wrap figure
+lines 0
+placement L
+overhang 0in
+width "50col%"
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename resources/spec-no-enhancement.png
+	lyxscale 21
+	scale 21
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:spec-no-enhancement"
+
+\end_inset
+
+Spectrogram of the basic filtering of 
+\begin_inset Quotes eld
+\end_inset
+
+factory2
+\begin_inset Quotes erd
+\end_inset
+
+ at 8000 Hz sampling frequency.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\noindent
+Due to the fact that evaluating sound 
+\begin_inset Quotes eld
+\end_inset
+
+cleanliness
+\begin_inset Quotes erd
+\end_inset
+
+ has copious amounts of subjectivity, especially when dwelling into the
+ minute details, we will use spectrograms to introduce some form of objectivity
+ when evaluating the performance of the filter.
+ We will use 
+\begin_inset Quotes eld
+\end_inset
+
+factory2
+\begin_inset Quotes erd
+\end_inset
+
+ for evaluation of the filter.
+ 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:spec-clean"
+
+\end_inset
+
+ shows the spectrogram of the provided clean sound file, and 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:spec-factory2"
+
+\end_inset
+
+ shows the spectrogram of the 
+\begin_inset Quotes eld
+\end_inset
+
+factory2
+\begin_inset Quotes erd
+\end_inset
+
+ corruped file.
+ 
+\end_layout
+
+\begin_layout Standard
+After applying the basic filter, the results can be seen in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:spec-no-enhancement"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Musical Noise
+\end_layout
+
+\begin_layout Standard
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ Phasellus dictum nulla sit amet leo porta ornare.
+ Mauris gravida, libero pulvinar scelerisque porta, nulla purus faucibus
+ nibh, sit amet fermentum ligula massa eget lacus.
+ Vestibulum in nibh nec metus auctor tempor.
+ Vestibulum aliquet pretium urna, sit amet euismod velit mattis suscipit.
+ Sed nec sem sed nisi sagittis tincidunt.
+ Quisque sollicitudin fringilla dui.
+ Pellentesque consequat varius mi, vel lobortis odio mattis nec.
+ Cras dictum ullamcorper malesuada.
+ Integer non eleifend metus.
+ Vivamus at tortor et sem vehicula vestibulum ac quis quam.
+ Proin sit amet blandit nisl.
+ Proin sit amet quam ac ligula blandit ultrices ultrices sed ipsum.
+ Ut non tempus diam.
+ Mauris sodales aliquam condimentum.
+ In lobortis iaculis odio, consequat volutpat dui auctor id.
+ Nunc tellus massa, semper non hendrerit nec, scelerisque nec urna.
+\end_layout
+
+\begin_layout Standard
+Curabitur at est non mauris sagittis condimentum dignissim non metus.
+ Maecenas turpis urna, mattis quis accumsan nec, rutrum non augue.
+ Donec id velit magna, quis dapibus diam.
+ Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
+ inceptos himenaeos.
+ Duis sed dui arcu, eget scelerisque dolor.
+ Maecenas quis velit ac nulla cursus fringilla ac laoreet est.
+ Cras facilisis sapien vel felis laoreet quis cursus odio ornare.
+\end_layout
+
+\begin_layout Standard
+In a magna augue.
+ Donec elementum risus eu nisi vehicula sit amet laoreet ante venenatis.
+ Nullam sapien ante, suscipit in facilisis vel, congue eu orci.
+ Morbi elementum dui vestibulum ante viverra ac suscipit orci tincidunt.
+ In sollicitudin, orci id suscipit eleifend, orci sapien elementum purus,
+ eu vehicula arcu augue sed leo.
+ Morbi ultricies ante vitae ligula rutrum cursus.
+ Cras faucibus, arcu eu sodales elementum, lectus sapien fermentum orci,
+ eu tempus leo lacus varius ipsum.
+ Proin non nisi est.
+\end_layout
+
+\begin_layout Standard
+Nullam elementum, velit quis interdum facilisis, nisl sem bibendum urna,
+ a malesuada magna urna consectetur odio.
+ Cras consectetur faucibus nulla, ut tristique diam dignissim nec.
+ Aenean sit amet diam eu enim congue pulvinar.
+ Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere
+ cubilia Curae; Sed rhoncus laoreet viverra.
+ Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere
+ cubilia Curae; Pellentesque habitant morbi tristique senectus et netus
+ et malesuada fames ac turpis egestas.
+ Duis in leo turpis.
+\end_layout
+
+\begin_layout Standard
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ Morbi ullamcorper dignissim orci id sagittis.
+ Cras bibendum dolor nec orci feugiat accumsan.
+ Aenean egestas, orci vel tincidunt pharetra, urna ante vestibulum felis,
+ eu feugiat sem justo non nisi.
+ Donec egestas ultricies lobortis.
+ Nullam eu fermentum est.
+ Suspendisse id lectus odio.
+ Phasellus in erat metus, sed luctus leo.
+ Curabitur hendrerit faucibus libero, sed lobortis dolor convallis eu.
+ Fusce mattis sollicitudin tortor, a hendrerit magna faucibus at.
 \end_layout
 
 \begin_layout Section
@@ -685,6 +997,46 @@ Low-Pass Filter Input for Noise Estimation
 \end_layout
 
 \begin_layout Standard
+\begin_inset Wrap figure
+lines 0
+placement R
+overhang 0in
+width "50col%"
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename resources/spec-enhancement-2.png
+	lyxscale 21
+	scale 21
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:spec-enhancement-2"
+
+\end_inset
+
+Spectrogram of the filtering with the low-pass filter input for noise estimation
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
 The noise estimate 
 \begin_inset Formula $P_{t}(\omega)$
 \end_inset
@@ -720,11 +1072,18 @@ where
 \end_inset
 
  is the time constant parameter for this filter.
- 
+ The result of the filtering can be seen in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:spec-enhancement-2"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
-=======================================================
+===========
 \end_layout
 
 \begin_layout Subsubsection
