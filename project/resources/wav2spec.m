@@ -15,6 +15,6 @@ function [S,F,T,P] = wav2spec( filename )
     spectrogram(wav(:,1), fftlength, overlap, fftlength, fs, 'yaxis');
     
     % comment the next line to not rotate
-    view([-47 22]);
+    %view([-47 22]);
 end
 
