@@ -159,16 +159,16 @@ void main()
     inwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Input window */
     outwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Output window */
     
-    noiseBuffer			= (float *) calloc(NOISE_BUFFER_NUM*FFTLEN, sizeof(float));	// noise estmiation buffer
+    noiseBuffer			= (float *) calloc(NOISE_BUFFER_NUM*FFTLEN/2, sizeof(float));	// noise estmiation buffer
     
-    previousFFTvalue 	= (float *) calloc(FFTLEN, sizeof(float));		// enhancement 2 buffer
+    previousFFTvalue 	= (float *) calloc(FFTLEN/2, sizeof(float));		// enhancement 1/2 buffer
     
-    noiseLpfBuffer 		= (float *) calloc(FFTLEN, sizeof(float));		// enhancement 3 buffer
+    noiseLpfBuffer 		= (float *) calloc(FFTLEN/2, sizeof(float));		// enhancement 3 buffer
     
     /* enhancement 8 buffers */
-    previousFrameNXRatio 	= (float *) calloc(FFTLEN, sizeof(float));
-    frameN1ModY				= (float *) calloc(FFTLEN, sizeof(float));
-    frameN2ModY				= (float *) calloc(FFTLEN, sizeof(float));
+    previousFrameNXRatio 	= (float *) calloc(FFTLEN/2, sizeof(float));
+    frameN1ModY				= (float *) calloc(FFTLEN/2, sizeof(float));
+    frameN2ModY				= (float *) calloc(FFTLEN/2, sizeof(float));
     	
 	/* initialize board and the audio port */
   	init_hardware();
@@ -315,7 +315,7 @@ void process_frame(void)
 	}
 		
 	// iterate over fft bins
-	for (i = 0; i < FFTLEN; i++)
+	for (i = 0; i < FFTLEN/2; i++)		// the FFT bins are mirrored - only need to process half of them
 	{	
 		x = cabs(frameN[i]); // absolute of the signal's fft bin
 		
@@ -484,7 +484,13 @@ void process_frame(void)
 		frameN2ModY = frameN1ModY;
 		frameN1ModY = temp;
 		
-	}    
+	}
+	
+	// zero the mirrored FFT bins
+	for (i = FFTLEN/2; i < FFTLEN; i++)
+	{
+		outFrame[i] = cmplx(0,0);
+	}
 	
 	ifft(FFTLEN, outFrame);	// perform inverse FFT to return us back to time domain
 	
