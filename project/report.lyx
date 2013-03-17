@@ -567,12 +567,20 @@ When the noise spectrum is to be estimated for use in spectral subtraction,
  is given by 
 \begin_inset Formula 
 \begin{equation}
-N(\omega)=\alpha\min_{i\in[1,4]}\left[M_{i}(\omega)\right]
+N(\omega)=\alpha\min_{i\in[1,4]}\left[M_{i}(\omega)\right]\label{eq:oversubtraction}
 \end{equation}
 
 \end_inset
 
- 
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ was set to a value of 20.
 \end_layout
 
 \begin_layout Subsection
@@ -655,6 +663,11 @@ musical noise
 \end_inset
 
  (see below) introduced by the spectral subtraction.
+ In this implementation, 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ was chosen to be 0.05.
 \end_layout
 
 \begin_layout Subsection
@@ -786,15 +799,14 @@ Spectrograms of provided files, generated in Matlab
 
  
 \begin_inset Wrap figure
-lines 12
-placement L
-overhang 0in
+lines 0
+placement o
+overhang 0col%
 width "50col%"
 status collapsed
 
 \begin_layout Plain Layout
 \noindent
-\align center
 \begin_inset Graphics
 	filename resources/spec-no-enhancement.png
 	lyxscale 21
@@ -913,7 +925,21 @@ win
 \begin_inset Quotes erd
 \end_inset
 
- the noise estimation vote due to the algorithm.An unnatural sounding 
+ the noise estimation vote due to the algorithm.
+ Due to the high ovsersubtraction factor 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ introduced in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:oversubtraction"
+
+\end_inset
+
+ to correct the underestimation of noise, some of the speech is also removed
+ and results in the voice being slurry.
+ An unnatural sounding 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1004,18 +1030,63 @@ reference "sec:Final-Implementation"
 \end_layout
 
 \begin_layout Subsection
-Structural Enhancement
+Structural Optimisation
+\end_layout
+
+\begin_layout Standard
+The frequency spectrum processing can be sped up by slightly less than a
+ factor of two simply by only processing the first half, plus one, of the
+ frequency bins in the DFT.
+ This is because the inputs to the DFT are real.
+ For our frame size of 256, where 
+\begin_inset Formula $X_{k}$
+\end_inset
+
+ denotes the k
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+th
+\end_layout
+
+\end_inset
+
+ frequency bin, 
+\begin_inset Formula $X_{256-i}=X_{-i}=X_{i}^{*}$
+\end_inset
+
+for 
+\begin_inset Formula $i\in[1,127]$
+\end_inset
+
+, and 
+\begin_inset Formula $X_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $X_{128}$
+\end_inset
+
+ are simply real-valued.
+ 
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:lpf-input"
+
+\end_inset
+
 Low-Pass Filter Input for Noise Estimation
 \end_layout
 
 \begin_layout Standard
+\noindent
 \begin_inset Wrap figure
 lines 0
-placement R
-overhang 0in
+placement o
+overhang 0col%
 width "50col%"
 status collapsed
 
@@ -1064,15 +1135,15 @@ The noise estimate
 \begin_inset Formula $t$
 \end_inset
 
- can be put through a low-pass filter to moderate the effects of a sharp
- drop in the noise estimation.
+ can be put through a low-pass filter (LPF) to moderate the effects of a
+ sharp drop in the noise estimation.
  The filtering can be done according to
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{eqnarray}
-P_{t}(\omega) & = & (1-k)\times|X(\omega)|+k\times P_{t-1}(\omega)\\
+P_{t}(\omega) & = & (1-k)\times|X(\omega)|+k\times P_{t-1}(\omega)\label{eq:lpf-input}\\
 k & = & e^{(-\nicefrac{T}{\tau})}
 \end{eqnarray}
 
@@ -1240,7 +1311,7 @@ remove discontinuities due to sudden changes in noise level estimate introduced
 \end_layout
 
 \begin_layout Subsection
-Alternate Calculations for 
+Alternate Calculation for 
 \begin_inset Formula $G(\omega)$
 \end_inset
 
@@ -1248,11 +1319,277 @@ Alternate Calculations for
 \end_layout
 
 \begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
 adaptive noise floor level based on SNR
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 1 - n/p 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Wrap figure
+lines 0
+placement o
+overhang 0col%
+width "50col%"
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename resources/spec-enhancement-2-4.png
+	lyxscale 21
+	scale 21
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:spec-enhancement6"
+
+\end_inset
+
+Spectrogram using an alternate calculation for 
+\begin_inset Formula $G(\omega)$
+\end_inset
+
+, combined with input LPF for noise estimation
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+The nature of the noise estimation algorithm is such that a lower noise
+ estimate (even momentarily) will cause an underestimate of the noise spectrum.
+ While this effect is moderated partly by the LPF in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:lpf-input"
+
+\end_inset
+
+, it still does not handle situations where the noise level increases.
+ Consider that the factor 
+\begin_inset Formula $G(\omega)$
+\end_inset
+
+ derived in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:g_w"
+
+\end_inset
+
+ can be calculated using another form to perform noise subtraction form
+ the input 
+\begin_inset Formula $X(\omega)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{alignat}{1}
+\left|Y(\omega)\right| & =\left|X(\omega)\right|-\frac{\left|N(\omega)\right|}{\left|P(\omega)\right|}=\left|X(\omega)\right|\left(1-\frac{\left|N(\omega)\right|}{\left|P(\omega)\right|}\right)\label{eq:eq2}\\
+\therefore G(\omega) & =\max\left[\lambda,1-\frac{\left|N(\omega)\right|}{\left|P(\omega)\right|}\right]\label{eq:enhancement-4}
+\end{alignat}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $|N(\omega)|$
+\end_inset
+
+ is the current minimum noise estimate from 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:oversubtraction"
+
+\end_inset
+
+, and 
+\begin_inset Formula $|P(\omega)|$
+\end_inset
+
+ is the low-pass filtered noise estimate for a frame from 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:lpf-input"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Consider that 
+\begin_inset Formula $|N(\omega)|$
+\end_inset
+
+ remains constant at a previously encountered minima and that the noise
+ level has increased.
+ Then, because of the LPF in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:lpf-input"
+
+\end_inset
+
+, 
+\begin_inset Formula $|P(\omega)|$
+\end_inset
+
+ does not rise sharply, but slowly.
+ Thus, 
+\begin_inset Formula $|P(\omega)|$
+\end_inset
+
+ is slightly more than 
+\begin_inset Formula $|N(\omega)|$
+\end_inset
+
+ and 
+\begin_inset Formula $\frac{\left|N(\omega)\right|}{\left|P(\omega)\right|}$
+\end_inset
+
+ will have a value that is close to one.
+ In the original form of noise subtraction in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:1"
+
+\end_inset
+
+, 
+\begin_inset Formula $|X(\omega)|$
+\end_inset
+
+ will continued to be subtracted by a very low 
+\begin_inset Formula $|N(\omega)|$
+\end_inset
+
+ while the noise level has risen.
+ This causes the increased noise to not be filtered, and can cause musical
+ noise.
+ In 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:eq2"
+
+\end_inset
+
+, this will result in a faster reduction in noise as 
+\begin_inset Formula $|X(\omega)|$
+\end_inset
+
+ will be subtracted by a larger value.
+ 
+\end_layout
+
+\begin_layout Standard
+However, as time goes by and 
+\begin_inset Formula $P(\omega)$
+\end_inset
+
+ increases, 
+\begin_inset Formula $\frac{\left|N(\omega)\right|}{\left|P(\omega)\right|}$
+\end_inset
+
+ will become smaller, and will eventually tend to 1 as 
+\begin_inset Formula $|P(\omega)|\rightarrow1$
+\end_inset
+
+.
+ This means that, given sufficient time, 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:eq2"
+
+\end_inset
+
+ will perform as badly as 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:1"
+
+\end_inset
+
+ in the event of a noise increase.
+ Thus, the time constant 
+\begin_inset Formula $\tau$
+\end_inset
+
+ in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:lpf-input"
+
+\end_inset
+
+ can be increased to slow down this process.
+ 
+\end_layout
+
+\begin_layout Standard
+The caveat with this enhancement is that 
+\begin_inset Formula $|P(\omega)|$
+\end_inset
+
+ is unable to distinguish speech from noise, and thus will cause some of
+ the speech to be removed as well.
+\end_layout
+
+\begin_layout Standard
+The output with this enhancement implemented can be seen in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:spec-enhancement6"
+
+\end_inset
+
+.
+ When compared with the results from 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:spec-enhancement-2"
+
+\end_inset
+
+, it can be seen that more noise (and musical noise) has been removed.
+ It can be noted that the noise in the period 11-12.5 s when the speaker
+ has paused his speech is almost fully removed.
+ However, it is also observed that some of the speech has also been removed,
+ resulting in a slightly slurry voice.
+ 
 \end_layout
 
 \begin_layout Subsection
