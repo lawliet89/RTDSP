@@ -19,5 +19,8 @@ function [S,F,T,P] = wav2spec( filename )
     
     % show the colour bar
     colorbar('EastOutside');
+    
+    % limit colorbar range
+    caxis([-160, -20]);
 end
 
