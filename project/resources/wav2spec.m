@@ -7,7 +7,7 @@ function wav2spec( filename )
     % plot
     figure;
     addpath('voicebox');
-    spgrambw(wav, fs, 'Jclw');
+    spgrambw(wav(:,1), fs, 'Jcw');
     
 end
 
