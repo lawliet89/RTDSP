@@ -159,16 +159,16 @@ void main()
     inwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Input window */
     outwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Output window */
     
-    noiseBuffer			= (float *) calloc(NOISE_BUFFER_NUM*FFTLEN/2, sizeof(float));	// noise estmiation buffer
+    noiseBuffer			= (float *) calloc(NOISE_BUFFER_NUM*FFTLEN, sizeof(float));	// noise estmiation buffer
     
-    previousFFTvalue 	= (float *) calloc(FFTLEN/2, sizeof(float));		// enhancement 1/2 buffer
+    previousFFTvalue 	= (float *) calloc(FFTLEN, sizeof(float));		// enhancement 2 buffer
     
-    noiseLpfBuffer 		= (float *) calloc(FFTLEN/2, sizeof(float));		// enhancement 3 buffer
+    noiseLpfBuffer 		= (float *) calloc(FFTLEN, sizeof(float));		// enhancement 3 buffer
     
     /* enhancement 8 buffers */
-    previousFrameNXRatio 	= (float *) calloc(FFTLEN/2, sizeof(float));
-    frameN1ModY				= (float *) calloc(FFTLEN/2, sizeof(float));
-    frameN2ModY				= (float *) calloc(FFTLEN/2, sizeof(float));
+    previousFrameNXRatio 	= (float *) calloc(FFTLEN, sizeof(float));
+    frameN1ModY				= (float *) calloc(FFTLEN, sizeof(float));
+    frameN2ModY				= (float *) calloc(FFTLEN, sizeof(float));
     	
 	/* initialize board and the audio port */
   	init_hardware();
@@ -315,9 +315,7 @@ void process_frame(void)
 	}
 		
 	// iterate over fft bins
-	// the FFT bins are mirrored - only need to process half of them
-	// we will need to process bins 0 - 127
-	for (i = 0; i < FFTLEN/2; i++)		
+	for (i = 0; i < FFTLEN; i++)
 	{	
 		x = cabs(frameN[i]); // absolute of the signal's fft bin
 		
@@ -340,7 +338,7 @@ void process_frame(void)
 
 		// if M buffers rotated -> overwrite bin with new vote
 		// store the minimum of the current noise value in M0 and the new bin value
-		*(noiseBuffer + curM_offset*FFTLEN/2 + i) = (rotatedM) ? noiseVote : min(noiseVote, *(noiseBuffer + curM_offset*FFTLEN/2 + i)); //TODO: []?
+		*(noiseBuffer + curM_offset*FFTLEN + i) = (rotatedM) ? noiseVote : min(noiseVote, *(noiseBuffer + curM_offset*FFTLEN + i)); //TODO: []?
 		
 		////////////////////////////////////////////////////////////////////////////
 		// iterate over noise min buffers and select the smallest bin value
@@ -348,7 +346,7 @@ void process_frame(void)
 		noiseMin = *(noiseBuffer + i);
 		for (j = 1; j < NOISE_BUFFER_NUM; ++j)
 		{
-			noiseMin = min(noiseMin, *(noiseBuffer + j*FFTLEN/2 + i));
+			noiseMin = min(noiseMin, *(noiseBuffer + j*FFTLEN + i));
 		}
 		// oversubstract by alpha coefficient
 		noiseMin *= noiseOversubtract;
@@ -486,15 +484,7 @@ void process_frame(void)
 		frameN2ModY = frameN1ModY;
 		frameN1ModY = temp;
 		
-	}
-	
-	// mirror the remaining bins
-	// bins 128 - 255 are complex conjugates of bins 127 - 0 (in this order)
-	for (i = FFTLEN/2 ; i < FFTLEN; i++)
-	{
-		outFrame[i].r = outFrame[FFTLEN -1 - i].r;
-		outFrame[i].i = outFrame[FFTLEN -1 - i].i * -1.f;
-	}
+	}    
 	
 	ifft(FFTLEN, outFrame);	// perform inverse FFT to return us back to time domain
 	
