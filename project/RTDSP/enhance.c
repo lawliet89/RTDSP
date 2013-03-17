@@ -104,7 +104,7 @@ float noiseLambda = 0.05f;				// lower bound coefficient for spectral substracti
 float noiseOversubtract = 3.2f;			// noise oversubtraction parameter (alpha)
 
 /* enhancements 1 & 2 & 3 */
-float freqLpfTimeConstant = 0.04f;		// enhancement 1/2 time constant parameter for LPF
+float freqLpfTimeConstant = 0.08f;		// enhancement 1/2 time constant parameter for LPF
 float noiseLpfTimeConstant = 0.1f;	// enhancement 3 time constant parameter for LPF
 float freqLPF_K, noiseLPF_K;				// calculated factor for enhancement 1/2 & 3 respectively
 float prev_freqLpfTimeConstant = 0;		// previous values for the above time constant values
