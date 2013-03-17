@@ -60,7 +60,7 @@ customHeadersFooters
 
 \graphics default
 \default_output_format pdf5
-\output_sync 0
+\output_sync 1
 \bibtex_command default
 \index_command default
 \paperfontsize default
@@ -605,8 +605,9 @@ Let the output be
 \begin_layout Standard
 \begin_inset Formula 
 \begin{alignat}{1}
+|Y(\omega)| & =|X(\omega)|-|N(\omega)|=|X(\omega)|\left(1-\frac{|N(\omega)}{|X(\omega)|}\right)\label{eq:1}\\
 Y(\omega) & =X(\omega)G(\omega)\\
-G(\omega) & =\max\left(\lambda,1-\frac{|N(\omega)|}{|X(\omega)|}\right)
+G(\omega) & =\max\left(\lambda,1-\frac{|N(\omega)|}{|X(\omega)|}\right)\label{eq:g_w}
 \end{alignat}
 
 \end_inset
@@ -620,7 +621,14 @@ where
 \end_inset
 
  is a essentially a real-gain factor that is calculated from the estimated
- noise spectrum.
+ noise spectrum derived from 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:1"
+
+\end_inset
+
+.
  Because of the fact that the expression 
 \begin_inset Formula $1-\frac{|N(\omega)|}{|X(\omega)|}$
 \end_inset
@@ -659,7 +667,7 @@ Evaluation
 placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -776,9 +784,9 @@ Spectrograms of provided files, generated in Matlab
 
 \end_inset
 
-
+ 
 \begin_inset Wrap figure
-lines 0
+lines 12
 placement L
 overhang 0in
 width "50col%"
@@ -825,7 +833,7 @@ factory2
 
 \end_inset
 
- 
+
 \end_layout
 
 \begin_layout Standard
@@ -885,83 +893,87 @@ reference "fig:spec-no-enhancement"
 \end_inset
 
 .
- 
+ From listening tests, the basic implementation has managed to attenuate
+ the background noise slightly, with darker areas seen in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:spec-no-enhancement"
+
+\end_inset
+
+ in between speech.
+ The filter is slow in responding to background noise changes, especially
+ when the noise level transits from a low level to a high level.
+ This is due to the ten-second window used for noise estimation.
+ In this case, the lower noise estimate will always 
+\begin_inset Quotes eld
+\end_inset
+
+win
+\begin_inset Quotes erd
+\end_inset
+
+ the noise estimation vote due to the algorithm.An unnatural sounding 
+\begin_inset Quotes eld
+\end_inset
+
+musical noise
+\begin_inset Quotes erd
+\end_inset
+
+ has also been introduced.
 \end_layout
 
-\begin_layout Subsubsection
+\begin_layout Subsubsection*
 Musical Noise
 \end_layout
 
 \begin_layout Standard
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- Phasellus dictum nulla sit amet leo porta ornare.
- Mauris gravida, libero pulvinar scelerisque porta, nulla purus faucibus
- nibh, sit amet fermentum ligula massa eget lacus.
- Vestibulum in nibh nec metus auctor tempor.
- Vestibulum aliquet pretium urna, sit amet euismod velit mattis suscipit.
- Sed nec sem sed nisi sagittis tincidunt.
- Quisque sollicitudin fringilla dui.
- Pellentesque consequat varius mi, vel lobortis odio mattis nec.
- Cras dictum ullamcorper malesuada.
- Integer non eleifend metus.
- Vivamus at tortor et sem vehicula vestibulum ac quis quam.
- Proin sit amet blandit nisl.
- Proin sit amet quam ac ligula blandit ultrices ultrices sed ipsum.
- Ut non tempus diam.
- Mauris sodales aliquam condimentum.
- In lobortis iaculis odio, consequat volutpat dui auctor id.
- Nunc tellus massa, semper non hendrerit nec, scelerisque nec urna.
-\end_layout
+The unnatural sounding musical noise is a result of the magnitude of the
+ frequency exhibiting strong fluctuations in the noisy area 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "cappe"
 
-\begin_layout Standard
-Curabitur at est non mauris sagittis condimentum dignissim non metus.
- Maecenas turpis urna, mattis quis accumsan nec, rutrum non augue.
- Donec id velit magna, quis dapibus diam.
- Class aptent taciti sociosqu ad litora torquent per conubia nostra, per
- inceptos himenaeos.
- Duis sed dui arcu, eget scelerisque dolor.
- Maecenas quis velit ac nulla cursus fringilla ac laoreet est.
- Cras facilisis sapien vel felis laoreet quis cursus odio ornare.
-\end_layout
+\end_inset
 
-\begin_layout Standard
-In a magna augue.
- Donec elementum risus eu nisi vehicula sit amet laoreet ante venenatis.
- Nullam sapien ante, suscipit in facilisis vel, congue eu orci.
- Morbi elementum dui vestibulum ante viverra ac suscipit orci tincidunt.
- In sollicitudin, orci id suscipit eleifend, orci sapien elementum purus,
- eu vehicula arcu augue sed leo.
- Morbi ultricies ante vitae ligula rutrum cursus.
- Cras faucibus, arcu eu sodales elementum, lectus sapien fermentum orci,
- eu tempus leo lacus varius ipsum.
- Proin non nisi est.
-\end_layout
+.
+ Referring to 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:spec-clean"
 
-\begin_layout Standard
-Nullam elementum, velit quis interdum facilisis, nisl sem bibendum urna,
- a malesuada magna urna consectetur odio.
- Cras consectetur faucibus nulla, ut tristique diam dignissim nec.
- Aenean sit amet diam eu enim congue pulvinar.
- Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere
- cubilia Curae; Sed rhoncus laoreet viverra.
- Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere
- cubilia Curae; Pellentesque habitant morbi tristique senectus et netus
- et malesuada fames ac turpis egestas.
- Duis in leo turpis.
-\end_layout
+\end_inset
 
-\begin_layout Standard
-Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- Morbi ullamcorper dignissim orci id sagittis.
- Cras bibendum dolor nec orci feugiat accumsan.
- Aenean egestas, orci vel tincidunt pharetra, urna ante vestibulum felis,
- eu feugiat sem justo non nisi.
- Donec egestas ultricies lobortis.
- Nullam eu fermentum est.
- Suspendisse id lectus odio.
- Phasellus in erat metus, sed luctus leo.
- Curabitur hendrerit faucibus libero, sed lobortis dolor convallis eu.
- Fusce mattis sollicitudin tortor, a hendrerit magna faucibus at.
+, it can be seen that the speech is paused between 11-12.5 s and the spectrogram
+ is completely empty during those period.
+ In the filtered version in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:spec-no-enhancement"
+
+\end_inset
+
+, it can be seen that there is noise during this period of time, and the
+ magnitude of the frequency bins fluctuates very rapidly with time.
+ This rapid fluctuation is a direct result of the minimum noise estimating
+ algorithm.
+ If the noise for a frequency bin goes low, even momentarily, its value
+ will be taken as a minimum for that ten-second period and will be subtracted
+ from the input.
+ The 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ factor introduced in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:g_w"
+
+\end_inset
+
+ as the floor for the noise subtraction helps to reduce the amount of fluctuatio
+n when the noise estimate goes from low to high.
 \end_layout
 
 \begin_layout Section
@@ -988,6 +1000,11 @@ reference "sec:Final-Implementation"
 \end_inset
 
 .
+ 
+\end_layout
+
+\begin_layout Subsection
+Structural Enhancement
 \end_layout
 
 \begin_layout Subsection
@@ -1035,6 +1052,10 @@ Spectrogram of the filtering with the low-pass filter input for noise estimation
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Standard
 The noise estimate 
 \begin_inset Formula $P_{t}(\omega)$
 \end_inset
@@ -1113,7 +1134,11 @@ if a particular noise frequency is not very pronounced in one frame (i.e.
 
 \begin_layout Standard
 This underestimation of the noise can be counteracted slightly via an oversubtra
-ction factor α.
+ction factor 
+\begin_inset Formula $\alpha$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -1400,7 +1425,7 @@ References
 LatexCommand bibtex
 btprint "btPrintAll"
 bibfiles "resources/ref"
-options "plainnat"
+options "agsm"
 
 \end_inset
 
