@@ -60,7 +60,7 @@ customHeadersFooters
 
 \graphics default
 \default_output_format pdf5
-\output_sync 1
+\output_sync 0
 \bibtex_command default
 \index_command default
 \paperfontsize default
@@ -659,7 +659,7 @@ Evaluation
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -675,7 +675,7 @@ status open
 \begin_inset Graphics
 	filename resources/spec-clean.png
 	lyxscale 35
-	scale 21
+	scale 20
 
 \end_inset
 
@@ -720,7 +720,7 @@ status open
 \begin_inset Graphics
 	filename resources/spec-factory2.png
 	lyxscale 35
-	scale 21
+	scale 20
 
 \end_inset
 
@@ -766,9 +766,7 @@ factory2
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Spectrograms of provided files.
- Note that the sampling frequency is at 11025 Hz instead of the 8000 Hz
- used for processing.
+Spectrograms of provided files, generated in Matlab
 \end_layout
 
 \end_inset
