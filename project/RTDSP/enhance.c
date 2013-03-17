@@ -159,16 +159,16 @@ void main()
     inwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Input window */
     outwin		= (float *) calloc(FFTLEN, sizeof(float));	/* Output window */
     
-    noiseBuffer			= (float *) calloc(NOISE_BUFFER_NUM*FFTLEN, sizeof(float));	// noise estmiation buffer
+    noiseBuffer			= (float *) calloc(NOISE_BUFFER_NUM*FFTLEN/2, sizeof(float));	// noise estmiation buffer
     
-    previousFFTvalue 	= (float *) calloc(FFTLEN/2+1, sizeof(float));		// enhancement 1/2 buffer
+    previousFFTvalue 	= (float *) calloc(FFTLEN/2, sizeof(float));		// enhancement 1/2 buffer
     
-    noiseLpfBuffer 		= (float *) calloc(FFTLEN/2+1, sizeof(float));		// enhancement 3 buffer
+    noiseLpfBuffer 		= (float *) calloc(FFTLEN/2, sizeof(float));		// enhancement 3 buffer
     
     /* enhancement 8 buffers */
-    previousFrameNXRatio 	= (float *) calloc(FFTLEN/2+1, sizeof(float));
-    frameN1ModY				= (float *) calloc(FFTLEN/2+1, sizeof(float));
-    frameN2ModY				= (float *) calloc(FFTLEN/2+1, sizeof(float));
+    previousFrameNXRatio 	= (float *) calloc(FFTLEN/2, sizeof(float));
+    frameN1ModY				= (float *) calloc(FFTLEN/2, sizeof(float));
+    frameN2ModY				= (float *) calloc(FFTLEN/2, sizeof(float));
     	
 	/* initialize board and the audio port */
   	init_hardware();
@@ -340,7 +340,7 @@ void process_frame(void)
 
 		// if M buffers rotated -> overwrite bin with new vote
 		// store the minimum of the current noise value in M0 and the new bin value
-		*(noiseBuffer + curM_offset*FFTLEN + i) = (rotatedM) ? noiseVote : min(noiseVote, *(noiseBuffer + curM_offset*FFTLEN + i)); //TODO: []?
+		*(noiseBuffer + curM_offset*FFTLEN/2 + i) = (rotatedM) ? noiseVote : min(noiseVote, *(noiseBuffer + curM_offset*FFTLEN/2 + i)); //TODO: []?
 		
 		////////////////////////////////////////////////////////////////////////////
 		// iterate over noise min buffers and select the smallest bin value
@@ -348,7 +348,7 @@ void process_frame(void)
 		noiseMin = *(noiseBuffer + i);
 		for (j = 1; j < NOISE_BUFFER_NUM; ++j)
 		{
-			noiseMin = min(noiseMin, *(noiseBuffer + j*FFTLEN + i));
+			noiseMin = min(noiseMin, *(noiseBuffer + j*FFTLEN/2 + i));
 		}
 		// oversubstract by alpha coefficient
 		noiseMin *= noiseOversubtract;
