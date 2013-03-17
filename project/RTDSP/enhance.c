@@ -490,13 +490,11 @@ void process_frame(void)
 	}
 	
 	// mirror the remaining bins
-	// bins 129 - 255 are mirrors of bins 1 - 127
+	// bins 129 - 255 are complex conjugates of bins 127 - 1 (in this order)
 	for (i = FFTLEN/2 + 1 ; i < FFTLEN; i++)
 	{
-		//outFrame[i].r = outFrame[FFTLEN - i].r;
-		//outFrame[i].i = outFrame[FFTLEN - i].i;
-		
-		outFrame[i] = cmplx(0,0);
+		outFrame[i].r = outFrame[FFTLEN - i].r;
+		outFrame[i].i = outFrame[FFTLEN - i].i * -1.f;
 	}
 	
 	ifft(FFTLEN, outFrame);	// perform inverse FFT to return us back to time domain
