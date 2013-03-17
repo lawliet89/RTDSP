@@ -316,9 +316,8 @@ void process_frame(void)
 		
 	// iterate over fft bins
 	// the FFT bins are mirrored - only need to process half of them
-	// note that bin 0 is DC and is NOT mirrored
-	// we will need to process bins 1 - 127
-	for (i = 0; i <= FFTLEN/2; i++)		
+	// we will need to process bins 0 - 127
+	for (i = 0; i < FFTLEN/2; i++)		
 	{	
 		x = cabs(frameN[i]); // absolute of the signal's fft bin
 		
@@ -490,11 +489,11 @@ void process_frame(void)
 	}
 	
 	// mirror the remaining bins
-	// bins 129 - 255 are complex conjugates of bins 127 - 1 (in this order)
-	for (i = FFTLEN/2 + 1 ; i < FFTLEN; i++)
+	// bins 128 - 255 are complex conjugates of bins 127 - 0 (in this order)
+	for (i = FFTLEN/2 ; i < FFTLEN; i++)
 	{
-		outFrame[i].r = outFrame[FFTLEN - i].r;
-		outFrame[i].i = outFrame[FFTLEN - i].i * -1.f;
+		outFrame[i].r = outFrame[FFTLEN -1 - i].r;
+		outFrame[i].i = outFrame[FFTLEN -1 - i].i * -1.f;
 	}
 	
 	ifft(FFTLEN, outFrame);	// perform inverse FFT to return us back to time domain
