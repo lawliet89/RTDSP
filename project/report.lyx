@@ -878,9 +878,9 @@ factory2
 \end_inset
 
  for evaluation of the filter.
- 
+ Figure 
 \begin_inset CommandInset ref
-LatexCommand formatted
+LatexCommand ref
 reference "fig:spec-clean"
 
 \end_inset
@@ -1006,7 +1006,7 @@ reference "eq:g_w"
 \end_inset
 
  as the floor for the noise subtraction helps to reduce the amount of fluctuatio
-n when the noise estimate goes from low to high.
+n when the noise estimate goes from high to low.
 \end_layout
 
 \begin_layout Section
@@ -1044,12 +1044,17 @@ Structural Optimisation
 The frequency spectrum processing can be sped up by slightly less than a
  factor of two simply by only processing the first half, plus one, of the
  frequency bins in the DFT.
- This is because the inputs to the DFT are real.
+ This is because the inputs to the DFT are real, and thus the DFT of the
+ inputs will be complex conjugates about the middle.
  For our frame size of 256, where 
 \begin_inset Formula $X_{k}$
 \end_inset
 
- denotes the k
+ denotes the 
+\begin_inset Formula $k$
+\end_inset
+
+
 \begin_inset script superscript
 
 \begin_layout Plain Layout
@@ -1062,7 +1067,7 @@ th
 \begin_inset Formula $X_{256-i}=X_{-i}=X_{i}^{*}$
 \end_inset
 
-for 
+ for 
 \begin_inset Formula $i\in[1,127]$
 \end_inset
 
@@ -1075,7 +1080,8 @@ for
 \end_inset
 
  are simply real-valued.
- 
+ This also allows some of the buffers used in the enhancements described
+ below to be almost halved in size.
 \end_layout
 
 \begin_layout Subsection
@@ -1177,6 +1183,22 @@ reference "fig:spec-enhancement-2"
 \end_inset
 
 .
+ Alternatively, LPF can also be done in power, rather than in magnitude:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+P_{t}(\omega)=\sqrt{(1-k)\times|X(\omega)|^{2}+k\times\left[P_{t-1}(\omega)\right]^{2}}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+No difference?
 \end_layout
 
 \begin_layout Standard
