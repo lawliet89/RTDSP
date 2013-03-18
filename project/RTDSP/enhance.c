@@ -104,19 +104,19 @@ float noiseLambda = 0.05f;				// lower bound coefficient for spectral substracti
 float noiseOversubtract = 3.2f;			// noise oversubtraction parameter (alpha)
 
 /* enhancements 1 & 2 & 3 */
-float freqLpfTimeConstant = 0.08f;		// enhancement 1/2 time constant parameter for LPF
+float freqLpfTimeConstant = 0.06f;		// enhancement 1/2 time constant parameter for LPF
 float noiseLpfTimeConstant = 0.1f;	// enhancement 3 time constant parameter for LPF
 float freqLPF_K, noiseLPF_K;				// calculated factor for enhancement 1/2 & 3 respectively
 float prev_freqLpfTimeConstant = 0;		// previous values for the above time constant values
 float prev_noiseLpfTimeConstant=0;	// used for tracking and seeing if the factors needs recalculations
 
 /* enhancement 6 parameters */
-float enhance6HighFreqLowerBound = 0.25f;	// fraction of frequency bin to consider as the lower bound for "high freq"
-float enhance6HighFreqUpperBound = 0.75;	// the former two should add to one
-float enhance6LowFreqGain = 1.2f;			// factor to multiply with alpha for low freq
+float enhance6HighFreqLowerBound = 0.00625f;	// fraction of frequency bin to consider as the lower bound for "high freq"
+float enhance6HighFreqUpperBound = 0.99375f;	// the former two should add to one
+float enhance6LowFreqGain = 10.f;			// factor to multiply with alpha for low freq
 float enhance6HighFreqGain = 1.f;			// factor to multiply with alpha for high freq
-float enhance6LowFreqThreshold = 2.f;		// low freq SNR threshold (NOT in dB)
-float enhance6HighFreqThreshold = 5.f;		// high freq SNR threshold (NOT in dB)
+float enhance6LowFreqThreshold = 0.5f;		// low freq SNR threshold (NOT in dB)
+float enhance6HighFreqThreshold = 1.f;		// high freq SNR threshold (NOT in dB)
 
 // calculated enhancement 6 parameters
 int enhance6HighFreqBinLowerBound, enhance6HighFreqBinUpperBound;	// calculated actual frequency bin numbers
@@ -130,8 +130,10 @@ short enhancement1 = 1;
 short enhancement2 = 1; 	// this overrides enhancement 1
 short enhancement3 = 1;
 short enhancement4Choice = 4;	// choose zero to turn enhancement 4/5 off.
-short enhancement6 = 1;
+short enhancement6 = 0;
 short enhancement8 = 0;
+
+short enhancementZero = 1;
 
  /******************************* Function prototypes *******************************/
 void init_hardware(void);    	/* Initialize codec */ 
@@ -469,6 +471,11 @@ void process_frame(void)
 		else // plain old no enhancement8
 		{		
 			outFrame[i] = frameN[i]; // direct assignment
+		}
+		
+		if ( enhancementZero && (i == 0 || i == 1) )
+		{
+			outFrame[i] = cmplx(0,0);	
 		}
 	}
 	
