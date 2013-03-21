@@ -35,7 +35,6 @@
 
 \setlength{\textfloatsep}{1ex plus 0.5ex minus 0.5ex}
 \setlength{\intextsep}{1ex plus 0.5ex minus 0.5ex}
-%\newref{sub}{refcmd={Subsection \ref{#1}}}
 \end_preamble
 \use_default_options true
 \begin_modules
@@ -43,6 +42,7 @@ figs-within-sections
 tabs-within-sections
 eqs-within-sections
 customHeadersFooters
+fixltx2e
 \end_modules
 \maintain_unincluded_children false
 \language british
@@ -83,7 +83,7 @@ customHeadersFooters
 \use_esint 1
 \use_mhchem 1
 \use_mathdots 1
-\cite_engine basic
+\cite_engine natbib_authoryear
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
@@ -121,6 +121,15 @@ Real Time Digital Signal Processing Speech Enhancement Project
 
 \begin_layout Author
 Yong Wen Chua (ywc110) & Ryan Savitski (rs5010)
+\end_layout
+
+\begin_layout Abstract
+This report describes the implementation and analysis of a dynamic real-time
+ noise filtering system, done primarily through spectral subtraction of
+ estimated noise.
+ It will describe and analyse a series of techniques to improve the filter
+ performance, and conclude with the parameters and techniques used to implement
+ the filter.
 \end_layout
 
 \begin_layout Section*
@@ -259,7 +268,6 @@ Basic Implementation
 
 \begin_layout Standard
 \noindent
-\align center
 \begin_inset Float figure
 placement H
 wide false
@@ -366,6 +374,13 @@ Block diagram on the overlapped processing of the frames.
 \begin_layout Plain Layout
 Block diagrams of how the samples are processed.
  
+\begin_inset CommandInset citation
+LatexCommand citep
+key "mitcherson"
+
+\end_inset
+
+ 
 \end_layout
 
 \end_inset
@@ -375,14 +390,6 @@ Block diagrams of how the samples are processed.
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-
-\end_layout
-
-\begin_layout Standard
 Filtering of the noisy input signal is done primarily in the frequency domain.
  As shown in 
 \begin_inset CommandInset ref
@@ -474,6 +481,14 @@ name "fig:overlap-frame"
 \end_inset
 
 Implementation of the overlapped frame processing.
+ 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "mitcherson"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -506,6 +521,12 @@ The input and output buffer are implemented as circular buffers with five
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Noise-Spectrum-Estimation"
+
+\end_inset
+
 Noise Spectrum Estimation
 \end_layout
 
@@ -806,54 +827,6 @@ Spectrograms of provided files, generated in Matlab
 \end_inset
 
  
-\begin_inset Wrap figure
-lines 0
-placement o
-overhang 0col%
-width "50col%"
-status collapsed
-
-\begin_layout Plain Layout
-\noindent
-\begin_inset Graphics
-	filename resources/spec-no-enhancement.png
-	lyxscale 21
-	scale 21
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:spec-no-enhancement"
-
-\end_inset
-
-Spectrogram of the basic filtering of 
-\begin_inset Quotes eld
-\end_inset
-
-factory2
-\begin_inset Quotes erd
-\end_inset
-
- at 8000 Hz sampling frequency.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -902,6 +875,65 @@ factory2
 
  corruped file.
  
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset Wrap figure
+lines 12
+placement O
+overhang 0in
+width "50col%"
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\begin_inset Graphics
+	filename resources/spec-no-enhancement.png
+	lyxscale 21
+	scale 21
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:spec-no-enhancement"
+
+\end_inset
+
+Spectrogram of the basic filtering of 
+\begin_inset Quotes eld
+\end_inset
+
+factory2
+\begin_inset Quotes erd
+\end_inset
+
+ at 8000 Hz sampling frequency.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -970,7 +1002,14 @@ Musical Noise
 
 \begin_layout Standard
 The unnatural sounding musical noise is a result of the magnitude of the
- frequency exhibiting strong fluctuations in the noisy area.
+ frequency exhibiting strong fluctuations in the noisy area 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "cappe"
+
+\end_inset
+
+.
  Referring to 
 \begin_inset CommandInset ref
 LatexCommand formatted
@@ -1097,9 +1136,9 @@ Low-Pass Filter Input for Noise Estimation
 \begin_layout Standard
 \noindent
 \begin_inset Wrap figure
-lines 0
-placement o
-overhang 0col%
+lines 12
+placement O
+overhang 0in
 width "50col%"
 status collapsed
 
@@ -1140,6 +1179,7 @@ Spectrogram of the filtering with the low-pass filter input for noise estimation
 \end_layout
 
 \begin_layout Standard
+\noindent
 The noise estimate 
 \begin_inset Formula $P_{t}(\omega)$
 \end_inset
@@ -1150,7 +1190,7 @@ The noise estimate
 
  can be put through a low-pass filter (LPF) to moderate the effects of a
  sharp drop in the noise estimation.
- The filtering can be done according to
+ The filtering can be done according to 
 \end_layout
 
 \begin_layout Standard
@@ -1195,10 +1235,6 @@ P_{t}(\omega)=\sqrt{(1-k)\times|X(\omega)|^{2}+k\times\left[P_{t-1}(\omega)\righ
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-No difference?
 \end_layout
 
 \begin_layout Standard
@@ -1366,9 +1402,9 @@ adaptive noise floor level based on SNR
 
 \begin_layout Standard
 \begin_inset Wrap figure
-lines 0
-placement o
-overhang 0col%
+lines 11
+placement O
+overhang 0in
 width "50col%"
 status collapsed
 
@@ -1443,7 +1479,8 @@ reference "eq:g_w"
 \begin_layout Standard
 \begin_inset Formula 
 \begin{alignat}{1}
-\left|Y(\omega)\right| & =\left|X(\omega)\right|-\frac{\left|N(\omega)\right|}{\left|P(\omega)\right|}=\left|X(\omega)\right|\left(1-\frac{\left|N(\omega)\right|}{\left|P(\omega)\right|}\right)\label{eq:eq2}\\
+\left|Y(\omega)\right| & =\left|X(\omega)\right|-|X(\omega)|\frac{\left|N(\omega)\right|}{\left|P(\omega)\right|}\label{eq:eq2}\\
+ & =\left|X(\omega)\right|\left(1-\frac{\left|N(\omega)\right|}{\left|P(\omega)\right|}\right)\nonumber \\
 \therefore G(\omega) & =\max\left[\lambda,1-\frac{\left|N(\omega)\right|}{\left|P(\omega)\right|}\right]\label{eq:enhancement-4}
 \end{alignat}
 
@@ -1457,7 +1494,7 @@ where
 \begin_inset Formula $|N(\omega)|$
 \end_inset
 
- is the current minimum noise estimate from 
+ is the current minimum noise estimate over ten seconds from 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "eq:oversubtraction"
@@ -1468,7 +1505,8 @@ reference "eq:oversubtraction"
 \begin_inset Formula $|P(\omega)|$
 \end_inset
 
- is the low-pass filtered noise estimate for a frame from 
+ is the low-pass filtered noise estimate for the current frame being processed
+ from 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "eq:lpf-input"
@@ -1477,6 +1515,58 @@ reference "eq:lpf-input"
 
 .
  
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:eq2"
+
+\end_inset
+
+ gives rise to different effects depending on the values of 
+\begin_inset Formula $|N(\omega)|$
+\end_inset
+
+ and 
+\begin_inset Formula $|P(\omega)|$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Noise Level Matches Minimum Estimate
+\end_layout
+
+\begin_layout Standard
+Consider a situation when the value of 
+\begin_inset Formula $|N(\omega)|$
+\end_inset
+
+ is equal, or slightly more than
+\begin_inset Formula $|P(\omega)|$
+\end_inset
+
+.
+ This will signify that the current minium noise estimate over ten seconds
+ roughly matches the low-pass filtered noise estimate for the current frame
+ being processed.
+ We are thus able to be fairly confident that the input 
+\begin_inset Formula $X(\omega)$
+\end_inset
+
+ consists entirely of only noise.
+ Thus, the fraction 
+\begin_inset Formula $\frac{\left|N(\omega)\right|}{\left|P(\omega)\right|}\approx1$
+\end_inset
+
+ and the entirety of 
+\begin_inset Formula $X(\omega)$
+\end_inset
+
+ will be subtracted.
+\end_layout
+
+\begin_layout Subsubsection
+Noise Level Increase
 \end_layout
 
 \begin_layout Standard
@@ -1485,7 +1575,11 @@ Consider that
 \end_inset
 
  remains constant at a previously encountered minima and that the noise
- level has increased.
+ level has increased via an increase in 
+\begin_inset Formula $|X(\omega)|$
+\end_inset
+
+.
  Then, because of the LPF in section 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1541,7 +1635,273 @@ reference "eq:eq2"
 \end_inset
 
  will be subtracted by a larger value.
- 
+ A numerical example of this happening is illustrated in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "tab:g-w-numerical"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Wrap table
+lines 12
+placement O
+overhang 0in
+width "50col%"
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="10" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $|N(\omega)|=0.1,|X(\omega)|=0.9$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $|X(\omega)|-|N(\omega)|=0.8$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $|P(\omega)|$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $|X(\omega)|-|X(\omega)|\frac{||N(\omega)|}{|P(\omega)|}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.45
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.6
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.675
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.5
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.72
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.6
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.75
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.7
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.771429
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.8
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.7875
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.9
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.8
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:g-w-numerical"
+
+\end_inset
+
+Numerical example depicting the noise subtraction during an increase in
+ the noise level.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1565,7 +1925,7 @@ reference "eq:eq2"
 
 \end_inset
 
- will perform as badly as 
+ will perform as badly, or even worse as 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "eq:1"
@@ -1584,8 +1944,19 @@ reference "eq:lpf-input"
 
 \end_inset
 
- can be increased to slow down this process.
- 
+ can be increased to slow down this process so that eventually when the
+ noise buffer described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Noise-Spectrum-Estimation"
+
+\end_inset
+
+ rotates, the old value will be discarded.
+\end_layout
+
+\begin_layout Subsubsection
+Evaluation
 \end_layout
 
 \begin_layout Standard
@@ -1626,21 +1997,34 @@ Frame lengths
 \end_layout
 
 \begin_layout Standard
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
 time resolution vs frequency resolution (and memory/computation)
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 I think that because the filter has already 3s lag or so, going from 32
  to 64 ms frame length is not a significant time domain loss.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 From experimentation, no significant difference between 256 and 512 observed
  though
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
 \begin_layout Subsection
-Further bin-dependent oversubtraction
+Dynamic Oversubtraction
 \end_layout
 
 \begin_layout Standard
@@ -1782,8 +2166,16 @@ filename "RTDSP/enhance.c"
 
 \end_layout
 
-\begin_layout Section
-References
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+btprint "btPrintAll"
+bibfiles "resources/ref"
+options "bibtotoc,agsm"
+
+\end_inset
+
+
 \end_layout
 
 \end_body
