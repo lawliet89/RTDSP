@@ -425,6 +425,12 @@ reference "fig:fame-overlap"
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Frame-Processing-Implementation"
+
+\end_inset
+
 Frame Processing Implementation
 \end_layout
 
@@ -873,7 +879,7 @@ factory2
 \begin_inset Quotes erd
 \end_inset
 
- corruped file.
+ corrupted file.
  
 \end_layout
 
@@ -966,7 +972,7 @@ win
 \end_inset
 
  the noise estimation vote due to the algorithm.
- Due to the high ovsersubtraction factor 
+ Due to the high over-subtraction factor 
 \begin_inset Formula $\alpha$
 \end_inset
 
@@ -1269,8 +1275,8 @@ if a particular noise frequency is not very pronounced in one frame (i.e.
 \end_layout
 
 \begin_layout Standard
-This underestimation of the noise can be counteracted slightly via an oversubtra
-ction factor 
+This underestimation of the noise can be counteracted slightly via an over
+ subtraction factor 
 \begin_inset Formula $\alpha$
 \end_inset
 
@@ -1288,7 +1294,7 @@ Noise with very minimal pauses would defeat this kind of filtering easily,
 
 \begin_layout Standard
 a particularly small bin value in one frame will affect the filtering of
- that frequency while the noise estimate stays in the noise mimimum buffer
+ that frequency while the noise estimate stays in the noise minimum buffer
  (the noise estimation period, which is usually in the range of seconds).
 \end_layout
 
@@ -1376,6 +1382,12 @@ remove discontinuities due to sudden changes in noise level estimate introduced
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:alt-gw"
+
+\end_inset
+
 Alternate Calculation for 
 \begin_inset Formula $G(\omega)$
 \end_inset
@@ -1546,7 +1558,7 @@ Consider a situation when the value of
 \end_inset
 
 .
- This will signify that the current minium noise estimate over ten seconds
+ This will signify that the current minim noise estimate over ten seconds
  roughly matches the low-pass filtered noise estimate for the current frame
  being processed.
  We are thus able to be fairly confident that the input 
@@ -1953,6 +1965,8 @@ reference "sub:Noise-Spectrum-Estimation"
 \end_inset
 
  rotates, the old value will be discarded.
+ Alternatively, the time interval in which the minimum noise is estimated
+ across can be reduced.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1997,6 +2011,47 @@ Frame lengths
 \end_layout
 
 \begin_layout Standard
+In general, frame lengths should be of powers of two so that the Fast Fourier
+ Transform (FFT) used for DFT can be the most efficient.
+ The frame length can be increased to give a better frequency resolution
+ when doing the DFT of the samples.
+ This would give a more granular approach in processing the frequency bins.
+ However, this comes at the expense of temporal resolution, although it
+ is not as important in this system.
+ Due to the use of the frame processing structure described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Frame-Processing-Implementation"
+
+\end_inset
+
+, there is a 1.25 frame delay between the input and output, and increasing
+ the frame length will increase the time delay more.
+ The increase in frame length will also cause more processing to be done
+ per frame, and if the increased processing takes up more time than the
+ frame time interval, it would cause 
+\begin_inset Quotes eld
+\end_inset
+
+clicking
+\begin_inset Quotes erd
+\end_inset
+
+ to be heard in the final output.
+ The increase in frame length would also increase the heap memory used,
+ and the limited memory would be a limiting factor.
+\end_layout
+
+\begin_layout Standard
+Through experimentation, it was found that increasing the frame length did
+ not yield much noticeable improvements.
+ Reducing the frame length caused a degradation in the filter quality, as
+ the frequency resolution would be reduced.
+ It is noted that a frame length of 256 provides sufficient granularity
+ for a sampling rate of 8 kHz.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Note Comment
 status open
 
@@ -2016,10 +2071,6 @@ From experimentation, no significant difference between 256 and 512 observed
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
 
 \end_layout
 
@@ -2080,7 +2131,7 @@ quicker tracking -> more relevant noise pattern -> better filtering for
 \end_layout
 
 \begin_layout Standard
-<elaborate on tradeoff?>
+<elaborate on trade-off?>
 \end_layout
 
 \begin_layout Section
