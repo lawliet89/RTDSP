@@ -1176,7 +1176,8 @@ name "fig:spec-enhancement-2"
 
 \end_inset
 
-Spectrogram of the filtering with the low-pass filter input for noise estimation
+Spectrogram of the filtering with the low-pass filter input for spectral
+ content across time
 \end_layout
 
 \end_inset
@@ -1190,43 +1191,26 @@ Spectrogram of the filtering with the low-pass filter input for noise estimation
 \end_layout
 
 \begin_layout Standard
-\noindent
-The noise estimate 
-\begin_inset Formula $P_{t}(\omega)$
-\end_inset
-
- for a frame 
-\begin_inset Formula $t$
-\end_inset
-
- can be put through a low-pass filter (LPF) to moderate the effects of a
- sharp drop in the noise estimation.
- The filtering can be done according to 
+The problem with the above approach is that each frame's FFT is considered
+ alone when updating the estimate of the minimum noise.
+ Therefore we observe the problem that even a single frame with an instanteneous
+ magnitude drop for an FFT bin will potentially stay as the overly pessimistic
+ noise estimate for the duration of the noise buffer.
+ Note that a frame duration at 256 point FFT at 8 kHz sampling rate is 32
+ ms, whereas one particularly overestimated noise value will stay within
+ the minimum noise buffer for a period that can last seconds.
+ This is the reason for a high oversubtraction coefficient for the naive
+ filter above, to compensate for its pessimism of the noise level.
+ Furthermore, for the same reasons of the filter being pessimistic, any
+ noise with small pauses will defeat the naive filter.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula 
-\begin{eqnarray}
-P_{t}(\omega) & = & (1-k)\times|X(\omega)|+k\times P_{t-1}(\omega)\label{eq:lpf-input}\\
-k & = & e^{(-\nicefrac{T}{\tau})}
-\end{eqnarray}
-
-\end_inset
-
-
+===================
 \end_layout
 
 \begin_layout Standard
-where 
-\begin_inset Formula $T$
-\end_inset
-
- is the frame rate (the time between frame calculation), and 
-\begin_inset Formula $\tau$
-\end_inset
-
- is the time constant parameter for this filter.
- The result of the filtering can be seen in 
+The result of the filtering can be seen in 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "fig:spec-enhancement-2"
@@ -1257,18 +1241,65 @@ Magnitude domain
 \end_layout
 
 \begin_layout Standard
-The problem with the above approach is that each frame's FFT is considered
- alone when updating the estimate of the minimum noise.
- Therefore we observe the problem that even a single frame with an instanteneous
- magnitude drop for an FFT bin will potentially stay as the overly pessimistic
- noise estimate for the duration of the noise buffer.
- Note that a frame duration at 256 point FFT at 8 kHz sampling rate is 32
- ms, whereas one particularly overestimated noise value will stay within
- the minimum noise buffer for a period that can last seconds.
- This is the reason for a high oversubtraction coefficient for the naive
- filter above, to compensate for its pessimism of the noise level.
- Furthermore, for the same reasons of the filter being pessimistic, any
- noise with small pauses will defeat the naive filter.
+One (effective) way of improving on the naive spectral subtractor is to
+ low-pass filter (LPF) the FFT magnitude bins across time as:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray}
+P_{t}(\omega) & = & (1-k)\times|X(\omega)|+k\times P_{t-1}(\omega)\label{eq:lpf-input}\\
+k & = & e^{(-\nicefrac{T}{\tau})}
+\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $T$
+\end_inset
+
+ is the frame rate (the time between frame calculation), and 
+\begin_inset Formula $\tau$
+\end_inset
+
+ is the time constant parameter for this filter.
+ 
+\end_layout
+
+\begin_layout Standard
+The effect of this is as follows:
+\end_layout
+
+\begin_layout Standard
+The low pass filtered FFT bins correspond to the persistent (average) level
+ of the magnitude of each frequency, with the duration of the filter being
+ controlled by 
+\begin_inset Formula $\tau$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+By taking the minimum of the LPFed signal as the noise minimum (and doing
+ the same minimum noise buffer rotation as before), we do not suffer from
+ the degeneracy of sudden amplitude jumps for the noise signal.
+ This means that the minimum noise buffer's noise estimate now more closely
+ matches the 
+\end_layout
+
+\begin_layout Standard
+Furthermore, for the original filter, if the noise floor suddenly had a
+ significant shift in amplitude, we would also perceive a discontinuity
+ in the filter's output.
+ LPFing on the other hand lets us have smoother transitions between noise
+ floor estimate changes.
+ This is also a downside theoretically as we are lowering the responsiveness
+ of the filter, but in practice it is well worth the tradeoff.
 \end_layout
 
 \begin_layout Standard
