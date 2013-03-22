@@ -605,6 +605,9 @@ where
 
  was set to a value of 20 for the naive implementation, producing a very
  aggressive filter.
+ Note that this is sufficiently higher than the suggestions of <<<Berouti,
+ section6>>> but works decently in practice, the downsides being high amplitude
+ musical noise and some voice distortion.
  Lowering 
 \begin_inset Formula $\alpha$
 \end_inset
@@ -1288,37 +1291,42 @@ The low pass filtered FFT bins correspond to the persistent (average) level
 By taking the minimum of the LPFed signal as the noise minimum (and doing
  the same minimum noise buffer rotation as before), we do not suffer from
  the degeneracy of sudden amplitude jumps for the noise signal.
- This means that the minimum noise buffer's noise estimate now more closely
- matches the 
+ This means that the noise buffer's noise estimate now more closely matches
+ the persistent noise level.
+ 
+\end_layout
+
+\begin_layout Standard
+As such we can reduce the oversubtraction coefficient 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ from 20 to 3.2.
+ This also reduces the musical noise perceived by both: lowering the unsubtracte
+d spikes to noise floor ratio when the filter mistakingly keeps a noise
+ bin value (lower alpha effect); and more closely matching the subtracted
+ value to the actual noise level (taking the average by LPFing).
 \end_layout
 
 \begin_layout Standard
 Furthermore, for the original filter, if the noise floor suddenly had a
  significant shift in amplitude, we would also perceive a discontinuity
- in the filter's output.
- LPFing on the other hand lets us have smoother transitions between noise
+ in the filter's output as well.
+ On the other hand, LPFing lets us have smoother transitions between noise
  floor estimate changes.
- This is also a downside theoretically as we are lowering the responsiveness
- of the filter, but in practice it is well worth the tradeoff.
+ This is also theoretically a downside as we are lowering the responsiveness
+ of the filter, but in practice it is well worth the tradeoff of better
+ noise estimation.
+\end_layout
+
+\begin_layout Standard
+The low pass filter can also be seen as an integrator->averager, therefore
+ by having a period to average over, we can take a bigger advantage of the
+ pauses between speech and get a much more accurate average noise estimate.
 \end_layout
 
 \begin_layout Standard
 ========================
-\end_layout
-
-\begin_layout Standard
-Therefore to fix the above issue, LPF of frequency bins is used for 
-\end_layout
-
-\begin_layout Standard
-+ smoothes transitions between noise estimations, i.e.
- the filter with track the noise front in a smoother fashion.
- This is also a downside theoretically, but in practice works well.
-\end_layout
-
-\begin_layout Standard
-+ goodgoodgood - main improvement -> LPF lets us pick out the persistent
- noise
 \end_layout
 
 \begin_layout Standard
@@ -1329,15 +1337,6 @@ Therefore to fix the above issue, LPF of frequency bins is used for
 
 \begin_layout Standard
 + show spectrograms and explain what it shows
-\end_layout
-
-\begin_layout Standard
-+ not affected by individual frame FFTs underestimating the true noise content
- for a long time
-\end_layout
-
-\begin_layout Standard
-change in alpha from 20 to 3.2
 \end_layout
 
 \begin_layout Standard
@@ -2454,10 +2453,6 @@ name "sec:Final-Implementation"
 \end_inset
 
 Final Implementation
-\end_layout
-
-\begin_layout Standard
-
 \end_layout
 
 \begin_layout Section
