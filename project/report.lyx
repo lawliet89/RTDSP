@@ -2084,26 +2084,96 @@ Dynamic Oversubtraction
 \end_layout
 
 \begin_layout Standard
-<enh6?>
+The over-subtraction factor 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ described in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:oversubtraction"
+
+\end_inset
+
+ can be dynamically adjusted based on the signal to noise ratio (SNR) given
+ by 
+\begin_inset Formula $\frac{|X(\omega)|}{|N(\omega)|}$
+\end_inset
+
+.
+ When the SNR falls below a certain threshold, the over-subtraction factor
+ 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ can be increased to cause more of the spectrum to be subtracted.
+ It is known that in the frequency range of 0-50 Hz, no human speech is
+ present.
+ Thus, this frequency range is considered for increased over-subtraction.
+ Alternatively, instead of over-subtracting and allowing these frequency
+ bins to fall to the noise floor level, 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ (see 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:g_w"
+
+\end_inset
+
+), these frequency bins can simply be zeroed.
 \end_layout
 
 \begin_layout Standard
+Through experimentation, with a low SNR threshold (approximately 2), no
+ discernable difference could be heard and the spectrogram output did not
+ reflect much improvement.
+ When the SNR threshold was raised (to about 5), a degradation in the speech
+ could be heard.
+ This is because the noise level 
+\begin_inset Formula $|N(\omega)|$
+\end_inset
+
+ is simply a minimum estimate and does not discern between noise and speech.
+ When the 0-50 Hz frequency bins were simply zeroed, some of the low frequency
+ musical noise was eliminated (e.g.
+ in input 
+\begin_inset Quotes eld
+\end_inset
+
+car
+\begin_inset Quotes erd
+\end_inset
+
+), and no degradation in speech was perceived.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status collapsed
+
+\begin_layout Plain Layout
+<enh6?>
+\end_layout
+
+\begin_layout Plain Layout
 the main spectral content of human speech can be assumed to be between 50
  and 8000 Hz.
  
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 Therefore one possible improvement is to oversubtract 0-50 Hz band even
  further.
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 We also explored completely zeroing the 0-50 Hz band, results were <ok?
  do a quick test>
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 When listening to filtering of 
 \begin_inset Quotes eld
 \end_inset
@@ -2117,8 +2187,73 @@ car1.wav
  This additional oversubtraction helped combat this effect.
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
-Residual Noise Reduction
+Residual Musical Noise Reduction
+\end_layout
+
+\begin_layout Standard
+The residual musical noise (see section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Musical-Noise"
+
+\end_inset
+
+) can be supressed further.
+ For a specific frequency bin, the musical noise is due to random fluctuation
+ in its amplitude across different frames, therefore, it can be replaced
+ with its minimum value from adjacent frames 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "boll"
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+For a current frame 
+\begin_inset Formula $k$
+\end_inset
+
+, if the ratio 
+\begin_inset Formula $\nicefrac{|N(\omega)|}{|X(\omega)|}$
+\end_inset
+
+ is high, more noise is estimaed than there is input.
+ Then, take the output 
+\begin_inset Formula $|Y(\omega)|=\min_{i\in\{k-1,k,k+1\}}\left[|Y_{i}(\omega)|\right]$
+\end_inset
+
+.
+ The motivation for doing so is that if 
+\begin_inset Formula $\nicefrac{|N(\omega)|}{|X(\omega)|}$
+\end_inset
+
+ is high and 
+\begin_inset Formula $|X(\omega)|$
+\end_inset
+
+ is rapidly fluctuating, then there is a high probability that it is simply
+ noise, and can be minimised.
+ If 
+\begin_inset Formula $|X(\omega)|$
+\end_inset
+
+ is constant, it is likely to be low energy speech.
+ Therefore, taking the minimum will retain the speech content.
+ 
+\end_layout
+
+\begin_layout Standard
+☻
 \end_layout
 
 \begin_layout Subsection
