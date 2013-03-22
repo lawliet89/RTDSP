@@ -456,11 +456,19 @@ reference "fig:overlap-frame"
 \end_layout
 
 \begin_layout Standard
+<<<FIG 2.2: make screenshot of fig1 (page 2) in Compernolle (the one that
+ I linked) paper instead ???, looks much nicer but doesn't have noise buffer
+ chunking.
+ I reckon still switch to Compernolle as it stops the marker from scrolling
+ through already familiar graphs quicker>>>
+\end_layout
+
+\begin_layout Standard
 \begin_inset Float figure
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -2941,20 +2949,33 @@ Further ideas
 \end_layout
 
 \begin_layout Standard
-- as in mobile telephony, when new signal starts (i.e.
- call connected), use the first noise estimates to overwrite all MNB buffers
- to start tracking the noise instantly (instead of the noise buffer period
- lag)
+A likely application of spectral subtraction is mobile telephony (for reasons
+ of simplicity and power spent on computation).
+ In such an application, we know when the connection for the call has been
+ fully established, yet we usually don't expect the caller to be already
+ speaking before the call is connected.
+ As such, we could treat the first brief period after establishing a connection
+ as being pure noise and start tracking it even before speech starts.
+ One specific way we could implement this: first few samples after the call
+ is established overwrite all noise buffer segments (i.e.
+ entire noise estimation period) in parallel.
+ This means that even from the start of the call we already have an estimate
+ of the noise, instead of waiting seconds for the old noise buffer segments
+ to be discarded and noise buffer saturated with new values (as the code
+ currently does).
+ When it works, it will ensure that the callee hears a roughly filtered
+ speech signal right from the beginning of the call.
 \end_layout
 
 \begin_layout Standard
-- since we know the speaker in advance, we can have a filter that can be
- trained to track particular speaker's speech components.
- In a mobile phone, it'd be sensible to have a model of the user's voice.
-\end_layout
-
-\begin_layout Standard
-- Markovian models for noise tracking?
+Another trait of mobile telephony is that usually a device will have one
+ or very few associated owners (and thus speakers who's voice is to be filtered,
+ assuming we filter on the input and transmit the filtered signal).
+ Therefore we could have adaptive filters that are trained to perform better
+ for the principal traits of the owner's speech and thus perform better
+ than a fully memoryless system.
+ This could be achieved in a variety of ways, some ideas include: neural
+ networks, markovian models and Wiener filter <<< ref: Compernell>>>.
 \end_layout
 
 \begin_layout Standard
