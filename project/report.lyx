@@ -1260,58 +1260,15 @@ Magnitude domain
 The problem with the above approach is that each frame's FFT is considered
  alone when updating the estimate of the minimum noise.
  Therefore we observe the problem that even a single frame with an instanteneous
- magnite drop for an FFT bin will potentially stay as the overly pessimistic
+ magnitude drop for an FFT bin will potentially stay as the overly pessimistic
  noise estimate for the duration of the noise buffer.
  Note that a frame duration at 256 point FFT at 8 kHz sampling rate is 32
  ms, whereas one particularly overestimated noise value will stay within
  the minimum noise buffer for a period that can last seconds.
  This is the reason for a high oversubtraction coefficient for the naive
  filter above, to compensate for its pessimism of the noise level.
-\end_layout
-
-\begin_layout Standard
-Hence:
-\end_layout
-
-\begin_layout Standard
-<NB: see above, some stuff already covered>
-\end_layout
-
-\begin_layout Standard
-if a particular noise frequency is not very pronounced in one frame (i.e.
- it's bin magnitude is low), it becomes the lowest noise estimate for that
- particular frequency for the duration of the noise estimation period.
- Noting that a frame length at 256 point FFT at 8 kHz sampling rate is 32
- ms, whereas one particularly overestimated noise value will stay within
- the minimum noise buffer for a period that can last seconds.
-\end_layout
-
-\begin_layout Standard
-This underestimation of the noise can be counteracted slightly via an over
- subtraction factor 
-\begin_inset Formula $\alpha$
-\end_inset
-
-.
-\end_layout
-
-\begin_layout Standard
-<elaborate on alpha values>
-\end_layout
-
-\begin_layout Standard
-Noise with very minimal pauses would defeat this kind of filtering easily,
- bringing the spectral subtraction component close to nothing.
-\end_layout
-
-\begin_layout Standard
-a particularly small bin value in one frame will affect the filtering of
- that frequency while the noise estimate stays in the noise minimum buffer
- (the noise estimation period, which is usually in the range of seconds).
-\end_layout
-
-\begin_layout Standard
-<throw in Burouti paper for alpha/beta values>
+ Furthermore, for the same reasons of the filter being pessimistic, any
+ noise with small pauses will defeat the naive filter.
 \end_layout
 
 \begin_layout Standard
@@ -2167,7 +2124,7 @@ reference "sub:alt-gw"
 
 \begin_layout Standard
 \begin_inset Note Comment
-status open
+status collapsed
 
 \begin_layout Plain Layout
 quicker tracking vs potentially filtering voice out if it stays audible
