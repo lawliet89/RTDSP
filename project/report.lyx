@@ -582,7 +582,7 @@ When the noise spectrum is to be estimated for use in spectral subtraction,
 \begin_inset Formula $\alpha$
 \end_inset
 
- is used to compensate.
+ is used for compensation.
  Thus, the minimum estimated noise spectrum 
 \begin_inset Formula $N(\omega)$
 \end_inset
@@ -603,7 +603,23 @@ where
 \begin_inset Formula $\alpha$
 \end_inset
 
- was set to a value of 20.
+ was set to a value of 20 for the naive implementation, producing a very
+ aggressive filter.
+ Lowering 
+\begin_inset Formula $\alpha$
+\end_inset
+
+ would increase the overall noise let through the filter, but at the same
+ time reduce the amount of 
+\begin_inset Quotes eld
+\end_inset
+
+musical noise
+\begin_inset Quotes erd
+\end_inset
+
+ present as there would be less differentials between noise peaks and the
+ spectral noise floor, as discussed further in the next section.
 \end_layout
 
 \begin_layout Subsection
@@ -704,11 +720,24 @@ reference "sub:Musical-Noise"
 
 , we can reduce the differential step between the post-filter noise floor
  and the spectral peaks that are a result of imperfect noise estimation.
- In this first implementation, 
+ In this first implementation, the spectral noise floor constant
 \begin_inset Formula $\lambda$
 \end_inset
 
- was chosen to be 0.05.
+ was chosen to be 0.05 by empirical methods, choosing from the ranges suggested
+ by <<<Berouti, section6>>>.
+ Generally, a higher 
+\begin_inset Formula $\lambda$
+\end_inset
+
+would result in a higher white noise level, but lower perceived musical
+ noise.
+ Lower 
+\begin_inset Formula $\lambda$
+\end_inset
+
+results in a lower white noise output but a more pronounced musical noise
+ effect.
 \end_layout
 
 \begin_layout Subsection
@@ -1122,7 +1151,7 @@ lines 12
 placement O
 overhang 0in
 width "50col%"
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -1229,8 +1258,15 @@ Magnitude domain
 
 \begin_layout Standard
 The problem with the above approach is that each frame's FFT is considered
- alone when estimating noise.
- 
+ alone when updating the estimate of the minimum noise.
+ Therefore we observe the problem that even a single frame with an instanteneous
+ magnite drop for an FFT bin will potentially stay as the overly pessimistic
+ noise estimate for the duration of the noise buffer.
+ Note that a frame duration at 256 point FFT at 8 kHz sampling rate is 32
+ ms, whereas one particularly overestimated noise value will stay within
+ the minimum noise buffer for a period that can last seconds.
+ This is the reason for a high oversubtraction coefficient for the naive
+ filter above, to compensate for its pessimism of the noise level.
 \end_layout
 
 \begin_layout Standard
