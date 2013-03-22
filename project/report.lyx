@@ -651,8 +651,8 @@ where
 \begin_inset Formula $G(\omega)$
 \end_inset
 
- is a essentially a real-gain factor that is calculated from the estimated
- noise spectrum derived from 
+ is a gain factor that is calculated from the estimated noise spectrum derived
+ from 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "eq:1"
@@ -664,20 +664,14 @@ reference "eq:1"
 \begin_inset Formula $1-\frac{|N(\omega)|}{|X(\omega)|}$
 \end_inset
 
- can potentially go to negative, 
+ can potentially go negative (i.e.
+ the noise floor is overestimated), 
 \begin_inset Formula $G(\omega)$
 \end_inset
 
- should be lower bounded by a positive value 
-\begin_inset Formula $\lambda$
-\end_inset
-
-.
- 
-\begin_inset Formula $\lambda$
-\end_inset
-
- is chosen to be slightly above zero to reduce the amount of 
+ should be lower bounded.
+ The naive approach would be to clip the noise to zero.
+ However, this will give rise to a highly perceivable level of 
 \begin_inset Quotes eld
 \end_inset
 
@@ -685,15 +679,26 @@ musical noise
 \begin_inset Quotes erd
 \end_inset
 
- (see section 
+(see section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Musical-Noise"
 
 \end_inset
 
-) introduced by the spectral subtraction.
- In this implementation, 
+).
+ This is due to the fact that if we take a white noise type signal and subtract
+ a level from it with clipping to zero, it will become a series of isolated
+ peaks in the spectrum, which sound like low-tone musical notes.
+ And, since human sound perception is logarithmic, the difference between
+ a zero and a sharp peak is much more perceivable.
+ By instead clipping to a small positive value 
+\begin_inset Formula $\lambda$
+\end_inset
+
+, we can reduce the differential step between the post-filter noise floor
+ and the spectral peaks that are a result of imperfect noise estimation.
+ In this first implementation, 
 \begin_inset Formula $\lambda$
 \end_inset
 
