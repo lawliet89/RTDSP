@@ -915,20 +915,13 @@ factory2
 \end_layout
 
 \begin_layout Standard
-\begin_inset Newpage pagebreak
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
 \noindent
 \begin_inset Wrap figure
 lines 12
 placement O
 overhang 0in
 width "50col%"
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -1340,35 +1333,53 @@ Furthermore, for the original filter, if the noise floor suddenly had a
 \end_layout
 
 \begin_layout Standard
-The low pass filter can also be seen as an integrator->averager, therefore
+The low pass filter can also be seen as an integrate->average system, therefore
  by having a period to average over, we can take a bigger advantage of the
  pauses between speech and get a much more accurate average noise estimate.
+ 
 \end_layout
 
 \begin_layout Standard
-========================
+Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:spec-enhancement-2"
+
+\end_inset
+
+ shows that the enhanced filter is indeed successful in taking the average
+ noise level over the periods of absense of speech and effectively filters
+ out said noise.
+ The amount of musical noise is sufficiently reduced as well by the reasons
+ mentioned above.
 \end_layout
 
 \begin_layout Standard
-+ we can take advantage of the entire pause between speech segments and
- average the noise content over it, therefore getting a close estimate of
- the mean of the persistent noise -> alpha can be lowered
-\end_layout
+The time constant factor 
+\begin_inset Formula $\tau$
+\end_inset
 
-\begin_layout Standard
-+ show spectrograms and explain what it shows
-\end_layout
+ can be tuned in this filter, our implementation uses 50 ms.
+ This value was obtained empirically with blind listening tests for the
+ set of samples given filtered with a range of time constants in the range
+ of 20 to 80 ms.
+ This range is in the range of maximising the integration period of noise
+ by matching the inter-word pause timings.
+ Having a higher time constant results in: more integration period, which
+ is good as long as we're not extending it to be bigger than the pauses
+ between words, as the filter will start integrating voice spectrum as part
+ of the noise.
+ Higher 
+\begin_inset Formula $\tau$
+\end_inset
 
-\begin_layout Standard
-<tau values, what it affects, what we chose>
-\end_layout
+ also means a slightly slower response to noise level change, but that term
+ is dominated by the noise buffer period anyway (7.5 seconds).
+ A smaller 
+\begin_inset Formula $\tau$
+\end_inset
 
-\begin_layout Standard
-<spectrograms of no lpf vs lpf to show correct averaging>
-\end_layout
-
-\begin_layout Standard
----------------------------------------------------
+ on the other hand will bring us closer to the naive filter.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1392,6 +1403,12 @@ y^2 = (x^2 - d^2)
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:enhancement-3"
+
+\end_inset
+
 Low-Pass Filter Noise Estimate
 \end_layout
 
@@ -2667,11 +2684,18 @@ reference "sub:Low-Pass-Filter-Input"
 , 
 \begin_inset CommandInset ref
 LatexCommand ref
+reference "sub:enhancement-3"
+
+\end_inset
+
+, 
+\begin_inset CommandInset ref
+LatexCommand ref
 reference "sub:alt-gw"
 
 \end_inset
 
- , and 
+, and 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:enhancement-9"
