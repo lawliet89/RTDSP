@@ -1090,6 +1090,12 @@ reference "sec:Final-Implementation"
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:complex-conjugate"
+
+\end_inset
+
 Structural Optimisation
 \end_layout
 
@@ -1135,6 +1141,20 @@ th
  are simply real-valued.
  This also allows some of the buffers used in the enhancements described
  below to be almost halved in size.
+\end_layout
+
+\begin_layout Standard
+This helps to prevents 
+\begin_inset Quotes eld
+\end_inset
+
+clicking
+\begin_inset Quotes erd
+\end_inset
+
+ in the output, resulting from frame computation taking longer than one
+ frame length.
+ 
 \end_layout
 
 \begin_layout Subsection
@@ -2006,6 +2026,12 @@ reference "fig:spec-enhancement-2"
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:enhancement-7"
+
+\end_inset
+
 Frame lengths
 \end_layout
 
@@ -2079,6 +2105,12 @@ fft-length-and-frequency-resolution
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:enhancement-6"
+
+\end_inset
+
 Dynamic Oversubtraction
 \end_layout
 
@@ -2192,6 +2224,12 @@ car1.wav
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:enhancement-8"
+
+\end_inset
+
 Residual Musical Noise Reduction
 \end_layout
 
@@ -2200,7 +2238,7 @@ Residual Musical Noise Reduction
 placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -2370,7 +2408,7 @@ reference "eq:lpf-input"
 \end_layout
 
 \begin_layout Standard
-The spectrogram of teh output for a threshold of 3 can be seen in 
+The spectrogram of the output for a threshold of 3 can be seen in 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "fig:spec-enhancement-8"
@@ -2387,10 +2425,16 @@ reference "fig:spec-enhancement-2"
 
 , it can be seen that more of the musical noise (c.f.
  11-12.5s) has been removed.
- ½ 
+ 
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:enhancement-9"
+
+\end_inset
+
 Changing the Noise Estimation Period
 \end_layout
 
@@ -2416,9 +2460,9 @@ reference "sub:alt-gw"
 \end_inset
 
  to perform better due to the faster rotation of the noise buffers.
- However, if the speaker does not pause speaking at least once every four
- seconds, the speaker's voice at its lowest level will be taken as noise
- and then erroneously subtracted from the spectrum.
+ However, if the speaker does not pause speaking at all during the period,
+ the speaker's voice at its lowest level will be taken as noise and then
+ erroneously subtracted from the spectrum.
  
 \end_layout
 
@@ -2442,7 +2486,17 @@ quicker tracking -> more relevant noise pattern -> better filtering for
 
 \end_inset
 
+ By analysing the spectrogram of the clean version of the sound file (see
+ 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:spec-clean"
 
+\end_inset
+
+), it can be seen that the speaker does pause at leaast once every four
+ seconds (however short).
+ 
 \end_layout
 
 \begin_layout Section
@@ -2453,6 +2507,334 @@ name "sec:Final-Implementation"
 \end_inset
 
 Final Implementation
+\end_layout
+
+\begin_layout Standard
+\noindent
+\begin_inset Wrap table
+lines 0
+placement O
+overhang 0in
+width "50col%"
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Quantity
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Value
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Over-subtraction factor, 
+\begin_inset Formula $\alpha$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.2
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Noise floor, 
+\begin_inset Formula $\lambda$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.05
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+LPF time constant 
+\begin_inset Formula $\tau$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0.05s
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:parameter"
+
+\end_inset
+
+Parameters for the final implementation.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In the final implementation of the filter, the enhancements described in
+ sections 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:complex-conjugate"
+
+\end_inset
+
+, 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Low-Pass-Filter-Input"
+
+\end_inset
+
+, 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:alt-gw"
+
+\end_inset
+
+ , and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:enhancement-9"
+
+\end_inset
+
+ were implemented.
+ The structural optimisation described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:complex-conjugate"
+
+\end_inset
+
+ was implemented to improve the performance of the filter and to reduce
+ and eliminate clicking sounds in the output.
+ 
+\end_layout
+
+\begin_layout Standard
+For the enhancement described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Low-Pass-Filter-Input"
+
+\end_inset
+
+, say why we chose it and why we chose a particular 
+\begin_inset Formula $\tau$
+\end_inset
+
+.
+ The alternate 
+\begin_inset Formula $G(\omega)$
+\end_inset
+
+ calculation described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:alt-gw"
+
+\end_inset
+
+ improves upon the LPF by addressing its shortcomings.
+ This requires that 
+\begin_inset Formula $\tau$
+\end_inset
+
+ be set to a slightly higher value.
+ The noise estimation period (section
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:enhancement-9"
+
+\end_inset
+
+) was also reduced to four seconds to improve the performance of the alternate
+ 
+\begin_inset Formula $|G(\omega)|$
+\end_inset
+
+ calculation and increase the reaction rate of the filter.
+ The frequency bins for 0-50 Hz were also zeroed, as described in section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:enhancement-6"
+
+\end_inset
+
+ because no human speech occurs in that region.
+ 
+\end_layout
+
+\begin_layout Standard
+The enhancement described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:enhancement-7"
+
+\end_inset
+
+ was not implemented due to the adverse effects on the output.
+ The enhancement described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:enhancement-8"
+
+\end_inset
+
+, while acheiving good results, require a longer 
+\begin_inset Formula $\tau$
+\end_inset
+
+ to further improve the results, but this will cause the noise estimate
+ to react slower to changes.
+ 
+\end_layout
+
+\begin_layout Standard
+The spectrogram of the output with enhancements combined can be found in
+ 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:spec-enhancement-8"
+
+\end_inset
+
+, and the parameters used can be found in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "tab:parameter"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename resources/spec-enhancement-combined.png
+	lyxscale 46
+	scale 46
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:spec-final"
+
+\end_inset
+
+Spectrogram of the filtered signal for the final implementation.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
