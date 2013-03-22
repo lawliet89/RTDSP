@@ -2065,7 +2065,7 @@ Through experimentation, it was found that increasing the frame length did
 
 \begin_layout Standard
 \begin_inset Note Comment
-status open
+status collapsed
 
 \begin_layout Plain Layout
 time resolution vs frequency resolution (and memory/computation)
@@ -2138,17 +2138,54 @@ Changing the Noise Estimation Period
 \end_layout
 
 \begin_layout Standard
+The noise estimation window described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Noise-Spectrum-Estimation"
+
+\end_inset
+
+ can be reduced to allow the noise filter to react faster to sharp changes
+ (especially increase) in noise level.
+ This will also allow the alternate 
+\begin_inset Formula $G(\omega)$
+\end_inset
+
+ calculation described in section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:alt-gw"
+
+\end_inset
+
+ to perform better due to the faster rotation of the noise buffers.
+ However, if the speaker does not pause speaking at least once every four
+ seconds, the speaker's voice at its lowest level will be taken as noise
+ and then erroneously subtracted from the spectrum.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Comment
+status open
+
+\begin_layout Plain Layout
 quicker tracking vs potentially filtering voice out if it stays audible
  for long periods of time,
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 quicker tracking -> more relevant noise pattern -> better filtering for
  changing noise
 \end_layout
 
-\begin_layout Standard
+\begin_layout Plain Layout
 <elaborate on trade-off?>
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -2159,6 +2196,10 @@ name "sec:Final-Implementation"
 \end_inset
 
 Final Implementation
+\end_layout
+
+\begin_layout Standard
+
 \end_layout
 
 \begin_layout Section
