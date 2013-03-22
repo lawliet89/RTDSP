@@ -125,11 +125,10 @@ Yong Wen Chua (ywc110) & Ryan Savitski (rs5010)
 
 \begin_layout Abstract
 This report describes the implementation and analysis of a dynamic real-time
- noise filtering system, done primarily through spectral subtraction of
- estimated noise.
+ noise filtering system for a speech signal, done primarily through spectral
+ subtraction of estimated noise.
  It will describe and analyse a series of techniques to improve the filter
- performance, and conclude with the parameters and techniques used to implement
- the filter.
+ performance, and conclude with the the specific implementation chosen.
 \end_layout
 
 \begin_layout Section*
@@ -190,8 +189,8 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-In this Digital Age, more communication are now happening over networks
- rather than in person.
+In this digital age, more communication is now happening over networks rather
+ than in person.
  Driven primarily by telephony, this increase in prevalence of digital communica
 tion has made the transmission of clear and noise-free sound more important
  than ever before.
@@ -272,7 +271,7 @@ Basic Implementation
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \noindent
@@ -518,7 +517,7 @@ The input and output buffer are implemented as circular buffers with five
  be used for frame processing) with one being used to store the inputs coming
  into the system.
  At the same time, one of the output segments will have been fully added
- with its overlapped frame (and therefore ripe for output), while the other
+ with its overlapped frame (and therefore ready for output), while the other
  four frames are being added with the current processed frame.
  The inputs are read from the input port via an interrupt, and the relevant
  output is then sent to the output port.
@@ -545,19 +544,16 @@ The heuristics used in the estimation of noise assumes that within a 10
  Thus, the minimum of the spectrum content over a ten-second sliding window
  can be used to estimate the noise spectrum.
  Due to the fact that the phase of the noise spectrum cannot be known, and
- the fact that slightly phase distortion is not audible to the human ears,
+ the fact that slight phase distortion is not audible to the human ears,
  only the absolute of the spectrum is analysed and processed.
 \end_layout
 
 \begin_layout Standard
-In practice, however, it is not feasible to store ten seconds worth of spectra
- content.
- Four separate 2.5 seconds sliding windows are used in place of a full 10
- seconds sliding window.
- For 2.5 seconds, the lowest spectrum content is stored in a relevant buffer.
- After 2.5 seconds have passed, the oldest buffer is discarded and is used
- to store the minimum spectra content for the next 2.5 seconds.
- These four separate sliding windows are implemented as a single circular
+In practice, however, it is not feasible to store and minimise over ten
+ seconds worth of spectral content.
+ Instead, the noise buffer is split into four, each holding a minimum over
+ a 2.5 second period.
+ These four separate noise minimum buffers are implemented as a single circular
  buffer, with the appropriate program logic to separate the segments.
  For the current window 
 \begin_inset Formula $M_{i}(\omega)$
@@ -581,13 +577,12 @@ In practice, however, it is not feasible to store ten seconds worth of spectra
 \begin_layout Standard
 When the noise spectrum is to be estimated for use in spectral subtraction,
  the minimum over the four 2.5 seconds segments are used.
- This essentially provides a ten second noise spectrum window that slides
- once every 2.5 seconds.
- The minimum is multiplied with a constant factor 
+ Noting that the nature of the naive noise estimation always underestimates
+ the noise content, therefore an oversubtraction factor 
 \begin_inset Formula $\alpha$
 \end_inset
 
- to correct any underestimation.
+ is used to compensate.
  Thus, the minimum estimated noise spectrum 
 \begin_inset Formula $N(\omega)$
 \end_inset
