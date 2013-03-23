@@ -158,7 +158,7 @@ enhancements explored in \secref{sec-enhancement}, along with details
 of the parameters used in those enhancements. In \secref{Final-Implementation},
 the combination of the enhancements chosen to be used for the final
 filter version are described. Finally, further ideas and heuristics
-that could enhance the filter are discussed in \secref{Further possible ideas}.
+that could enhance the filter are discussed in \secref{further}.
 The code for the project can be found in \secref{Project-Code}.
 
 
@@ -336,8 +336,8 @@ effect.
 \noindent As human perception of volume, noise and in general audio
 signal clarity is very subjective and lacks a complete mathematical
 model, spectrograms are used to introduce some form of objectivity
-when evaluating the performance of the filterThe ``factory2'' corrupted
-sample is used for evaluation of the filter. Figure \ref{fig:spec-clean}
+when evaluating the performance of the filter. The ``factory2''
+corrupted sample is used for evaluation of the filter. Figure \ref{fig:spec-clean}
 shows the spectrogram of the provided clean sound file, and \figref{spec-factory2}
 shows the spectrogram of the ``factory2'' corrupted signal. 
 
@@ -358,13 +358,14 @@ the background noise slightly, with darker areas seen in \figref{spec-no-enhance
 in between speech. The filter is slow in responding to background
 noise changes, especially when the noise level transits from a low
 level to a high level. This is due to the ten-second window used for
-noise estimation. As the filter is always pessimistic about the noise
-level, the lower estimate before the transition is always dominating
-until the relevant minimum noise buffer is discarded (around 7.5 seconds).
-Due to the high over-subtraction factor $\alpha$ introduced in \eqref{oversubtraction}
-to correct the underestimation of noise, some of the speech is also
-removed and results in the voice being slurry. There is also a very
-pronounced level of musical noise.
+noise estimation. As the filter is always conservative about the noise
+level being low (by always taking the minimum), the lower estimate
+before the transition is always dominating until the relevant minimum
+noise buffer is discarded (around 7.5 seconds). Due to the high over-subtraction
+factor $\alpha$ introduced in \eqref{oversubtraction} to correct
+the underestimation of noise, some of the speech is also removed and
+results in the voice being slurry. There is also a very pronounced
+level of musical noise.
 
 The unnatural sounding musical noise is a result of the magnitude
 of the frequency exhibiting strong fluctuations in the noisy area
@@ -416,21 +417,21 @@ low-pass filter input for spectral content across time}
 A problem with the basic approach is that each frame's DFT is considered
 alone when updating the estimate of the minimum noise. Therefore,
 even a single frame with an instantaneous magnitude drop for an DFT
-bin will potentially stay as the overly pessimistic noise estimate
+bin will potentially stay as the overly conservative noise estimate
 for the duration of the noise buffer. Since the frame length for 256
 samples at 8000 Hz sampling frequency is 32 ms, one particularly underestimated
 noise value will stay within the minimum noise buffer for a period
 that can last seconds. This is the reason for a high over-subtraction
 coefficient for the basic filter above, to compensate for the filter's
-optimism of the noise level. Furthermore, for the same reasons of
-the filter being overly pessimistic, any noise with small spectral
+conservatism of the noise level. Furthermore, for the same reasons
+of the filter being overly optimistic, any noise with small spectral
 pauses (that need not be aligned to one frame) will defeat the basic
 implementation.
 
 
 \subsubsection{Magnitude domain}
 
-One way of improving on the naive spectral subtractor is to low-pass
+One way of improving on the naive spectral subtracter is to low-pass
 filter (LPF) the DFT magnitude bins across time according to:
 \begin{eqnarray}
 P_{t}(\omega) & = & (1-k)\times|X(\omega)|+k\times P_{t-1}(\omega)\label{eq:lpf-input}\\
@@ -468,7 +469,7 @@ clipped and unclipped samples. This is due to the subtracted spectrum
 being more closely matched to the actual noise level.
 
 In the basic filter, when the input $|X(\omega)|$ falls sharply,
-this would cause a sharp fall in $|N(\omega)|$ and cause a discontunity
+this would cause a sharp fall in $|N(\omega)|$ and cause a discontinuity
 in the output. Low pass filtering removes this discontinuity by introducing
 a smoother transition. This also has the effect of lowering the responsiveness
 of the filter, but is worth the trade-off due to much better noise
@@ -673,7 +674,7 @@ in a slightly slurry voice.
 \subsection{\label{sub:enhancement-7}Frame lengths}
 
 In general, frame lengths should be of powers of two so that the Fast
-Fourier Transform (FFT) used for DFT can be the most efficient. The
+Fourier Transform (FF) used for DFT can be the most efficient. The
 frame length can be increased to give a better frequency resolution
 when doing the DFT of the samples. This would give a more granular
 approach in processing the frequency bins. However, this comes at
@@ -883,7 +884,7 @@ noise estimate to be slower in reacting to changes.
 
 The spectrogram of the output with enhancements combined can be found
 in \figref{spec-final}, and the parameters used can be found in \tabref{parameter}.
-The filter has removed the musical noise present during perioids when
+The filter has removed the musical noise present during periods when
 speech is paused significantly (for example 11-12.5s) due to the filter
 being able to better react to changing noise levels. It has also reduced
 the amount of high frequency noise. 
@@ -901,7 +902,7 @@ final implementation.}
 
 
 
-\section{\label{sec:Further possible ideas}Further ideas}
+\section{\label{sec:further}Further ideas}
 
 A very appropriate application of spectral subtraction is mobile telephony
 due to its simplicity and low computational requirements. In such
@@ -914,8 +915,8 @@ noise buffers with the initial samples and then continuing the estimation
 as before. This will remove the initial ``warm up time'' that the
 filter experience due to the way the noise buffers are set up in section\ref{sub:Noise-Spectrum-Estimation}.
 Thus, the person on the other end of the line will receive a filtered
-output right from the beginning. Additionally,  the filter could start
-tracking the noise even during the connection setup delay period.
+output right from the beginning. Additionally, the filter could start
+tracking the noise even during the connection set-up delay period.
 
 Another trait of mobile telephony is that usually a device will usually
 only have one or very few associated users. Therefore adaptive filters

@@ -258,7 +258,7 @@ reference "sec:Final-Implementation"
  discussed in 
 \begin_inset CommandInset ref
 LatexCommand formatted
-reference "sec:Further possible ideas"
+reference "sec:further"
 
 \end_inset
 
@@ -893,7 +893,8 @@ Spectrograms of provided files, generated in Matlab
 As human perception of volume, noise and in general audio signal clarity
  is very subjective and lacks a complete mathematical model, spectrograms
  are used to introduce some form of objectivity when evaluating the performance
- of the filterThe 
+ of the filter.
+ The 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1001,9 +1002,10 @@ reference "fig:spec-no-enhancement"
  The filter is slow in responding to background noise changes, especially
  when the noise level transits from a low level to a high level.
  This is due to the ten-second window used for noise estimation.
- As the filter is always pessimistic about the noise level, the lower estimate
- before the transition is always dominating until the relevant minimum noise
- buffer is discarded (around 7.5 seconds).
+ As the filter is always conservative about the noise level being low (by
+ always taking the minimum), the lower estimate before the transition is
+ always dominating until the relevant minimum noise buffer is discarded
+ (around 7.5 seconds).
  Due to the high over-subtraction factor 
 \begin_inset Formula $\alpha$
 \end_inset
@@ -1207,14 +1209,15 @@ Spectrogram of the filtering with the low-pass filter input for spectral
 A problem with the basic approach is that each frame's DFT is considered
  alone when updating the estimate of the minimum noise.
  Therefore, even a single frame with an instantaneous magnitude drop for
- an DFT bin will potentially stay as the overly pessimistic noise estimate
+ an DFT bin will potentially stay as the overly conservative noise estimate
  for the duration of the noise buffer.
  Since the frame length for 256 samples at 8000 Hz sampling frequency is
  32 ms, one particularly underestimated noise value will stay within the
  minimum noise buffer for a period that can last seconds.
  This is the reason for a high over-subtraction coefficient for the basic
- filter above, to compensate for the filter's optimism of the noise level.
- Furthermore, for the same reasons of the filter being overly pessimistic,
+ filter above, to compensate for the filter's conservatism of the noise
+ level.
+ Furthermore, for the same reasons of the filter being overly optimistic,
  any noise with small spectral pauses (that need not be aligned to one frame)
  will defeat the basic implementation.
 \end_layout
@@ -1224,7 +1227,7 @@ Magnitude domain
 \end_layout
 
 \begin_layout Standard
-One way of improving on the naive spectral subtractor is to low-pass filter
+One way of improving on the naive spectral subtracter is to low-pass filter
  (LPF) the DFT magnitude bins across time according to:
 \begin_inset Formula 
 \begin{eqnarray}
@@ -1356,7 +1359,7 @@ In the basic filter, when the input
 \begin_inset Formula $|N(\omega)|$
 \end_inset
 
- and cause a discontunity in the output.
+ and cause a discontinuity in the output.
  Low pass filtering removes this discontinuity by introducing a smoother
  transition.
  This also has the effect of lowering the responsiveness of the filter,
@@ -2177,7 +2180,7 @@ Frame lengths
 
 \begin_layout Standard
 In general, frame lengths should be of powers of two so that the Fast Fourier
- Transform (FFT) used for DFT can be the most efficient.
+ Transform (FF) used for DFT can be the most efficient.
  The frame length can be increased to give a better frequency resolution
  when doing the DFT of the samples.
  This would give a more granular approach in processing the frequency bins.
@@ -2962,7 +2965,7 @@ reference "tab:parameter"
 \end_inset
 
 .
- The filter has removed the musical noise present during perioids when speech
+ The filter has removed the musical noise present during periods when speech
  is paused significantly (for example 11-12.5s) due to the filter being able
  to better react to changing noise levels.
  It has also reduced the amount of high frequency noise.
@@ -3019,7 +3022,7 @@ Spectrogram of the filtered signal for the final implementation.
 \begin_layout Section
 \begin_inset CommandInset label
 LatexCommand label
-name "sec:Further possible ideas"
+name "sec:further"
 
 \end_inset
 
@@ -3055,8 +3058,8 @@ reference "sub:Noise-Spectrum-Estimation"
 .
  Thus, the person on the other end of the line will receive a filtered output
  right from the beginning.
- Additionally,  the filter could start tracking the noise even during the
- connection setup delay period.
+ Additionally, the filter could start tracking the noise even during the
+ connection set-up delay period.
 \end_layout
 
 \begin_layout Standard
