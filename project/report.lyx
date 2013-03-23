@@ -644,6 +644,49 @@ Noise Spectrum Subtraction
 \end_layout
 
 \begin_layout Standard
+\begin_inset Wrap figure
+lines 17
+placement O
+overhang 0in
+width "40col%"
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename resources/musical-noise.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:musical-noise-illus"
+
+\end_inset
+
+Illustration of the generation of musical noise by noise clipping.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 Let the output be 
 \begin_inset Formula $Y(\omega)$
 \end_inset
@@ -664,9 +707,6 @@ Let the output be
  (and achieve a zero-phase filtering), only the magnitude should be altered,
  as mentioned before.
  Thus, the output is given by
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
 \begin{alignat}{1}
 |Y(\omega)| & =|X(\omega)|-|N(\omega)|=|X(\omega)|\left(1-\frac{|N(\omega)}{|X(\omega)|}\right)\label{eq:1}\\
@@ -703,8 +743,8 @@ reference "eq:1"
 \end_inset
 
  should be lower bounded.
- The naive approach would be to clip the noise to zero.
- However, this will give rise to a highly perceivable level of 
+ The input is not simply attenuated to zero because this gives rise to a
+ highly perceivable level of 
 \begin_inset Quotes eld
 \end_inset
 
@@ -712,43 +752,74 @@ musical noise
 \begin_inset Quotes erd
 \end_inset
 
-(see section <<<fig musical noise>>> and 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "sub:Musical-Noise"
+.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Musical-Noise"
 
 \end_inset
 
-).
- This is due to the fact that if we take a white noise type signal and subtract
- a level from it with clipping to zero, it will become a series of isolated
- peaks in the spectrum, which sound like low-tone musical notes.
- And, since human sound perception is logarithmic <<<Dirk Van Compernolle
- DSP techniques for speech enhancement>>>, the difference between a zero
- and a sharp peak is much more perceivable.
- By instead clipping to a small positive value 
+Musical Noise
+\end_layout
+
+\begin_layout Standard
+If a noise is simply attenuated, it will become a series of isolated peaks
+ in the spectrum, which would be perceived as low-tone musical notes.
+ Since human sound perception is logarithmic 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "compernolle"
+
+\end_inset
+
+, the difference between a zero and a sharp peak is much more perceivable
+ and pronounced.
+ Instead, by clipping to a small positive value 
 \begin_inset Formula $\lambda$
 \end_inset
 
-, we can reduce the differential step between the post-filter noise floor
- and the spectral peaks that are a result of imperfect noise estimation.
- In this first implementation, the spectral noise floor constant
+, the differential step between the post-filter noise floor (
+\begin_inset Formula $\lambda)$
+\end_inset
+
+ and the spectral peaks that are a result of imperfect noise estimation
+ can be reduced.
+ In this first implementation, the spectral noise floor constant 
 \begin_inset Formula $\lambda$
 \end_inset
 
  was chosen to be 0.05 by empirical methods, choosing from the ranges suggested
- by <<<Berouti, section6>>>.
+ by 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "berouti"
+
+\end_inset
+
+.
+ This is illustrated in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:musical-noise-illus"
+
+\end_inset
+
+.
  Generally, a higher 
 \begin_inset Formula $\lambda$
 \end_inset
 
-would result in a higher white noise level, but lower perceived musical
+ would result in a higher white noise level, but lower perceived musical
  noise.
  Lower 
 \begin_inset Formula $\lambda$
 \end_inset
 
-results in a lower white noise output but a more pronounced musical noise
+ results in a lower white noise output but a more pronounced musical noise
  effect.
 \end_layout
 
@@ -762,7 +833,7 @@ Evaluation
 placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -885,9 +956,9 @@ Spectrograms of provided files, generated in Matlab
 \begin_layout Standard
 \noindent
 As human perception of volume, noise and in general audio signal clarity
- is extremely subjetive and lacks a complete mathematical model , we will
- use spectrograms to introduce some form of objectivity when evaluating
- the performance of the filter.
+ is very subjetive and lacks a complete mathematical model , we will use
+ spectrograms to introduce some form of objectivity when evaluating the
+ performance of the filter.
  We will use 
 \begin_inset Quotes eld
 \end_inset
@@ -925,19 +996,18 @@ factory2
 
 \begin_layout Standard
 \noindent
-\begin_inset Wrap figure
-lines 12
-placement O
-overhang 0in
-width "50col%"
+\begin_inset Float figure
+wide false
+sideways false
 status collapsed
 
 \begin_layout Plain Layout
 \noindent
+\align center
 \begin_inset Graphics
 	filename resources/spec-no-enhancement.png
-	lyxscale 21
-	scale 21
+	lyxscale 46
+	scale 46
 
 \end_inset
 
@@ -1015,16 +1085,6 @@ reference "eq:oversubtraction"
  There is also a very pronounced level of musical noise.
 \end_layout
 
-\begin_layout Subsubsection*
-\begin_inset CommandInset label
-LatexCommand label
-name "sub:Musical-Noise"
-
-\end_inset
-
-Musical Noise
-\end_layout
-
 \begin_layout Standard
 The unnatural sounding musical noise is a result of the magnitude of the
  frequency exhibiting strong fluctuations in the noisy area 
@@ -1052,16 +1112,15 @@ reference "fig:spec-no-enhancement"
 \end_inset
 
 , it can be seen that there is noise during this period of time, and the
- magnitude of the frequency bins fluctuates very rapidly with time.
- The reasons on why this behaviour is exhibited have already been stated
- in section
+ magnitude of the frequency bins fluctuates very rapidly with (see section
+ 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sub:Noise-Spectrum-Subtraction"
+reference "sub:Musical-Noise"
 
 \end_inset
 
-.
+).
 \end_layout
 
 \begin_layout Section
@@ -1171,20 +1230,19 @@ Low-Pass Filter Input for Noise Estimation
 
 \begin_layout Standard
 \noindent
-\begin_inset Wrap figure
-lines 12
-placement O
-overhang 0in
-width "50col%"
-status open
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
 \align center
 \begin_inset Graphics
 	filename resources/spec-enhancement-2.png
-	lyxscale 21
-	scale 21
+	lyxscale 46
+	scale 46
 
 \end_inset
 
@@ -1216,15 +1274,15 @@ Spectrogram of the filtering with the low-pass filter input for spectral
 \end_layout
 
 \begin_layout Standard
-The problem with the above approach is that each frame's FFT is considered
+A problem with the basic approach is that each frame's FFT is considered
  alone when updating the estimate of the minimum noise.
- Therefore we observe the problem that even a single frame with an instanteneous
- magnitude drop for an FFT bin will potentially stay as the overly pessimistic
- noise estimate for the duration of the noise buffer.
- Note that a frame duration at 256 point FFT at 8 kHz sampling rate is 32
- ms, whereas one particularly overestimated noise value will stay within
- the minimum noise buffer for a period that can last seconds.
- This is the reason for a high oversubtraction coefficient for the naive
+ Therefore, even a single frame with an instanteneous magnitude drop for
+ an FFT bin will potentially stay as the overly pessimistic noise estimate
+ for the duration of the noise buffer.
+ Since the frame length for 256 samples at 8000 Hz sampling frequency is
+ 32 ms, one particularly underestimated noise value will stay within the
+ minimum noise buffer for a period that can last seconds.
+ This is the reason for a high oversubtraction coefficient for the basic
  filter above, to compensate for its pessimism of the noise level.
  Furthermore, for the same reasons of the filter being pessimistic, any
  noise with small pauses will defeat the naive filter.
@@ -1235,11 +1293,8 @@ Magnitude domain
 \end_layout
 
 \begin_layout Standard
-One (effective) way of improving on the naive spectral subtractor is to
- low-pass filter (LPF) the FFT magnitude bins across time as:
-\end_layout
-
-\begin_layout Standard
+One way of improving on the naive spectral subtractor is to low-pass filter
+ (LPF) the FFT magnitude bins across time according to:
 \begin_inset Formula 
 \begin{eqnarray}
 P_{t}(\omega) & = & (1-k)\times|X(\omega)|+k\times P_{t-1}(\omega)\label{eq:lpf-input}\\
@@ -1270,42 +1325,85 @@ where
 \end_layout
 
 \begin_layout Standard
-The effect of this is as follows:
-\end_layout
-
-\begin_layout Standard
-The low pass filtered FFT bins correspond to the persistent (average) level
- of the magnitude of each frequency, with the duration of the filter being
- controlled by 
+The effect of this is as follows: the low pass filtered FFT bins correspond
+ to the persistent average level of the magnitude of each frequency, with
+ the duration of the filter being controlled by 
 \begin_inset Formula $\tau$
+\end_inset
+
+.
+ By taking the minimum of the LPF-ed signal as the noise minimum (and doing
+ the same minimum noise buffer rotation as before), the filter will not
+ suffer from the degeneracy of sudden amplitude jumps for the noise signal.
+ This means that the noise buffer's noise estimate now more closely matches
+ the persistent noise level.
+ This is illustrated in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "fig:lpf-illus"
+
 \end_inset
 
 .
 \end_layout
 
 \begin_layout Standard
-By taking the minimum of the LPFed signal as the noise minimum (and doing
- the same minimum noise buffer rotation as before), we do not suffer from
- the degeneracy of sudden amplitude jumps for the noise signal.
- This means that the noise buffer's noise estimate now more closely matches
- the persistent noise level.
- This is shown in <<<FIG LPF>>.
+\begin_inset Wrap figure
+lines 0
+placement O
+overhang 0in
+width "50col%"
+status collapsed
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename resources/lpf.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:lpf-illus"
+
+\end_inset
+
+Illustration of the low pas filtering of the FFT bins.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-As such we can reduce the oversubtraction coefficient 
+As such the oversubtraction coefficient 
 \begin_inset Formula $\alpha$
 \end_inset
 
- from 20 to 3.2.
- This also reduces the musical noise perceived by both: lowering the unsubtracte
-d spikes to noise floor ratio when the filter mistakingly keeps a noise
- bin value (lower alpha effect); and more closely matching the subtracted
- value to the actual noise level (taking the average by LPFing).
+ can be reduced from 20 to 3.2.
+ This also reduces the musical noise perceived by lowering the unsubtracted
+ spikes to noise floor ratio when the filter mistakingly keeps a noise bin
+ value (lower alpha effect), and more closely matching the subtracted value
+ to the actual noise level (taking the average by LPFing).
 \end_layout
 
 \begin_layout Standard
-Furthermore, for the original filter, if the noise floor suddenly had a
+Furthermore, for the original filter, if the noise floor experiences a sudden
  significant shift in amplitude, we would also perceive a discontinuity
  in the filter's output as well.
  On the other hand, LPFing lets us have smoother transitions between noise
@@ -1316,9 +1414,13 @@ Furthermore, for the original filter, if the noise floor suddenly had a
 \end_layout
 
 \begin_layout Standard
-The low pass filter can also be seen as an integrate->average system, therefore
- by having a period to average over, we can take a bigger advantage of the
- pauses between speech and get a much more accurate average noise estimate.
+The low pass filter can also be seen as an integrate
+\begin_inset Formula $\rightarrow$
+\end_inset
+
+average system, therefore by having a period to average over, we can take
+ a bigger advantage of the pauses between speech and get a much more accurate
+ average noise estimate.
  
 \end_layout
 
@@ -1388,10 +1490,7 @@ P_{t}(\omega)=\sqrt{(1-k)\times|X(\omega)|^{2}+k\times\left[P_{t-1}(\omega)\righ
 
 \begin_layout Standard
 The rest of the setup is the same.
-\end_layout
-
-\begin_layout Standard
-The reasoning for doing power domain filtering is that human hearing tracks
+ The reasoning for doing power domain filtering is that human hearing tracks
  the power of the signal closer than its magnitude.
  Hence we can potentially lessen the perceivable noise by filtering in this
  domain.
@@ -1604,7 +1703,6 @@ reference "eq:g_w"
 \end_layout
 
 \begin_layout Standard
-<<<<<second line missing symbol?>>>>>
 \begin_inset Formula 
 \begin{alignat}{1}
 \left|Y(\omega)\right| & =\left|X(\omega)\right|-|X(\omega)|\frac{\left|N(\omega)\right|}{\left|P(\omega)\right|}\label{eq:eq2}\\
