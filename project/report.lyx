@@ -211,9 +211,9 @@ rs can never fully know what sort of noise environment users are in when
 \end_layout
 
 \begin_layout Standard
-This project aims to implement such a noise-reduction system on various
+This project aims to implement such a noise-reduction system on a set of
  noise corrupted sound files in real-time.
- Various heuristics are first used to estimate the noise profile.
+ Various heuristics are used to estimate the noise profile.
  Once estimated, spectral subtraction is used to 
 \begin_inset Quotes eld
 \end_inset
@@ -222,8 +222,8 @@ subtract
 \begin_inset Quotes erd
 \end_inset
 
- the noise spectrum to obtain a noise reduced version of the noise corrupted
- files.
+ the noise spectrum estimate to obtain a clearer version of the corrupted
+ speech signal.
  
 \end_layout
 
@@ -236,24 +236,33 @@ reference "sec:sec-basic"
 \end_inset
 
 , we first explore a basic implementation of the noise filter.
- This will also establish the basic structure of the filtering system.
- In 
+ This will also establish the basic framework for the enhancements explored
+ in 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "sec:sec-enhancement"
 
 \end_inset
 
-, various enhancements to the basic system are explored, along with details
- of the parameters used in those enhancements.
- Finally, in 
+, along with details of the parameters used in those enhancements.
+ In 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "sec:Final-Implementation"
 
 \end_inset
 
-, the combination of the enhancements chosen to be used are described.
+, the combination of the enhancements chosen to be used for the final filter
+ version are described.
+ Finally, we discuss further ideas and heuristics that could enhance the
+ filter in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sec:Further possible ideas"
+
+\end_inset
+
+.
  The code for the project can be found in 
 \begin_inset CommandInset ref
 LatexCommand formatted
@@ -372,7 +381,7 @@ Frame Processing Implementation
 A frame size of 256 samples was chosen for frame processing, and an oversampling
  ratio of four was chosen along the the square root of the Hamming Window.
  This ensures that there are no sharp discontinuities at frame edges and
- that the overall gain at the edges sum to unity.
+ that the overall gain of the overlapped windows sum to unity.
  This means that a full frame is taken for frequency domain processing every
  
 \begin_inset Formula $\nicefrac{1}{4}$
@@ -670,7 +679,7 @@ reference "eq:1"
 \begin_inset Formula $\lambda$
 \end_inset
 
-) to reduce the amount of 
+) to reduce the amount of perceivable 
 \begin_inset Quotes eld
 \end_inset
 
@@ -693,25 +702,9 @@ Musical Noise
 \end_layout
 
 \begin_layout Standard
-If a noise is simply attenuated, it will become a series of isolated peaks
- in the spectrum, which would be perceived as low-tone musical notes.
- Since human sound perception is logarithmic 
-\begin_inset CommandInset citation
-LatexCommand citep
-key "compernolle"
-
-\end_inset
-
-, the difference between a zero and a sharp peak is much more perceivable
- and pronounced, resulting in 
-\begin_inset Quotes eld
-\end_inset
-
-musical noise
-\begin_inset Quotes erd
-\end_inset
-
- being perceived.
+When subtracting an estimate of the noise with clipping, imperfect noise
+ estimation produces isolated peaks in the spectrum of the filtered signal,
+ which is perceived as low-tone musical notes.
  This is illustrated in 
 \begin_inset CommandInset ref
 LatexCommand formatted
@@ -720,6 +713,14 @@ reference "fig:musical-noise-illus"
 \end_inset
 
 .
+ As human sound perception is logarithmic 
+\begin_inset CommandInset citation
+LatexCommand citep
+key "compernolle"
+
+\end_inset
+
+, the difference between the zeroed floor and a sharp peak is very pronounced.
  Instead, by clipping to a small positive value 
 \begin_inset Formula $\lambda$
 \end_inset
@@ -924,7 +925,7 @@ factory2
 \begin_inset Quotes erd
 \end_inset
 
- corrupted file.
+ corrupted signal.
  
 \end_layout
 
@@ -1038,7 +1039,7 @@ reference "fig:spec-clean"
 \end_inset
 
 , it can be seen that the speech is paused between 11-12.5 s and the spectrogram
- is completely empty during those period.
+ is completely empty during that period.
  In the filtered version in 
 \begin_inset CommandInset ref
 LatexCommand formatted
@@ -1047,8 +1048,8 @@ reference "fig:spec-no-enhancement"
 \end_inset
 
 , it can be seen that there is noise during this period of time, and the
- magnitude of the frequency bins fluctuates very rapidly with (see section
- 
+ magnitude of the frequency bins fluctuates very rapidly, exhibiting the
+ musical noise effect mentioned above (see section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Musical-Noise"
@@ -1140,7 +1141,7 @@ th
 \end_layout
 
 \begin_layout Standard
-This helps to prevents 
+This helps to prevent 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1214,8 +1215,9 @@ A problem with the basic approach is that each frame's DFT is considered
  minimum noise buffer for a period that can last seconds.
  This is the reason for a high over-subtraction coefficient for the basic
  filter above, to compensate for the filter's optimism of the noise level.
- Furthermore, for the same reasons of the filter being overly optismistic,
- any noise with small pauses will defeat the basic filter.
+ Furthermore, for the same reasons of the filter being overly pessimistic,
+ any noise with small spectral pauses (that need not be aligned to one frame)
+ will defeat the basic implementation.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1223,7 +1225,7 @@ Magnitude domain
 \end_layout
 
 \begin_layout Standard
-One way of improving on the naive spectral subtracter is to low-pass filter
+One way of improving on the naive spectral subtractor is to low-pass filter
  (LPF) the DFT magnitude bins across time according to:
 \begin_inset Formula 
 \begin{eqnarray}
@@ -1258,7 +1260,7 @@ reference "eq:oversubtraction"
 \end_layout
 
 \begin_layout Standard
-\begin_inset Formula $P_{t(}(\omega)$
+\begin_inset Formula $P_{t}(\omega)$
 \end_inset
 
  is the low pass filtered DFT bin that corresponds to the persistent average
@@ -1276,10 +1278,10 @@ reference "eq:oversubtraction"
 
 \end_inset
 
-), the filter will not suffer from the degeneracy of sudden amplitude jumps
- in the noise signal.
- This means that the noise buffer's noise estimate now more closely matches
- the persistent noise level.
+), the filter will not suffer from the degenerating upon encountering sudden
+ magnitude jumps in the noise signal's spectral content.
+ Result is such that the noise buffer's noise estimate now more closely
+ matches the persistent noise level.
  This is illustrated in 
 \begin_inset CommandInset ref
 LatexCommand formatted
@@ -1340,7 +1342,8 @@ The over-subtraction coefficient,
 
 , can thus be reduced from 20 to 3.2.
  This also reduces the musical noise perceived by lowering the level of
- fluctuation in the magnitude at each frequency bin.
+ fluctuation in the magnitude at each frequency bin between clipped and
+ unclipped samples.
  This is due to the subtracted spectrum being more closely matched to the
  actual noise level.
 \end_layout
@@ -1362,8 +1365,8 @@ In the basic filter, when the input
 \end_layout
 
 \begin_layout Standard
-The low pass filter can also be seen as an integrate and average system,
- where the inputs are integrated over a period of time and averaged.
+The low pass filter can also be seen as a system where the inputs are integrated
+ over a period of time and then averaged.
  Therefore, by having a longer period to average over, the pauses between
  speech can be used to get a much more accurate average noise estimate.
  Figure 
@@ -1406,8 +1409,8 @@ The time constant factor
 \end_inset
 
  also means a slightly slower response to noise level change, although the
- 7.5 seconds period between noise buffer rotation has a bigger effect on
- the response speed (see section 
+ 7.5 seconds period of the full noise buffer rotation latency has a bigger
+ effect on the response speed (see section 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "sub:Noise-Spectrum-Estimation"
@@ -1442,8 +1445,9 @@ Power domain filtering provides slightly more accurate filtering, because
 \end_layout
 
 \begin_layout Standard
-Alternatively, the entire noise estimation and noise subtraction can be
- performed in the power domain before rooting the values before output.
+We also explored an approach where the entire noise estimation and noise
+ subtraction is performed in the power domain, converting to magnitude domain
+ only before output.
  Thus, 
 \begin_inset CommandInset ref
 LatexCommand formatted
@@ -1469,13 +1473,13 @@ reference "eq:eq2"
  can be performed by
 \begin_inset Formula 
 \begin{equation}
-|Y(\omega)|=\sqrt{|X(\omega)|^{2}-|N(\omega)|}
+|Y(\omega)|=\sqrt{|X(\omega)|^{2}-|N_{p}(\omega)|}
 \end{equation}
 
 \end_inset
 
 where 
-\begin_inset Formula $|N(|\omega)|$
+\begin_inset Formula $|N_{p}(\omega)|$
 \end_inset
 
  is the minimum noise estimate in the power domain estimated in the same
@@ -1490,15 +1494,16 @@ reference "eq:oversubtraction"
 \end_layout
 
 \begin_layout Standard
-From tests, there are no perceivable difference when the filtering was done
- in the magnitude or frequency domain, as 
+Testing showed no perceivable difference regardless of whether the filtering
+ was done in the magnitude or power domain (including both variants), agreeing
+ with 
 \begin_inset CommandInset citation
 LatexCommand citet
 key "compernolle"
 
 \end_inset
 
- wrote.
+.
 \end_layout
 
 \begin_layout Subsection
@@ -2861,8 +2866,7 @@ reference "sub:complex-conjugate"
 
 \end_inset
 
- was implemented to improve the performance of the filter and to reduce
- and eliminate clicking sounds in the output.
+ was implemented to improve the computational performance of the filter.
  
 \end_layout
 
@@ -2874,7 +2878,7 @@ reference "sub:Low-Pass-Filter-Input"
 
 \end_inset
 
- gave the most significant reduction in terms of musical noise reduction.
+ gave the most significant improvement in terms of musical noise reduction.
  The alternate 
 \begin_inset Formula $G(\omega)$
 \end_inset
@@ -2913,7 +2917,7 @@ reference "sub:enhancement-6"
 
 \end_inset
 
- because no human speech occurs in that region.
+ because no human speech spectral content in that band is insignificant.
  
 \end_layout
 
@@ -3050,8 +3054,11 @@ reference "sub:Noise-Spectrum-Estimation"
 \end_inset
 
 .
- Thus, the caller on the other end of the line will receive a filtered output
+ Thus, the callee on the other end of the line will receive a filtered output
  right from the beginning.
+ This is assuming that the unfiltered signal is transmitted, if we filter
+ on the input and transmit the clean signal, then the filter could start
+ tracking the noise even during the connection setup delay period.
 \end_layout
 
 \begin_layout Standard
@@ -3059,8 +3066,8 @@ Another trait of mobile telephony is that usually a device will usually
  only have one or very few associated users.
  Therefore adaptive filters that are trained to perform better based on
  the principal traits of the owner's speech can be implemented.
- This could be achieved in a variety of way including neural networks, markovian
- models and Wiener filters 
+ This could be achieved in a variety of ways including neural networks,
+ markovian models and Wiener filters 
 \begin_inset CommandInset citation
 LatexCommand citep
 key "compernolle"
