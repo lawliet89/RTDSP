@@ -361,11 +361,10 @@ level to a high level. This is due to the ten-second window used for
 noise estimation. As the filter is always conservative about the noise
 level being low (by always taking the minimum), the lower estimate
 before the transition is always dominating until the relevant minimum
-noise buffer is discarded (around 7.5 seconds). Due to the high over-subtraction
-factor $\alpha$ introduced in \eqref{oversubtraction} to correct
-the underestimation of noise, some of the speech is also removed and
-results in the voice being slurry. There is also a very pronounced
-level of musical noise.
+noise buffer is discarded. Due to the high over-subtraction factor
+$\alpha$ introduced in \eqref{oversubtraction} to correct the underestimation
+of noise, some of the speech is also removed and results in the voice
+being slurry. There is also a very pronounced level of musical noise.
 
 The unnatural sounding musical noise is a result of the magnitude
 of the frequency exhibiting strong fluctuations in the noisy area
