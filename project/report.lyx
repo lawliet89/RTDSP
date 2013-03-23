@@ -235,7 +235,7 @@ reference "sec:sec-basic"
 
 \end_inset
 
-, we first explore a basic implementation of the noise filter.
+, a basic implementation of the noise filter is explored.
  This will also establish the basic framework for the enhancements explored
  in 
 \begin_inset CommandInset ref
@@ -254,8 +254,8 @@ reference "sec:Final-Implementation"
 
 , the combination of the enhancements chosen to be used for the final filter
  version are described.
- Finally, we discuss further ideas and heuristics that could enhance the
- filter in 
+ Finally, further ideas and heuristics that could enhance the filter are
+ discussed in 
 \begin_inset CommandInset ref
 LatexCommand formatted
 reference "sec:Further possible ideas"
@@ -891,10 +891,9 @@ Spectrograms of provided files, generated in Matlab
 \begin_layout Standard
 \noindent
 As human perception of volume, noise and in general audio signal clarity
- is very subjective and lacks a complete mathematical model , we will use
- spectrograms to introduce some form of objectivity when evaluating the
- performance of the filter.
- We will use 
+ is very subjective and lacks a complete mathematical model, spectrograms
+ are used to introduce some form of objectivity when evaluating the performance
+ of the filterThe 
 \begin_inset Quotes eld
 \end_inset
 
@@ -902,7 +901,7 @@ factory2
 \begin_inset Quotes erd
 \end_inset
 
- corrupted sample for evaluation of the filter.
+ corrupted sample is used for evaluation of the filter.
  Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
@@ -1445,9 +1444,9 @@ Power domain filtering provides slightly more accurate filtering, because
 \end_layout
 
 \begin_layout Standard
-We also explored an approach where the entire noise estimation and noise
- subtraction is performed in the power domain, converting to magnitude domain
- only before output.
+An approach where the entire noise estimation and noise subtraction is performed
+ in the power domain was explored, converting to magnitude domain only before
+ output.
  Thus, 
 \begin_inset CommandInset ref
 LatexCommand formatted
@@ -1721,12 +1720,12 @@ Consider a situation when the value of
  This will signify that the current minim noise estimate over ten seconds
  roughly matches the low-pass filtered noise estimate for the current frame
  being processed.
- We are thus able to be fairly confident that the input 
+ Thus, there is a high confidence that the input 
 \begin_inset Formula $X(\omega)$
 \end_inset
 
  consists entirely of only noise.
- Thus, the fraction 
+ Hence, the fraction 
 \begin_inset Formula $\frac{\left|N(\omega)\right|}{\left|P(\omega)\right|}\approx1$
 \end_inset
 
@@ -3054,11 +3053,10 @@ reference "sub:Noise-Spectrum-Estimation"
 \end_inset
 
 .
- Thus, the callee on the other end of the line will receive a filtered output
+ Thus, the person on the other end of the line will receive a filtered output
  right from the beginning.
- This is assuming that the unfiltered signal is transmitted, if we filter
- on the input and transmit the clean signal, then the filter could start
- tracking the noise even during the connection setup delay period.
+ Additionally,  the filter could start tracking the noise even during the
+ connection setup delay period.
 \end_layout
 
 \begin_layout Standard
