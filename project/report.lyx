@@ -456,14 +456,6 @@ reference "fig:overlap-frame"
 \end_layout
 
 \begin_layout Standard
-<<<FIG 2.2: make screenshot of fig1 (page 2) in Compernolle (the one that
- I linked) paper instead ???, looks much nicer but doesn't have noise buffer
- chunking.
- I reckon still switch to Compernolle as it stops the marker from scrolling
- through already familiar graphs quicker>>>
-\end_layout
-
-\begin_layout Standard
 \begin_inset Float figure
 placement H
 wide false
@@ -645,11 +637,11 @@ Noise Spectrum Subtraction
 
 \begin_layout Standard
 \begin_inset Wrap figure
-lines 17
+lines 19
 placement O
 overhang 0in
 width "40col%"
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \noindent
@@ -997,6 +989,7 @@ factory2
 \begin_layout Standard
 \noindent
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status collapsed
@@ -1418,23 +1411,19 @@ The low pass filter can also be seen as an integrate
 \begin_inset Formula $\rightarrow$
 \end_inset
 
-average system, therefore by having a period to average over, we can take
- a bigger advantage of the pauses between speech and get a much more accurate
- average noise estimate.
- 
-\end_layout
-
-\begin_layout Standard
-Figure 
+average system.
+ Therefore, by having a period to average over, the pauses between speech
+ can be used to get a much more accurate average noise estimate.
+ Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:spec-enhancement-2"
 
 \end_inset
 
- shows that the enhanced filter is indeed successful in taking the average
- noise level over the periods of absense of speech and effectively filters
- out said noise.
+ shows output of the filter being successful in taking the average noise
+ level over the periods of absense of speech and effectively filtering out
+ said noise.
  The amount of musical noise is sufficiently reduced as well by the reasons
  mentioned above.
 \end_layout
@@ -1444,28 +1433,36 @@ The time constant factor
 \begin_inset Formula $\tau$
 \end_inset
 
- can be tuned in this filter, our implementation uses 50 ms.
+ can be adjusted in this filter.
+ 50 ms was chosen for the implementation.
  This value was obtained empirically with blind listening tests for the
  set of samples given filtered with a range of time constants in the range
  of 20 to 80 ms.
  This range is in the range of maximising the integration period of noise
  by matching the inter-word pause timings.
- Having a higher time constant results in: more integration period, which
- is good as long as we're not extending it to be bigger than the pauses
- between words, as the filter will start integrating voice spectrum as part
- of the noise.
- Higher 
+ Having a higher time constant results in a longer integration period, which
+ when bigger than the pauses between words will start integrating voice
+ spectrum as part of the noise estimate.
+ A higher 
 \begin_inset Formula $\tau$
 \end_inset
 
- also means a slightly slower response to noise level change, but that term
- is dominated by the noise buffer period anyway (7.5 seconds).
+ also means a slightly slower response to noise level change, although the
+ 7.5 seconds period between noise buffer rotation has a bigger effect on
+ the response (see section 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "sub:Noise-Spectrum-Estimation"
+
+\end_inset
+
+).
  A smaller 
 \begin_inset Formula $\tau$
 \end_inset
 
- on the other hand will bring us closer to the naive filter in terms of
- averaging over a shorter period.
+ on the other hand will be similar to the basic implementation in terms
+ of averaging over a shorter period.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1473,14 +1470,10 @@ Power domain
 \end_layout
 
 \begin_layout Standard
-Alternatively, LPF of FFT bins (spectral components) can also be done in
- power domain:
-\end_layout
-
-\begin_layout Standard
+Alternatively, the LPF of the frequency bins can be done in power domain:
 \begin_inset Formula 
 \begin{equation}
-P_{t}(\omega)=\sqrt{(1-k)\times|X(\omega)|^{2}+k\times\left[P_{t-1}(\omega)\right]^{2}}
+P_{t}(\omega)=\sqrt{(1-k)\times|X(\omega)|^{2}+k\times\left[P_{t-1}(\omega)\right]^{2}}\label{eq:power-lpf}
 \end{equation}
 
 \end_inset
@@ -1489,39 +1482,40 @@ P_{t}(\omega)=\sqrt{(1-k)\times|X(\omega)|^{2}+k\times\left[P_{t-1}(\omega)\righ
 \end_layout
 
 \begin_layout Standard
-The rest of the setup is the same.
- The reasoning for doing power domain filtering is that human hearing tracks
- the power of the signal closer than its magnitude.
- Hence we can potentially lessen the perceivable noise by filtering in this
- domain.
+Power domain filtering provides slightly more accurate filtering, because
+ human hearing tracks the power of the signal closer than its magnitude.
+ Hence, the perceivable noise could potentially be reduced.
 \end_layout
 
 \begin_layout Standard
-The assignment's suggestion is to filter as follows:
-\end_layout
+Alternatively, the entire noise estimation and noise subtraction can be
+ performed in the power domain before rooting the values before output.
+ Thus, 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:power-lpf"
 
-\begin_layout Standard
-<<<TURN TO MATH EQUATIONS>>> (((eq 9 in Compernolle)))
-\end_layout
+\end_inset
 
-\begin_layout Standard
-y(w) = x - sqrt(D^2) 
-\end_layout
-
-\begin_layout Standard
-where D represents the estimate of the noise power spectral density.
-\end_layout
-
-\begin_layout Standard
-But this does only the noise estimation in power domain, we tried to do
- the entire algorithm in power domain instead with the following power noise
- term:
-\end_layout
-
-\begin_layout Standard
+ becomes
 \begin_inset Formula 
 \begin{equation}
-P_{t}(\omega)=(1-k)\times|X(\omega)|^{2}+k\times\left[P_{t-1}(\omega)\right]^{2}
+P_{t}(\omega)=(1-k)\times|X(\omega)|^{2}+k\times P_{t-1}(\omega)
+\end{equation}
+
+\end_inset
+
+ and noise subtraction originally in the form of 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:eq2"
+
+\end_inset
+
+ can be performed by 
+\begin_inset Formula 
+\begin{equation}
+|Y(\omega)|=\sqrt{|X(\omega)|^{2}-|N(\omega)|}
 \end{equation}
 
 \end_inset
@@ -1530,29 +1524,31 @@ P_{t}(\omega)=(1-k)\times|X(\omega)|^{2}+k\times\left[P_{t-1}(\omega)\right]^{2}
 \end_layout
 
 \begin_layout Standard
-and then transferring to magnitude domain only right before the output stage
- as follows:
-\end_layout
-
-\begin_layout Standard
-<<<TURN TO MATH EQUATIONS>>>
-\end_layout
-
-\begin_layout Standard
-y(w) = sqrt(x^2 - D^2)
-\end_layout
-
-\begin_layout Standard
-However, with both approaches, there is no perceivable difference with the
- magnitude domain filtering in practice, which agrees with the section 
-\begin_inset Quotes eld
+where 
+\begin_inset Formula $|N(|\omega)|$
 \end_inset
 
-Generalised Spectral Subtraction
-\begin_inset Quotes erd
+ is the minimum noise estimate in the power domain estimated in the same
+ way as in 
+\begin_inset CommandInset ref
+LatexCommand formatted
+reference "eq:oversubtraction"
+
 \end_inset
 
- of <<<Compernolle>>>.
+ 
+\end_layout
+
+\begin_layout Standard
+From tests, there are no perceivable difference when the filtering was done
+ in the magnitude or frequency domain, as 
+\begin_inset CommandInset citation
+LatexCommand citet
+key "compernolle"
+
+\end_inset
+
+ wrote.
 \end_layout
 
 \begin_layout Subsection
@@ -1566,8 +1562,8 @@ Low-Pass Filter Noise Estimate
 \end_layout
 
 \begin_layout Standard
-Another aspect to consider is the potential discontinuities whenever minimum
- noise buffer segments are shifted.
+Another potential for discontinuities in the output can be when minimum
+ noise buffers are rotated .
  These steps can be perceivable if the noise level changes significantly,
  but we can smooth it by LPFing over the noise estimates as well.
  This ensures a smoother transition between noise buffer rotations.
