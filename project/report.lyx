@@ -1004,8 +1004,7 @@ reference "fig:spec-no-enhancement"
  This is due to the ten-second window used for noise estimation.
  As the filter is always conservative about the noise level being low (by
  always taking the minimum), the lower estimate before the transition is
- always dominating until the relevant minimum noise buffer is discarded
- (around 7.5 seconds).
+ always dominating until the relevant minimum noise buffer is discarded.
  Due to the high over-subtraction factor 
 \begin_inset Formula $\alpha$
 \end_inset
